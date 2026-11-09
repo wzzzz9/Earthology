@@ -67,7 +67,12 @@ export class SubmitScene extends Phaser.Scene {
     this.big.setText(isMark ? `${this.feedback.score} / 100` : '');
     this.body.setY(isMark ? 72 : 48).setText(isMark ? page.slice(1) : page);
     const stampName = this.feedback.band.stamp;
-    this.stamp.setText(this.feedback.kind === 'marked' && stampName ? `[ ${stampName.toUpperCase()} STAMP ]` : state.bestScore ? `best so far: ${state.bestScore}` : '');
+    const reward = this.feedback.band.reward;
+    const bits: string[] = [];
+    if (this.feedback.kind === 'marked' && stampName) bits.push(`[ ${stampName.toUpperCase()} STAMP ]`);
+    if (this.feedback.kind === 'marked' && reward) bits.push(`[ ${reward} ]`);
+    if (!bits.length && state.bestScore) bits.push(`best so far: ${state.bestScore}`);
+    this.stamp.setText(bits.join('   '));
     this.hint.setText(this.pageIndex === pages.length - 1 ? 'Enter: close' : 'Enter: next');
     this.publishDebug();
   }

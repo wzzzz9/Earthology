@@ -111,6 +111,8 @@ export interface Band {
   min: number;
   name: string;
   stamp: string | null;
+  /** Placeholder until rewards are designed: "reward*1" or null. */
+  reward: string | null;
   lines: string[];
 }
 

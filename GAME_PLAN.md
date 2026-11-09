@@ -186,10 +186,10 @@ From the ship you send the notebook to the teacher. The teacher reads it (a shor
    | Mark | Band | What you get |
    | --- | --- | --- |
    | 0–39 | Keep going | Feedback only, kindly worded. The teacher's first hint is extra generous. |
-   | 40–59 | Encouragement | A small sticker on the notebook cover and one warm line from the teacher. No unlock. |
-   | 60–79 | Pass | Next country unlocked. Bronze stamp. |
-   | 80–99 | Credit | Silver stamp and a cosmetic for the alien or the ship (a hat, a paint job). |
-   | 100 | Perfect | Gold stamp, the full rubric revealed, and the teacher's one embarrassing personal story. |
+   | 40–59 | Encouragement | `reward*1` (placeholder; one warm line from the teacher). No unlock. |
+   | 60–79 | Pass | Class passed. Next country unlocked. `reward*1`. |
+   | 80–99 | Credit | `reward*1`. |
+   | 100 | Perfect | The full marking sheet revealed. `reward*1`. |
 2. **One line per section** ("Land: strong. Rocks: thin. People: who did you actually talk to?").
 3. **One targeted hint** on the weakest section. Hints escalate on repeat submissions the way v1's hint ladder does: nudge → clue → answer.
    - 1st: "You have three igneous rocks. Iceland has more than three kinds of rock."
@@ -280,7 +280,11 @@ If AI small talk is ever added (5.4), it is a separate optional service and must
 
 **Classes and small tasks (decided in principle, details open).** The professor runs a schedule: "Day 3, 9 o'clock, class on rocks. Be on time." A class is a short scene at the ship that teaches one idea (Tier 1), then she sets a small task with a deadline in game days: "By day 5, bring me two different rocks." Tasks come only from the professor, never from townspeople, so the no-quests rule for the town still holds. Missing a deadline is soft: "Are you all right? One more chance, day 7." Missing the second time costs something small (a comment on the report card), never a fail. Open points: how many classes per country (suggest 4 to 5), whether classes block the homework (suggest no, they only add rubric items and hints), and what the schedule looks like in the notebook (suggest a Timetable tab).
 
-**Course naming.** The game is *Earthology*, which is also the name of the student's major. One country is one *unit* of the course. A submission is a *report*. Passing a unit unlocks the next. The course grade is the average of best unit marks and only changes the ending.
+**Course structure (decided Nov 11).** The game is *Earthology*, which is also the name of the student's major. **One country is one class.** A class is passed or failed. A submission is a *report*. Passing a class unlocks the next country.
+
+**Failing and retaking (decided in principle Nov 11; the trigger below is the recommended default, to confirm).** A class can be failed. Recommended trigger: each class has a final deadline, for Iceland day 14. At the end of that day the professor takes the best report so far as the final mark. Below the pass mark is a fail. Failing is not the end: the student **retakes** the class, which means staying in the same country with everything already discovered kept on record. Only the undiscovered items remain. During a retake the professor holds **no classes**: it is discovery only, with the notebook and her report feedback as the only guides. A retake has no deadline. The report card remembers how many attempts a class took.
+
+**Rewards (deferred Nov 11).** Every place where a reward is given shows the placeholder `reward*1` until the reward design is decided. Bands, stamps and unlocks stay as marks on the report; what they give the player is still open.
 
 ## 8b. Visual direction (decided Nov 10, extended Nov 11)
 
@@ -333,7 +337,7 @@ Decided in the Nov 8, 2026 planning conversation. These override the matching v1
 | new | Quests | None. Relationship levels and leads instead. |
 | new | Disguise | **Nobody ever finds out.** The child-and-dogs gag is dropped. |
 | new | Teacher | Ms. Beatrice Lund, random human name, placeholder. |
-| new | Progression and rewards | Pass mark 60 unlocks the next country. Reward bands at 40 (encouragement), 60 (pass), 80 (credit), 100 (perfect). See 6.2. |
+| new | Progression and rewards | One country = one class, pass or fail. Pass mark 60 unlocks the next country. Bands at 40 / 60 / 80 / 100. Rewards are `reward*1` placeholders until designed. Fail → retake the class: progress kept, no classes, discovery only. See 2b and 6.2. |
 | new | Anti-spam | 3 identical submissions → teacher waits for 3 new entries. No real fail. |
 
 v1 questions 1, 2, 5, 6, 8, 10, 14, 18–22 keep their v1 recommended defaults unless you say otherwise.
