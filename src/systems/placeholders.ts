@@ -95,9 +95,17 @@ export interface FigureLook {
   /** Hat colour, or null for bare hair. */
   hat: string | null;
   legs: string;
+  /** Long hair falls to the shoulders. */
+  hairLong?: boolean;
+  /** A knitted headband instead of a hat. */
+  headband?: string | null;
 }
 
 export const PLAYER_LOOK: FigureLook = { coat: '#e2673f', coatDark: '#b84d2e', hair: '#3b2a2a', skin: '#f3cfae', hat: '#3f4866', legs: '#2d3140' };
+export const DISGUISES: Record<string, FigureLook> = {
+  a: PLAYER_LOOK,
+  b: { coat: '#4f7fb8', coatDark: '#3a6190', hair: '#6b3f2a', skin: '#f3cfae', hat: null, headband: '#e9c46a', legs: '#3a3f55', hairLong: true },
+};
 
 export function makePlaceholderPlayer(scene: Phaser.Scene, key = 'player', look: FigureLook = PLAYER_LOOK): void {
   if (scene.textures.exists(key)) return;
@@ -133,12 +141,15 @@ export function makePlaceholderPlayer(scene: Phaser.Scene, key = 'player', look:
       r(4, 3 + bob, 8, 9, look.skin);
       if (dir === 'up') {
         r(4, 3 + bob, 8, 7, look.hair);
+        if (look.hairLong) r(4, 10 + bob, 8, 4, look.hair);
       } else {
         r(4, 3 + bob, 8, 3, look.hair);
         r(4, 6 + bob, 1, 3, look.hair); r(11, 6 + bob, 1, 3, look.hair);
         if (dir === 'left') r(10, 6 + bob, 2, 2, look.hair);
         if (dir === 'right') r(4, 6 + bob, 2, 2, look.hair);
+        if (look.hairLong) { r(3, 8 + bob, 2, 7, OUT); r(11, 8 + bob, 2, 7, OUT); r(4, 9 + bob, 1, 5, look.hair); r(11, 9 + bob, 1, 5, look.hair); }
       }
+      if (look.headband) { r(4, 5 + bob, 8, 1, look.headband); r(5, 4 + bob, 1, 1, look.headband); r(10, 4 + bob, 1, 1, look.headband); }
       // hat (the disguise): a beanie over the hair
       if (look.hat) {
         r(3, 1 + bob, 10, 4, OUT);
@@ -238,5 +249,32 @@ export function makePickupRock(scene: Phaser.Scene, key: string, color: string):
   ctx.fillStyle = color; ctx.fillRect(2, 3, 8, 6); ctx.fillRect(4, 1, 5, 2);
   ctx.fillStyle = '#ffffff55'; ctx.fillRect(4, 3, 3, 1);
   ctx.fillStyle = '#00000055'; ctx.fillRect(2, 8, 8, 1);
+  tex.refresh();
+}
+
+/**
+ * The alien's true form, 16x20: a round teal body, one wide eye band with two pupils,
+ * two antennae with lights, stubby feet. Gender-free, little-monster vibe.
+ */
+export function makeAlienTrueForm(scene: Phaser.Scene, key = 'alien'): void {
+  if (scene.textures.exists(key)) return;
+  const tex = scene.textures.createCanvas(key, 16, 20);
+  if (!tex) return;
+  const ctx = tex.getContext();
+  const r = (x: number, y: number, w: number, h: number, c: string) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
+  const OUT = '#1a1c20';
+  r(3, 18, 10, 2, 'rgba(0,0,0,0.28)');
+  // antennae
+  r(4, 0, 1, 4, OUT); r(11, 0, 1, 4, OUT); r(3, 0, 2, 1, '#ffd37a'); r(11, 0, 2, 1, '#ffd37a');
+  // body
+  r(2, 4, 12, 13, OUT); r(1, 6, 14, 9, OUT);
+  r(3, 5, 10, 11, '#5fc4b0'); r(2, 7, 12, 7, '#5fc4b0');
+  r(3, 13, 10, 3, '#3f9d8c');
+  // eye band
+  r(3, 7, 10, 4, '#f4f1e8'); r(4, 8, 2, 2, OUT); r(10, 8, 2, 2, OUT); r(4, 8, 1, 1, '#9fd8ff'); r(10, 8, 1, 1, '#9fd8ff');
+  // mouth
+  r(7, 12, 2, 1, OUT);
+  // feet
+  r(3, 16, 4, 2, OUT); r(9, 16, 4, 2, OUT); r(4, 16, 2, 1, '#3f9d8c'); r(10, 16, 2, 1, '#3f9d8c');
   tex.refresh();
 }

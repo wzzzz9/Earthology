@@ -62,12 +62,12 @@ export class TitleScene extends Phaser.Scene {
 
     const start = () => {
       if (save) loadSave();
-      this.scene.start('World');
+      this.scene.start(save && state.introDone ? 'World' : 'Intro');
     };
     const fresh = () => {
       clearSave();
       state.reset();
-      this.scene.start('World');
+      this.scene.start('Intro');
     };
     this.input.keyboard!.once('keydown-ENTER', start);
     this.input.keyboard!.once('keydown-SPACE', start);

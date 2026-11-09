@@ -53,6 +53,10 @@ export interface SaveData {
   bestScore: number;
   rubricRevealed: boolean;
   playerPos: { x: number; y: number } | null;
+  disguise: string | null;
+  introDone: boolean;
+  /** Explored tile indexes of the current map (fog of war on the paper map). */
+  explored: number[];
 }
 
 /** Everything that would go in a save file. */
@@ -70,9 +74,14 @@ export class GameState {
   bestScore = 0;
   rubricRevealed = false;
   playerPos: { x: number; y: number } | null = null;
+  disguise: string | null = null;
+  introDone = false;
+  explored: number[] = [];
+  private exploredSet = new Set<number>();
 
   reset(): void {
     Object.assign(this, new GameState());
+    this.exploredSet = new Set();
     bus.emit(EV.stateChanged);
   }
 
@@ -92,13 +101,29 @@ export class GameState {
       bestScore: this.bestScore,
       rubricRevealed: this.rubricRevealed,
       playerPos: this.playerPos,
+      disguise: this.disguise,
+      introDone: this.introDone,
+      explored: this.explored,
     };
+  }
+
+  /** Marks a tile index as explored. Returns true if it was new. */
+  explore(index: number): boolean {
+    if (this.exploredSet.has(index)) return false;
+    this.exploredSet.add(index);
+    this.explored.push(index);
+    return true;
+  }
+
+  isExplored(index: number): boolean {
+    return this.exploredSet.has(index);
   }
 
   load(data: SaveData): void {
     if (data.version !== 1) return;
     const fresh = new GameState();
     Object.assign(this, fresh, data);
+    this.exploredSet = new Set(this.explored);
     bus.emit(EV.stateChanged);
   }
 

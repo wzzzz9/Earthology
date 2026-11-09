@@ -1,13 +1,14 @@
 import Phaser from 'phaser';
 import {
   makePlaceholderTileset, makePlaceholderPlayer, makePlaceholderShip, makeSparkle, makePlaceholderProps, makePickupRock,
-  PLAYER_W, PLAYER_H,
+  PLAYER_W, PLAYER_H, DISGUISES, PLAYER_LOOK,
 } from '../systems/placeholders';
 import { MoveInput } from '../systems/input';
 import { content } from '../content';
 import { state } from '../systems/state';
 import { Conversation } from '../systems/conversation';
 import type { DialogueSource } from './DialogueScene';
+import type { MapInfo } from './MapScene';
 import { bus, EV } from '../systems/events';
 import { saveNow } from '../systems/save';
 
@@ -38,14 +39,30 @@ export class WorldScene extends Phaser.Scene {
   /** Keys that were down when an overlay closed; ignored until released, so the closing press does not re-open. */
   private heldE = false;
   private heldN = false;
+  private heldM = false;
+  private mapKey!: Phaser.Input.Keyboard.Key;
+  private mapInfo!: Omit<MapInfo, 'player'>;
+  private lastTile = -1;
+  private firstWalk = false;
+  private playerKey = 'player';
 
   constructor() {
     super('World');
   }
 
+  init(data: { firstWalk?: boolean }): void {
+    this.firstWalk = !!data?.firstWalk;
+    this.interactables = [];
+    this.busy = false;
+    this.pendingOverlay = null;
+    this.lastTile = -1;
+  }
+
   create(): void {
     makePlaceholderTileset(this);
-    makePlaceholderPlayer(this);
+    const disguise = state.disguise && DISGUISES[state.disguise] ? state.disguise : 'a';
+    this.playerKey = `player.${disguise}`;
+    makePlaceholderPlayer(this, this.playerKey, DISGUISES[disguise] ?? PLAYER_LOOK);
     makePlaceholderShip(this);
     makeSparkle(this);
     makePlaceholderProps(this);
@@ -61,7 +78,7 @@ export class WorldScene extends Phaser.Scene {
     const spawn = objects.find((o) => o.name === 'spawn');
 
     const start = state.playerPos ?? { x: spawn?.x ?? 100, y: spawn?.y ?? 100 };
-    this.player = this.physics.add.sprite(start.x, start.y, 'player', 'down0');
+    this.player = this.physics.add.sprite(start.x, start.y, this.playerKey, 'down0');
     this.player.body!.setSize(10, 8).setOffset((PLAYER_W - 10) / 2, PLAYER_H - 8);
     this.player.setCollideWorldBounds(true);
     this.player.setDepth(10);
@@ -108,13 +125,27 @@ export class WorldScene extends Phaser.Scene {
     this.physics.add.collider(this.player, solids);
 
     for (const dir of ['down', 'up', 'left', 'right'] as const) {
-      this.anims.create({
-        key: `walk-${dir}`,
-        frames: [{ key: 'player', frame: `${dir}0` }, { key: 'player', frame: `${dir}1` }],
-        frameRate: 6,
-        repeat: -1,
-      });
+      const key = `walk-${dir}-${disguise}`;
+      if (!this.anims.exists(key)) {
+        this.anims.create({
+          key,
+          frames: [{ key: this.playerKey, frame: `${dir}0` }, { key: this.playerKey, frame: `${dir}1` }],
+          frameRate: 6,
+          repeat: -1,
+        });
+      }
     }
+
+    // What the paper map needs: tile layers and marker positions.
+    const groundData = ground.layer.data.flat().map((t) => (t.index > 0 ? t.index : 0));
+    const wallData = walls.layer.data.flat().map((t) => (t.index > 0 ? t.index : 0));
+    this.mapInfo = {
+      width: map.width,
+      height: map.height,
+      ground: groundData,
+      walls: wallData,
+      markers: this.interactables.filter((it) => it.kind !== 'sample').map((it) => ({ x: it.x, y: it.y, kind: it.kind as 'ship' | 'scan' | 'npc', id: it.id })),
+    };
 
     const cam = this.cameras.main;
     cam.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
@@ -124,6 +155,7 @@ export class WorldScene extends Phaser.Scene {
     this.move = new MoveInput(this);
     this.actKey = this.input.keyboard!.addKey('E');
     this.bookKey = this.input.keyboard!.addKey('N');
+    this.mapKey = this.input.keyboard!.addKey('M');
     this.prompt = this.add
       .text(0, 0, '', { fontFamily: 'monospace', fontSize: '8px', color: '#f4f1e8', backgroundColor: '#11141cdd', padding: { x: 3, y: 1 } })
       .setOrigin(0.5, 1)
@@ -139,6 +171,32 @@ export class WorldScene extends Phaser.Scene {
     });
 
     this.installDebug();
+    this.revealAround();
+    if (this.firstWalk) {
+      this.cameras.main.fadeIn(500, 0, 0, 0);
+      this.time.delayedCall(600, () => bus.emit(EV.toast, content.intro.controls));
+    }
+  }
+
+  /** Fog of war: mark tiles within a few tiles of the player as explored. */
+  private revealAround(): void {
+    const tx = Math.floor(this.player.x / 16);
+    const ty = Math.floor(this.player.y / 16);
+    const idx = ty * this.mapInfo.width + tx;
+    if (idx === this.lastTile) return;
+    this.lastTile = idx;
+    const R = 4;
+    let changed = false;
+    for (let dy = -R; dy <= R; dy++) {
+      for (let dx = -R; dx <= R; dx++) {
+        if (dx * dx + dy * dy > R * R + 2) continue;
+        const x = tx + dx;
+        const y = ty + dy;
+        if (x < 0 || y < 0 || x >= this.mapInfo.width || y >= this.mapInfo.height) continue;
+        if (state.explore(y * this.mapInfo.width + x)) changed = true;
+      }
+    }
+    if (changed) bus.emit(EV.stateChanged);
   }
 
   private addSparkle(x: number, y: number): Phaser.GameObjects.Image {
@@ -252,6 +310,7 @@ export class WorldScene extends Phaser.Scene {
     // Whatever key closed the overlay must be released before it counts again.
     this.heldE = this.actKey.isDown;
     this.heldN = this.bookKey.isDown;
+    this.heldM = this.mapKey.isDown;
     this.busy = false;
   }
 
@@ -259,17 +318,22 @@ export class WorldScene extends Phaser.Scene {
     if (this.busy) return;
     if (this.heldE && !this.actKey.isDown) this.heldE = false;
     if (this.heldN && !this.bookKey.isDown) this.heldN = false;
+    if (this.heldM && !this.mapKey.isDown) this.heldM = false;
     if (Phaser.Input.Keyboard.JustDown(this.bookKey) && !this.heldN) return this.openOverlay('Notebook');
+    if (Phaser.Input.Keyboard.JustDown(this.mapKey) && !this.heldM) {
+      return this.openOverlay('Map', { info: { ...this.mapInfo, player: { x: this.player.x, y: this.player.y } } });
+    }
     this.move.update();
     this.player.setVelocity(this.move.vec.x * SPEED, this.move.vec.y * SPEED);
     if (this.move.moving) {
-      this.player.anims.play(`walk-${this.move.facing}`, true);
+      this.player.anims.play(`walk-${this.move.facing}-${state.disguise ?? 'a'}`, true);
     } else {
       this.player.anims.stop();
       this.player.setFrame(`${this.move.facing}0`);
     }
     this.player.setDepth(this.player.y + 12);
     state.playerPos = { x: Math.round(this.player.x), y: Math.round(this.player.y) };
+    this.revealAround();
 
     const it = this.target();
     if (it) {
@@ -299,6 +363,9 @@ export class WorldScene extends Phaser.Scene {
           bestScore: state.bestScore,
           locked: state.lockBaseline !== null,
           identicalStreak: state.identicalStreak,
+          disguise: state.disguise,
+          introDone: state.introDone,
+          explored: state.explored.length,
         }),
         enumerable: true,
         configurable: true,

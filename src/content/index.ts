@@ -7,7 +7,8 @@ import testsJson from '../../content/tests.json';
 import keyJson from '../../content/key.json';
 import rubricJson from '../../content/countries/iceland/rubric.json';
 import teacherJson from '../../content/countries/iceland/teacher.json';
-import type { Scannable, NpcDef, NpcDialogue, Fact, SampleDef, TestDef, TestId, IdKey, Rubric, TeacherDef } from './types';
+import introJson from '../../content/countries/iceland/intro.json';
+import type { Scannable, NpcDef, NpcDialogue, Fact, SampleDef, TestDef, TestId, IdKey, Rubric, TeacherDef, IntroDef } from './types';
 
 /** All game content, bundled at build time. Never hard-code facts in src/. */
 export const content = {
@@ -20,6 +21,7 @@ export const content = {
   key: keyJson as IdKey,
   rubric: rubricJson as Rubric,
   teacher: teacherJson as TeacherDef,
+  intro: introJson as IntroDef,
 };
 
 export const TEST_ORDER: TestId[] = ['lens', 'water', 'magnet', 'acid', 'streak', 'scratch'];

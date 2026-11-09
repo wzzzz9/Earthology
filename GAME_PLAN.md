@@ -292,7 +292,7 @@ Every milestone ends with a playable build and a commit, as in v1.
 3. **M3 Notice and talk.** ✅ done Nov 10. Scan one object into the notebook. One NPC with Stranger and Acquaintance lines, a topic that unlocks after a scan, trust points, the day counter via sleeping in the ship.
 4. **M4 Notebook and rocks.** ✅ done Nov 10. Notebook screen with sections and bars, sample testing mini-game with 3 rocks, identification key (v1 M4).
 5. **M5 Homework.** ✅ done Nov 10. Rubric loader, submission screen, teacher feedback with hint ladder, grade bands, anti-spam rule, save and load. *This is the milestone that proves the new idea. Test it hard.*
-6. **M6 Landing.** Opening: ship lands, teacher explains the assignment on the communicator, the player picks a human disguise, the first walk into town. Map-skill basics folded in (v1 M6).
+6. **M6 Landing.** ✅ done Nov 10. Opening: ship lands, teacher explains the assignment on the communicator, the player picks a human disguise, the first walk into town. Map-skill basics folded in (v1 M6).
 7. **M7 Iceland.** The whole country: town, ~10 NPCs with relationship levels, 3–5 outside places, the happening, full rubric, placeholder art. Reuses v1's Iceland walkthrough for the geology.
 8. **M8 Playtest.** 3–5 friends from the link. Check: can a plot-skipper pass? Does anyone feel lost without a quest log? Is the teacher funny or annoying? Does anyone reach 100%?
 9. **M9 Art and sound.** Replace placeholders for the opening and Iceland.

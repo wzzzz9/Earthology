@@ -1,0 +1,14 @@
+{
+  "pages": [
+    { "lines": ["Student. Can you hear me? Good.", "You have landed on EaRtH20934.", "Small planet. Wet. Mostly harmless."], "note": "Ms. Lund: you have landed." },
+    { "lines": ["Your assignment: survey this planet.", "Everything you learn goes in the notebook. Press N.", "Land, rocks, sky, and the people."], "note": "Assignment: survey the planet. Notebook is N." },
+    { "lines": ["Submit from the ship when you think it is complete.", "I will mark it. I am fair.", "I am not kind."], "note": "Submit from the ship. She marks it." },
+    { "lines": ["Nobody down there may learn what you are.", "Put on a disguise before you step outside."], "note": "Nobody may learn what you are. Wear the disguise.", "choice": "disguise" },
+    { "lines": ["Acceptable. You almost look like one of them.", "Now go outside and look at things.", "Your map is M. Try not to fall in anything."], "note": "Go outside. Map is M." }
+  ],
+  "disguises": {
+    "a": { "label": "The one with the beanie", "describe": "A beanie, a sweater, and a serious face." },
+    "b": { "label": "The one with the headband", "describe": "Long hair, a knitted headband, a blue coat." }
+  },
+  "controls": "Arrows or WASD: walk   E: look / talk   N: notebook   M: map"
+}

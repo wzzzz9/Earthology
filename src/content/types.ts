@@ -127,3 +127,15 @@ export interface TeacherDef {
   unlockNeeded: number;
   reveal: string;
 }
+
+export interface IntroPage {
+  lines: string[];
+  note?: string;
+  /** "disguise" turns this page into the disguise choice. */
+  choice?: 'disguise';
+}
+export interface IntroDef {
+  pages: IntroPage[];
+  disguises: Record<string, { label: string; describe: string }>;
+  controls: string;
+}
