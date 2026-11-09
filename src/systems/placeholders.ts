@@ -7,34 +7,75 @@ import Phaser from 'phaser';
 
 export const TILE = 16;
 
-/** 8 tiles in a row: grass, grass2, path, water, rock, moss rock, sand, dark. */
+/**
+ * Tileset, 12 tiles in a row (gid 1..12). Palette aims at Iceland: yellow-green
+ * tundra grass, moss-covered black lava, grey gravel, glacial blue water, black sand,
+ * basalt boulders, ice patches.
+ *  1 tundra   2 tundra (tufts)   3 gravel path   4 water   5 basalt boulder (solid)
+ *  6 mossy boulder (solid)   7 black sand   8 void   9 moss lava   10 moss lava (dense)
+ *  11 ice   12 water edge (light)
+ */
+export const TILE_COUNT = 14;
+
 export function makePlaceholderTileset(scene: Phaser.Scene, key = 'placeholder'): void {
   if (scene.textures.exists(key)) return;
-  const tex = scene.textures.createCanvas(key, TILE * 8, TILE);
+  const tex = scene.textures.createCanvas(key, TILE * TILE_COUNT, TILE);
   if (!tex) return;
   const ctx = tex.getContext();
   const fill = (i: number, color: string) => {
     ctx.fillStyle = color;
     ctx.fillRect(i * TILE, 0, TILE, TILE);
   };
-  const dots = (i: number, color: string, pts: [number, number][]) => {
+  const px = (i: number, color: string, pts: [number, number, number?, number?][]) => {
     ctx.fillStyle = color;
-    for (const [x, y] of pts) ctx.fillRect(i * TILE + x, y, 2, 2);
+    for (const [x, y, w = 1, h = 1] of pts) ctx.fillRect(i * TILE + x, y, w, h);
   };
-  fill(0, '#4f8a3a'); dots(0, '#5e9c46', [[3, 4], [10, 9], [6, 12]]);
-  fill(1, '#4a8236'); dots(1, '#3f7430', [[2, 10], [9, 3], [12, 12]]);
-  fill(2, '#b08a5a'); dots(2, '#9c7849', [[4, 6], [11, 11], [7, 13]]);
-  fill(3, '#3b78c2'); dots(3, '#5f97d8', [[2, 5], [9, 10], [12, 3]]);
-  fill(4, '#4f8a3a'); // rock on grass
-  ctx.fillStyle = '#6b6f78'; ctx.fillRect(4 * TILE + 2, 3, 12, 11);
-  ctx.fillStyle = '#8a8f99'; ctx.fillRect(4 * TILE + 4, 4, 6, 4);
-  ctx.fillStyle = '#454851'; ctx.fillRect(4 * TILE + 3, 12, 11, 2);
-  fill(5, '#4f8a3a'); // moss rock
-  ctx.fillStyle = '#5f6a5a'; ctx.fillRect(5 * TILE + 2, 3, 12, 11);
-  ctx.fillStyle = '#7fa060'; ctx.fillRect(5 * TILE + 3, 4, 7, 3);
-  ctx.fillStyle = '#3e463a'; ctx.fillRect(5 * TILE + 3, 12, 11, 2);
-  fill(6, '#d9c79a'); dots(6, '#c9b586', [[5, 5], [10, 11]]);
-  fill(7, '#1a1c22');
+  // Rounded blotch: a rectangle with its corner pixels knocked off.
+  const blotch = (i: number, color: string, x: number, y: number, w: number, h: number) => {
+    px(i, color, [[x + 1, y, w - 2, h], [x, y + 1, w, h - 2]]);
+  };
+  // Rounded boulder on a ground colour.
+  const boulder = (i: number, ground: string, mossy: boolean) => {
+    fill(i, ground);
+    blotch(i, '#1a1c20', 2, 5, 12, 10); // shadow/base
+    blotch(i, '#2b2e34', 2, 3, 12, 10);
+    blotch(i, '#454a54', 4, 4, 6, 4);
+    px(i, '#5c626d', [[5, 5, 3, 1]]);
+    if (mossy) { blotch(i, '#6f9a4a', 7, 3, 6, 4); px(i, '#8fb85c', [[8, 4, 3, 1], [3, 9, 2, 2]]); }
+  };
+
+  // 1 tundra grass: muted yellow-green with a few tufts
+  fill(0, '#7d9150'); px(0, '#8ea35c', [[2, 3, 2], [9, 7, 2], [5, 12, 2], [12, 13, 2]]); px(0, '#6a7f42', [[6, 5], [13, 2], [3, 9], [10, 11]]);
+  // 2 tundra variant: paler, drier
+  fill(1, '#86964f'); px(1, '#98a85d', [[4, 4, 2], [11, 9, 2], [7, 13, 2]]); px(1, '#6f8244', [[2, 11], [13, 4], [8, 7]]);
+  // 3 gravel path: grey-brown with pebbles
+  fill(2, '#8a8378'); px(2, '#a39b8d', [[3, 5, 2], [10, 10, 2], [7, 13]]); px(2, '#6c665d', [[6, 3], [12, 6], [2, 12], [9, 8]]);
+  // 4 glacial water: blue-turquoise with ripples
+  fill(3, '#4a93b5'); px(3, '#6fb3cf', [[2, 4, 4], [8, 9, 5], [11, 2, 3]]); px(3, '#3a7a98', [[5, 12, 4], [12, 13, 3]]);
+  // 5 basalt boulder (solid)   6 mossy boulder (solid)
+  boulder(4, '#7d9150', false);
+  boulder(5, '#7d9150', true);
+  // 7 black sand: near-black with grey grains
+  fill(6, '#33343a'); px(6, '#4a4b52', [[3, 4], [9, 7], [13, 12], [6, 11], [11, 2]]); px(6, '#26272c', [[5, 8], [12, 5], [2, 13]]);
+  // 8 void
+  fill(7, '#0b0d14');
+  // 9, 10, 13, 14: moss-covered lava, four variants so the field does not read as a grid.
+  // Base is dark lava; moss is laid on in rounded blotches of two greens.
+  const lava = (i: number, blots: [number, number, number, number][], bright: [number, number, number, number][], cracks: [number, number, number?, number?][]) => {
+    fill(i, '#2e3137');
+    px(i, '#24262b', [[0, 0, 16, 1], [0, 15, 16, 1]]);
+    for (const [x, y, w, h] of blots) blotch(i, '#6f9a4a', x, y, w, h);
+    for (const [x, y, w, h] of bright) blotch(i, '#8fb85c', x, y, w, h);
+    px(i, '#1c1e23', cracks);
+  };
+  lava(8, [[0, 1, 8, 7], [8, 8, 8, 7]], [[1, 2, 4, 3], [10, 9, 4, 3]], [[9, 2, 3, 2], [2, 11, 3, 2]]);
+  lava(9, [[0, 0, 16, 6], [0, 9, 7, 7], [9, 10, 7, 6]], [[2, 1, 6, 3], [10, 11, 4, 3]], [[7, 7, 3, 2]]);
+  lava(12, [[3, 0, 10, 5], [0, 6, 6, 10], [8, 7, 8, 5]], [[5, 1, 4, 2], [1, 8, 3, 4]], [[11, 13, 4, 2]]);
+  lava(13, [[0, 3, 5, 6], [6, 0, 10, 4], [5, 10, 11, 6]], [[7, 1, 5, 2], [7, 11, 5, 3]], [[1, 11, 3, 3], [12, 6, 3, 3]]);
+  // 11 ice / old snow: white-blue
+  fill(10, '#dfe9ee'); px(10, '#f6fafc', [[2, 2, 5, 3], [9, 9, 5, 4]]); px(10, '#b9ccd6', [[8, 3, 4, 2], [2, 10, 4, 2], [12, 6, 2, 2]]);
+  // 12 water edge: lighter shallow water
+  fill(11, '#6fb3cf'); px(11, '#9fd0e3', [[2, 3, 5, 2], [9, 10, 5, 2]]); px(11, '#4a93b5', [[7, 7, 4, 2], [1, 12, 5, 2]]);
   tex.refresh();
 }
 
@@ -57,9 +98,12 @@ export function makePlaceholderPlayer(scene: Phaser.Scene, key = 'player', coat 
       const i = d * 2 + step;
       const ox = i * PLAYER_W;
       const bob = step === 1 ? 1 : 0;
-      // coat
+      // coat, with a pale yoke band (an Icelandic wool-sweater nod)
       ctx.fillStyle = coat;
       ctx.fillRect(ox + 4, 10 + bob, 8, 9);
+      ctx.fillStyle = '#e9e4d8';
+      ctx.fillRect(ox + 4, 11 + bob, 8, 1);
+      ctx.fillRect(ox + 5, 13 + bob, 1, 1); ctx.fillRect(ox + 7, 13 + bob, 1, 1); ctx.fillRect(ox + 9, 13 + bob, 1, 1);
       // legs
       ctx.fillStyle = '#2d3140';
       ctx.fillRect(ox + 4, 19, 3, 5 - bob);
@@ -130,10 +174,11 @@ export function makePlaceholderProps(scene: Phaser.Scene): void {
   if (!scene.textures.exists('prop.cairn')) {
     const t = scene.textures.createCanvas('prop.cairn', 16, 16)!;
     const c = t.getContext();
-    c.fillStyle = '#6b6f78'; c.fillRect(2, 10, 12, 5);
-    c.fillStyle = '#8a8f99'; c.fillRect(4, 6, 8, 4);
-    c.fillStyle = '#a0a5ae'; c.fillRect(6, 3, 4, 3);
-    c.fillStyle = '#454851'; c.fillRect(2, 14, 12, 1);
+    c.fillStyle = '#2b2e34'; c.fillRect(2, 10, 12, 5);
+    c.fillStyle = '#454a54'; c.fillRect(4, 6, 8, 4);
+    c.fillStyle = '#5c626d'; c.fillRect(6, 3, 4, 3);
+    c.fillStyle = '#8fb85c'; c.fillRect(3, 10, 2, 1); c.fillRect(10, 7, 2, 1);
+    c.fillStyle = '#1a1c20'; c.fillRect(2, 14, 12, 1);
     t.refresh();
   }
 }
