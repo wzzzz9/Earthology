@@ -111,6 +111,7 @@ export function submit(): Feedback {
     pages.push([t.spam[n - 1]]);
     if (state.identicalStreak >= t.spam.length) {
       state.lockBaseline = state.thingsCount;
+      pages.push([t.locked.replace('{n}', String(t.unlockNeeded))]);
       state.submissions.push({ day: state.day, score: ev.score, fingerprint: fp });
       saveNow();
       bus.emit(EV.stateChanged);

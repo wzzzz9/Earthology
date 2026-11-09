@@ -33,6 +33,11 @@ export class WorldScene extends Phaser.Scene {
   private interactables: Interactable[] = [];
   private prompt!: Phaser.GameObjects.Text;
   private busy = false;
+  /** An overlay to open as soon as the current dialogue closes (ship -> Submit). */
+  private pendingOverlay: string | null = null;
+  /** Keys that were down when an overlay closed; ignored until released, so the closing press does not re-open. */
+  private heldE = false;
+  private heldN = false;
 
   constructor() {
     super('World');
@@ -209,8 +214,8 @@ export class WorldScene extends Phaser.Scene {
           return page([`Day ${state.day}. The cabin is warm.`, 'What now?'], ['Submit homework', 'Sleep until tomorrow', 'Nothing']);
         }
         if (step === 1 && choice === 0) {
-          // Close this dialogue, then open the communicator once the world is free again.
-          this.time.delayedCall(200, () => this.openOverlay('Submit'));
+          // Close this dialogue; the communicator opens as soon as it has closed.
+          this.pendingOverlay = 'Submit';
           return null;
         }
         if (step === 1 && choice === 1) {
@@ -238,13 +243,23 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private onDialogueClosed(): void {
-    // Small delay so the key that closed the dialogue does not re-open it.
-    this.time.delayedCall(120, () => (this.busy = false));
+    if (this.pendingOverlay) {
+      const key = this.pendingOverlay;
+      this.pendingOverlay = null;
+      this.scene.launch(key);
+      return; // stay busy
+    }
+    // Whatever key closed the overlay must be released before it counts again.
+    this.heldE = this.actKey.isDown;
+    this.heldN = this.bookKey.isDown;
+    this.busy = false;
   }
 
   update(): void {
     if (this.busy) return;
-    if (Phaser.Input.Keyboard.JustDown(this.bookKey)) return this.openOverlay('Notebook');
+    if (this.heldE && !this.actKey.isDown) this.heldE = false;
+    if (this.heldN && !this.bookKey.isDown) this.heldN = false;
+    if (Phaser.Input.Keyboard.JustDown(this.bookKey) && !this.heldN) return this.openOverlay('Notebook');
     this.move.update();
     this.player.setVelocity(this.move.vec.x * SPEED, this.move.vec.y * SPEED);
     if (this.move.moving) {
@@ -259,7 +274,7 @@ export class WorldScene extends Phaser.Scene {
     const it = this.target();
     if (it) {
       this.prompt.setText(this.promptFor(it)).setPosition(this.player.x, this.player.y - 16).setVisible(true);
-      if (Phaser.Input.Keyboard.JustDown(this.actKey)) this.interact(it);
+      if (Phaser.Input.Keyboard.JustDown(this.actKey) && !this.heldE) this.interact(it);
     } else {
       this.prompt.setVisible(false);
     }

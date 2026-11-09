@@ -132,6 +132,8 @@ export class DialogueScene extends Phaser.Scene {
   private skip(): void {
     if (!this.page) return;
     if (this.page.note) bus.emit(EV.toast, 'Field note: ' + this.page.note);
+    // On a choice page, Esc takes the last option, which content keeps as the neutral one or "Goodbye".
+    if (this.page.choices?.length) this.selected = this.page.choices.length - 1;
     this.advance();
   }
 

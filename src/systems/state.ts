@@ -1,5 +1,6 @@
 import type { Section, TestId } from '../content/types';
 import { bus, EV } from './events';
+import { levelOfTrust } from './relationships';
 
 export interface NotebookEntry {
   id: string;
@@ -101,9 +102,15 @@ export class GameState {
     bus.emit(EV.stateChanged);
   }
 
-  /** How many "things" the player has gathered. Used by the teacher's anti-spam lock. */
+  /**
+   * How many "things" the player has gathered: notebook entries (scans, talks,
+   * identified rocks), rocks picked up, and relationship levels. Used by the
+   * teacher's anti-spam fingerprint and lock. Facts are not counted separately,
+   * since they always arrive with a notebook entry.
+   */
   get thingsCount(): number {
-    return this.notebook.length + this.factsLearned.length + this.bag.filter((b) => b.identified).length;
+    const levels = Object.keys(this.relationships).reduce((n, id) => n + levelOfTrust(id, this.relationships[id].trust), 0);
+    return this.notebook.length + this.bag.length + levels;
   }
 
   get testsRun(): number {

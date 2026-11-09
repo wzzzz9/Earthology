@@ -94,6 +94,7 @@ export class Conversation {
     const rel = state.rel(this.npcId);
     if (!rel.asked.includes(topicId)) {
       rel.asked.push(topicId);
+      bus.emit(EV.stateChanged);
       if (node.trust) this.announce(addTrust(this.npcId, node.trust));
       if (node.note) {
         const added = state.addEntry({

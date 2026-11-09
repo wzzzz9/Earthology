@@ -71,8 +71,8 @@
   "hintIntro": "Weakest part: {section}.",
   "spam": [
     "This is the same homework you just sent me.",
-    "Same again. I am not re-reading it.",
-    "Send this once more and I will fail you. I won't. But I will stop reading."
+    "Same again. Send it once more and I will fail you.",
+    "That is three. I have stopped reading. I warned you."
   ],
   "locked": "Bring me {n} new things first. Then I will read it.",
   "unlockNeeded": 3,
