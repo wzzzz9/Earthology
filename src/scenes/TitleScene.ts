@@ -40,12 +40,26 @@ export class TitleScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
+    const prompt = this.add
+      .text(cx, GAME_HEIGHT - 40, 'Press Enter to land', {
+        fontFamily: 'monospace',
+        fontSize: '10px',
+        color: '#f4f1e8',
+      })
+      .setOrigin(0.5);
+    this.tweens.add({ targets: prompt, alpha: 0.3, duration: 700, yoyo: true, repeat: -1 });
+
     this.add
-      .text(cx, GAME_HEIGHT - 16, 'Milestone M1: hello world', {
+      .text(cx, GAME_HEIGHT - 16, 'Arrows or WASD to walk', {
         fontFamily: 'monospace',
         fontSize: '8px',
         color: '#5c6577',
       })
       .setOrigin(0.5);
+
+    const start = () => this.scene.start('World');
+    this.input.keyboard!.once('keydown-ENTER', start);
+    this.input.keyboard!.once('keydown-SPACE', start);
+    this.input.once('pointerdown', start);
   }
 }

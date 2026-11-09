@@ -7,7 +7,7 @@ export class BootScene extends Phaser.Scene {
   }
 
   preload(): void {
-    // Assets will be loaded here from public/assets/ in later milestones.
+    this.load.tilemapTiledJSON('map.test-field', 'assets/maps/test-field.json');
   }
 
   create(): void {

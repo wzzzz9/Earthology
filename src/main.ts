@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { GAME_WIDTH, GAME_HEIGHT } from './config';
 import { BootScene } from './scenes/BootScene';
 import { TitleScene } from './scenes/TitleScene';
+import { WorldScene } from './scenes/WorldScene';
 
 new Phaser.Game({
   type: Phaser.AUTO,
@@ -18,5 +19,5 @@ new Phaser.Game({
     default: 'arcade',
     arcade: { debug: false },
   },
-  scene: [BootScene, TitleScene],
+  scene: [BootScene, TitleScene, WorldScene],
 });
