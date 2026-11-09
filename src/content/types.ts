@@ -150,3 +150,44 @@ export interface IntroDef {
   disguises: Record<string, { label: string; describe: string }>;
   controls: string;
 }
+
+export type TaskSatisfiedBy =
+  | { identifiedCount: number }
+  | { scannedCount: number }
+  | { talkEntries: number }
+  | { exploredPct: number }
+  | { factLearned: string };
+
+export interface TaskDef {
+  id: string;
+  text: string;
+  due: number;
+  graceDays: number;
+  satisfiedBy: TaskSatisfiedBy;
+}
+
+export interface ClassDef {
+  id: string;
+  day: number;
+  title: string;
+  teaches: string[];
+  lesson: { lines: string[]; note?: string }[];
+  task: TaskDef;
+}
+
+export interface ClassesDef {
+  deadlineDay: number;
+  classes: ClassDef[];
+  lines: {
+    classToday: string;
+    classMissed: string;
+    taskSet: string;
+    taskDone: string;
+    taskGrace: string;
+    taskMissed: string;
+    deadlineSoon: string;
+    finalPass: string[];
+    finalFail: string[];
+    retakePass: string[];
+  };
+}

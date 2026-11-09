@@ -86,6 +86,27 @@ for (const country of readdirSync(join(root, 'countries'))) {
   }
   for (const npcId of Object.keys(npcs)) if (!dialogue[npcId]) fail(`npc ${npcId} has no dialogue`);
 
+  // ---- classes ----
+  if (existsSync(join(dir, 'classes.json'))) {
+    const cl = read(join(dir, 'classes.json'));
+    const seenDays = new Set();
+    for (const c of cl.classes) {
+      if (seenDays.has(c.day)) fail(`class ${c.id}: two classes on day ${c.day}`);
+      seenDays.add(c.day);
+      if (c.day >= cl.deadlineDay) fail(`class ${c.id}: day ${c.day} is not before the deadline ${cl.deadlineDay}`);
+      for (const f of c.teaches) if (!facts[f]) fail(`class ${c.id}: unknown fact ${f}`);
+      c.lesson.forEach((pg, i) => checkNode(`class ${c.id} page ${i}`, pg));
+      if (c.task.due <= c.day) fail(`class ${c.id}: task due day ${c.task.due} is not after the class`);
+      if (c.task.due + c.task.graceDays > cl.deadlineDay) fail(`class ${c.id}: task grace runs past the deadline`);
+      if (c.task.text.length > MAX_CHARS) fail(`class ${c.id}: task text too long`);
+    }
+    for (const [k, v] of Object.entries(cl.lines)) {
+      const arr = Array.isArray(v) ? v : [v];
+      if (arr.length > MAX_LINES) fail(`classes.lines.${k}: ${arr.length} lines`);
+      for (const l of arr) if (l.length > MAX_CHARS + 20) fail(`classes.lines.${k}: line too long (${l.length})`);
+    }
+  }
+
   // ---- rubric ----
   if (existsSync(join(dir, 'rubric.json'))) {
     const rubric = read(join(dir, 'rubric.json'));

@@ -7,9 +7,11 @@ import { bus, EV } from '../systems/events';
 import { List } from '../ui/List';
 import { makeSampleSketch } from '../systems/placeholders';
 import { evaluate, bandFor } from '../systems/rubric';
+import { taskFor, gradeLabel } from '../systems/schedule';
 
-type Tab = { id: Section | 'bag' | 'marking'; label: string };
+type Tab = { id: Section | 'bag' | 'marking' | 'timetable'; label: string };
 const BASE_TABS: Tab[] = [
+  { id: 'timetable', label: 'Class' },
   { id: 'bag', label: 'Bag' },
   { id: 'land', label: 'Land' },
   { id: 'rocks', label: 'Rocks' },
@@ -94,6 +96,33 @@ export class NotebookScene extends Phaser.Scene {
     return state.notebook.filter((e) => e.section === id);
   }
 
+  /** Timetable rows: classes with their day and status, tasks with due day and status. */
+  private timetableRows() {
+    const rows: { label: string; dim: boolean; detail: string[] }[] = [];
+    const deadline = content.classes.deadlineDay;
+    rows.push({
+      label: state.retake ? 'Retake: discovery only' : state.finalResult ? `Final: ${gradeLabel()}` : `Final report: end of day ${deadline}`,
+      dim: false,
+      detail: state.retake
+        ? ['RETAKE', '', 'No more classes. Everything you found stays.', 'Pass a report and the class is done.']
+        : state.finalResult
+          ? ['FINAL RESULT', '', `Mark ${state.finalResult.score}. ${gradeLabel()}`, `Attempt ${state.finalResult.attempt}.`]
+          : ['THE CLASS', '', `Your best report at the end of day ${deadline} is your final mark.`, `Pass mark: ${content.rubric.passMark}.`],
+    });
+    for (const c of content.classes.classes) {
+      const attended = state.classesAttended.includes(c.id);
+      const missed = state.classesMissed.includes(c.id);
+      const status = attended ? 'attended' : missed ? 'missed' : state.day > c.day ? 'missed' : state.day === c.day ? 'TODAY' : 'upcoming';
+      rows.push({ label: `Day ${c.day}  ${c.title}  (${status})`, dim: attended || missed, detail: [c.title.toUpperCase(), '', `Day ${c.day} at the ship.`, `Status: ${status}.`] });
+      const ts = state.tasks[c.task.id];
+      if (ts) {
+        const def = taskFor(c.task.id)!;
+        rows.push({ label: `   task: ${def.text} (${ts.status}, day ${ts.due})`, dim: ts.status === 'done' || ts.status === 'missed', detail: ['TASK', '', def.text, '', `Due: end of day ${ts.due}.`, `Status: ${ts.status}.`] });
+      }
+    }
+    return rows;
+  }
+
   /** Rubric rows for the Marking tab: section, weight, done or not. */
   private markingRows() {
     const ev = evaluate();
@@ -115,12 +144,15 @@ export class NotebookScene extends Phaser.Scene {
     });
     this.tabTexts.forEach((t, i) => {
       const id = TABS[i].id;
-      const n = id === 'bag' ? state.bag.length : this.entriesFor(id).length;
+      const n = id === 'bag' ? state.bag.length : id === 'timetable' || id === 'marking' ? '' : this.entriesFor(id).length;
       t.setText(`${i === this.tab ? '>' : ' '}${TABS[i].label} ${n}`);
       t.setColor(i === this.tab ? '#b5451b' : '#5a4a2a');
     });
     const id = TABS[this.tab].id;
-    if (id === 'marking') {
+    if (id === 'timetable') {
+      this.list.setItems(this.timetableRows().map((r) => ({ label: r.label, dim: r.dim })), keepIndex);
+      this.hint.setText('Your class schedule and tasks.   Left/Right: tabs   Esc: close');
+    } else if (id === 'marking') {
       this.list.setItems(this.markingRows().map((r) => ({ label: `${r.done ? '✓' : '·'} ${content.teacher.sectionNames[r.item.section]} (${r.item.weight})`, dim: r.done })), keepIndex);
       this.hint.setText('The full marking sheet. You earned it.   Esc: close');
     } else if (id === 'bag') {
@@ -142,6 +174,11 @@ export class NotebookScene extends Phaser.Scene {
     const TABS = tabs();
     const id = TABS[this.tab].id;
     this.sketch.setVisible(false);
+    if (id === 'timetable') {
+      const r = this.timetableRows()[this.list.index];
+      this.detail.setText(r ? r.detail : '');
+      return;
+    }
     if (id === 'marking') {
       const r = this.markingRows()[this.list.index];
       if (!r) { this.detail.setText('Nothing to mark.'); return; }

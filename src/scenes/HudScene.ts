@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import { GAME_WIDTH } from '../config';
 import { state } from '../systems/state';
 import { bus, EV } from '../systems/events';
+import { content } from '../content';
+import { classToday } from '../systems/schedule';
 
 /** Always-on overlay: day counter, notebook count, and toasts. */
 export class HudScene extends Phaser.Scene {
@@ -34,7 +36,12 @@ export class HudScene extends Phaser.Scene {
   }
 
   private refresh(): void {
-    this.dayText.setText(`Day ${state.day}`);
+    const deadline = content.classes.deadlineDay;
+    const bits = [state.retake ? `Day ${state.day} · retake` : state.finalResult ? `Day ${state.day} · passed` : `Day ${state.day} / ${deadline}`];
+    if (classToday()) bits.push('Class today at the ship');
+    const open = Object.entries(state.tasks).filter(([, t]) => t.status === 'open' || t.status === 'graced');
+    if (open.length) bits.push(`Task due day ${Math.min(...open.map(([, t]) => t.due))}`);
+    this.dayText.setText(bits.join('   '));
     this.bookText.setText(`Notebook ${state.notebook.length}`);
   }
 

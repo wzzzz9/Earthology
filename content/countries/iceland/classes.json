@@ -1,0 +1,89 @@
+{
+  "deadlineDay": 14,
+  "classes": [
+    {
+      "id": "rocks",
+      "day": 2,
+      "title": "Rocks: what cooling tells you",
+      "teaches": ["igneous.cooling-rate"],
+      "lesson": [
+        { "lines": ["Class one. Sit. Or stand, you have no chairs.", "Today: rocks. Every rock here started as melted stone."] },
+        { "lines": ["Melted stone that cools slowly grows big crystals.", "Cooled fast, at the surface: tiny crystals, or none.", "Glass, even. Look through the hand lens and you will see."] },
+        { "lines": ["There are rocks lying about outside.", "Pick them up. Test them. Use the key in your notebook."] }
+      ],
+      "task": {
+        "id": "two-rocks",
+        "text": "Identify two different rocks in the lab.",
+        "due": 5,
+        "graceDays": 2,
+        "satisfiedBy": { "identifiedCount": 2 }
+      }
+    },
+    {
+      "id": "land",
+      "day": 4,
+      "title": "Reading the land",
+      "teaches": ["map.grid-references"],
+      "lesson": [
+        { "lines": ["Class two. You have been outside. Good.", "A survey is not a walk. It is a walk with a map."] },
+        { "lines": ["Your map has letters across and numbers down.", "A letter and a number name one square: C3, say.", "Write where things are, not just what they are."] },
+        { "lines": ["Three things outside, noticed and written down.", "That is your task. Water counts. Stones count."] }
+      ],
+      "task": {
+        "id": "three-things",
+        "text": "Look closely at three things and write them in the notebook.",
+        "due": 7,
+        "graceDays": 2,
+        "satisfiedBy": { "scannedCount": 3 }
+      }
+    },
+    {
+      "id": "people",
+      "day": 7,
+      "title": "People",
+      "teaches": [],
+      "lesson": [
+        { "lines": ["Class three. People.", "They are the hardest part of any planet."] },
+        { "lines": ["Nobody here owes you anything. Say hello anyway.", "Come back tomorrow and say it again.", "When they know you, they will tell you what maps cannot."] },
+        { "lines": ["Learn one true thing from a person in this town.", "Not from a sign. From a person."] }
+      ],
+      "task": {
+        "id": "one-person",
+        "text": "Learn one thing from a person in town.",
+        "due": 10,
+        "graceDays": 2,
+        "satisfiedBy": { "talkEntries": 1 }
+      }
+    },
+    {
+      "id": "maps",
+      "day": 10,
+      "title": "The edges of the map",
+      "teaches": ["map.compass-north"],
+      "lesson": [
+        { "lines": ["Class four. Your map still has blank squares.", "Blank squares are where surveys go to die."] },
+        { "lines": ["The compass on your map points north.", "North is the top of the map. Always, on this planet.", "Walk the edges. Fill the blanks."] },
+        { "lines": ["Half the map, at least, before your final report.", "And the final report is due at the end of day 14."] }
+      ],
+      "task": {
+        "id": "half-map",
+        "text": "Explore at least half of the map.",
+        "due": 13,
+        "graceDays": 1,
+        "satisfiedBy": { "exploredPct": 50 }
+      }
+    }
+  ],
+  "lines": {
+    "classToday": "Day {day}. You have class today. Come to the ship. On time.",
+    "classMissed": "You missed class yesterday. Here are my notes. Read them.",
+    "taskSet": "Task: {task} Due: end of day {due}.",
+    "taskDone": "Task done: {task}",
+    "taskGrace": "Day {day}. Your task was due. Are you all right? One more chance: day {due}.",
+    "taskMissed": "Day {day}. Task not done: {task} It goes on your record.",
+    "deadlineSoon": "Reminder: final report at the end of day {due}. Submit from the ship.",
+    "finalPass": ["Final mark for this class: {score}.", "That is a pass. You may stay as long as you like.", "The next class begins when the term does."],
+    "finalFail": ["Final mark for this class: {score}.", "That is below the pass mark. You will retake the class.", "Everything you have found stays. No more classes. Go and look."],
+    "retakePass": ["Retake mark: {score}.", "Passed. Took you a while. It took me longer, once."]
+  }
+}

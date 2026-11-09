@@ -8,7 +8,7 @@ import Phaser from 'phaser';
 export const TILE = 16;
 
 /**
- * Tileset, 12 tiles in a row (gid 1..12). Palette aims at Iceland: yellow-green
+ * Tileset, 14 tiles in a row (gid 1..14). Palette aims at Iceland: yellow-green
  * tundra grass, moss-covered black lava, grey gravel, glacial blue water, black sand,
  * basalt boulders, ice patches.
  *  1 tundra   2 tundra (tufts)   3 gravel path   4 water   5 basalt boulder (solid)

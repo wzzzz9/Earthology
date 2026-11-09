@@ -37,6 +37,21 @@ export interface Submission {
   fingerprint: string;
 }
 
+export type TaskStatus = 'open' | 'graced' | 'done' | 'missed';
+export interface TaskState {
+  status: TaskStatus;
+  /** Current due day (extended once when graced). */
+  due: number;
+}
+
+export interface FinalResult {
+  score: number;
+  passed: boolean;
+  day: number;
+  /** 1 = first attempt, 2 = passed on retake, ... */
+  attempt: number;
+}
+
 export interface SaveData {
   version: 1;
   day: number;
@@ -58,6 +73,13 @@ export interface SaveData {
   introDone: boolean;
   /** Explored tile indexes of the current map (fog of war on the paper map). */
   explored: number[];
+  classesAttended: string[];
+  classesMissed: string[];
+  tasks: Record<string, TaskState>;
+  finalResult: FinalResult | null;
+  /** True while retaking the class: no more scheduled classes, no deadline. */
+  retake: boolean;
+  attempt: number;
 }
 
 /** Everything that would go in a save file. */
@@ -79,6 +101,12 @@ export class GameState {
   playerName = 'Student';
   introDone = false;
   explored: number[] = [];
+  classesAttended: string[] = [];
+  classesMissed: string[] = [];
+  tasks: Record<string, TaskState> = {};
+  finalResult: FinalResult | null = null;
+  retake = false;
+  attempt = 1;
   private exploredSet = new Set<number>();
 
   reset(): void {
@@ -107,7 +135,25 @@ export class GameState {
       playerName: this.playerName,
       introDone: this.introDone,
       explored: this.explored,
+      classesAttended: this.classesAttended,
+      classesMissed: this.classesMissed,
+      tasks: this.tasks,
+      finalResult: this.finalResult,
+      retake: this.retake,
+      attempt: this.attempt,
     };
+  }
+
+  get identifiedCount(): number {
+    return new Set(this.bag.filter((b) => b.identified).map((b) => b.sampleId)).size;
+  }
+
+  get scannedCount(): number {
+    return this.notebook.filter((e) => e.kind === 'scan' && !e.id.startsWith('sample.')).length;
+  }
+
+  get talkEntries(): number {
+    return this.notebook.filter((e) => e.kind === 'talk').length;
   }
 
   /** Marks a tile index as explored. Returns true if it was new. */

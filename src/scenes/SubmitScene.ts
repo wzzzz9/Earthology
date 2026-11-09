@@ -4,6 +4,7 @@ import { content } from '../content';
 import { submit, type Feedback } from '../systems/rubric';
 import { bus, EV } from '../systems/events';
 import { state } from '../systems/state';
+import { checkRetakePass } from '../systems/schedule';
 
 /**
  * The communicator screen. The teacher "reads" the notebook, then returns the mark,
@@ -37,6 +38,9 @@ export class SubmitScene extends Phaser.Scene {
     this.hint = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 10, 'Enter: next', { fontFamily: 'monospace', fontSize: '7px', color: '#9aa3b2' }).setOrigin(0.5);
 
     this.feedback = submit();
+    if (this.feedback.kind === 'marked') {
+      for (const n of checkRetakePass(this.feedback.score)) this.feedback.pages.push(n.lines);
+    }
 
     // "Reading..." beat before the mark appears.
     this.body.setText(t.reading);

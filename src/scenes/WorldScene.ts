@@ -11,6 +11,7 @@ import type { DialogueSource } from './DialogueScene';
 import type { MapInfo } from './MapScene';
 import { bus, EV } from '../systems/events';
 import { saveNow } from '../systems/save';
+import { onNewDay, classToday, attendClass, checkTasks, type Notice } from '../systems/schedule';
 
 const SPEED = 70; // px per second, a relaxed walking pace for 16px tiles
 const REACH = 22; // px from the point in front of the player to an interactable
@@ -172,9 +173,11 @@ export class WorldScene extends Phaser.Scene {
     this.scene.launch('Hud');
     bus.on(EV.dialogueClosed, this.onDialogueClosed, this);
     bus.on(EV.overlayClosed, this.onDialogueClosed, this);
+    bus.on(EV.stateChanged, checkTasks);
     this.events.once('shutdown', () => {
       bus.off(EV.dialogueClosed, this.onDialogueClosed, this);
       bus.off(EV.overlayClosed, this.onDialogueClosed, this);
+      bus.off(EV.stateChanged, checkTasks);
     });
 
     this.installDebug();
@@ -274,29 +277,64 @@ export class WorldScene extends Phaser.Scene {
     const page = (lines: string[], choices?: string[]) => ({ speaker: 'Ship', color: '#8a8f99', lines, choices });
     return {
       next: (choice?: number) => {
+        const cls = classToday();
+        const options = [...(cls ? ['Attend class'] : []), 'Submit homework', 'Sleep until tomorrow', 'Nothing'];
         if (step === 0) {
           step = 1;
-          return page([`Day ${state.day}. The cabin is warm.`, 'What now?'], ['Submit homework', 'Sleep until tomorrow', 'Nothing']);
+          return page([`Day ${state.day}. The cabin is warm.`, 'What now?'], options);
         }
-        if (step === 1 && choice === 0) {
-          // Close this dialogue; the communicator opens as soon as it has closed.
-          this.pendingOverlay = 'Submit';
-          return null;
-        }
-        if (step === 1 && choice === 1) {
-          step = 2;
-          this.sleep();
-          return page([`Day ${state.day}.`, 'The light outside has changed.']);
+        if (step === 1) {
+          const picked = options[choice ?? options.length - 1];
+          if (picked === 'Attend class' && cls) {
+            // The lesson is the professor talking; it replaces this menu.
+            this.pendingNotices = attendClass(cls);
+            this.pendingOverlay = 'notices';
+            return null;
+          }
+          if (picked === 'Submit homework') {
+            this.pendingOverlay = 'Submit';
+            return null;
+          }
+          if (picked === 'Sleep until tomorrow') {
+            this.sleep();
+            return null;
+          }
         }
         return null;
       },
     };
   }
 
+  private pendingNotices: Notice[] = [];
+
   private sleep(): void {
     state.nextDay();
     saveNow();
     this.cameras.main.flash(600, 10, 12, 18);
+    const notices = [{ lines: [`Day ${state.day}.`, 'The light outside has changed.'] }, ...onNewDay()];
+    this.pendingNotices = notices;
+    this.pendingOverlay = 'notices';
+  }
+
+  /** The professor speaks: a list of pages shown through the dialogue box. */
+  private noticesSource(notices: Notice[]): DialogueSource {
+    let i = 0;
+    const t = content.teacher;
+    return {
+      next: () => {
+        const n = notices[i++];
+        return n ? { speaker: t.name, color: t.color, lines: n.lines, note: n.note } : null;
+      },
+    };
+  }
+
+  /** Testing hook: sleep n nights, processing each morning's schedule. */
+  private skipDays(n: number): void {
+    for (let i = 0; i < n; i++) {
+      state.nextDay();
+      this.pendingNotices = onNewDay();
+    }
+    saveNow();
   }
 
   private openDialogue(source: DialogueSource): void {
@@ -311,8 +349,19 @@ export class WorldScene extends Phaser.Scene {
     if (this.pendingOverlay) {
       const key = this.pendingOverlay;
       this.pendingOverlay = null;
-      this.scene.launch(key);
-      return; // stay busy
+      if (key === 'notices') {
+        const notices = this.pendingNotices;
+        this.pendingNotices = [];
+        if (notices.length) {
+          // The Dialogue scene is still shutting down in this very tick; relaunching it now
+          // would be cancelled by its queued stop. Wait a beat, then open the notices.
+          this.time.delayedCall(80, () => this.scene.launch('Dialogue', { source: this.noticesSource(notices) }));
+          return; // stay busy
+        }
+      } else {
+        this.scene.launch(key);
+        return; // stay busy
+      }
     }
     // Whatever key closed the overlay must be released before it counts again.
     this.heldE = this.actKey.isDown;
@@ -373,11 +422,19 @@ export class WorldScene extends Phaser.Scene {
           disguise: state.disguise,
           introDone: state.introDone,
           explored: state.explored.length,
+          classesAttended: state.classesAttended,
+          classesMissed: state.classesMissed,
+          tasks: state.tasks,
+          finalResult: state.finalResult,
+          retake: state.retake,
+          attempt: state.attempt,
         }),
         enumerable: true,
         configurable: true,
       },
       teleport: { value: (x: number, y: number) => (player.body as Phaser.Physics.Arcade.Body).reset(x, y), enumerable: true, configurable: true },
+      skipDays: { value: (n: number) => this.skipDays(n), enumerable: true, configurable: true },
+      notices: { get: () => this.pendingNotices, enumerable: true, configurable: true },
     });
   }
 }

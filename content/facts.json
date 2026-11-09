@@ -43,5 +43,27 @@
     "curriculum": [],
     "source": "https://www.usgs.gov/volcanoes/glossary/basalt",
     "verified": false
+  },
+  "map.grid-references": {
+    "tier": 1,
+    "text": "A grid reference names one square on a map: the letter across first, then the number down.",
+    "fieldNote": "Grid reference: letter across, then number down.",
+    "topics": [
+      "map-skills"
+    ],
+    "curriculum": [],
+    "source": "https://www.ordnancesurvey.co.uk/documents/resources/map-reading.pdf",
+    "verified": false
+  },
+  "map.compass-north": {
+    "tier": 1,
+    "text": "A compass needle points north. Most maps are drawn with north at the top, so you can turn the map to match the ground.",
+    "fieldNote": "Compass points north. Maps put north at the top.",
+    "topics": [
+      "map-skills"
+    ],
+    "curriculum": [],
+    "source": "https://www.ordnancesurvey.co.uk/documents/resources/map-reading.pdf",
+    "verified": false
   }
 }
