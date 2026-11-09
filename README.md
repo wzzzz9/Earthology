@@ -1,0 +1,24 @@
+# Moon Field
+
+A top-down 2D pixel adventure. You are an alien student whose final assignment
+is to survey planet EaRtH20934, a planet identical to our Earth. Walk around a
+real country, notice things, test rocks, read maps, make friends, and submit
+your homework. The teacher marks it and tells you what you missed.
+
+Design: see `GAME_PLAN.md`. Working rules for Claude Code: see `CLAUDE.md`.
+
+## Run
+
+```bash
+npm install
+npm run dev
+```
+
+## Build
+
+```bash
+npm run build
+```
+
+Pushing to `main` deploys to GitHub Pages via `.github/workflows/deploy.yml`
+(requires the repo to be public, or GitHub Pro, and Pages set to "GitHub Actions").
