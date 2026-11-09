@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config';
 import type { Page } from '../systems/conversation';
 import { bus, EV } from '../systems/events';
+import { state } from '../systems/state';
 
 export interface DialogueSource {
   /** Returns the next page, or null when finished. choiceIndex is set after a choice page. */
@@ -74,7 +75,7 @@ export class DialogueScene extends Phaser.Scene {
     }
     this.page = page;
     this.selected = 0;
-    const lines = page.lines.slice(0, 3);
+    const lines = page.lines.slice(0, 3).map((l) => l.replace(/\{player\}/g, state.playerName));
     const nChoices = page.choices?.length ?? 0;
 
     // Box grows to fit the lines and choices; everything is laid out from its top edge.

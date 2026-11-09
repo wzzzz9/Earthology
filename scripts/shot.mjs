@@ -30,6 +30,17 @@ await page.waitForTimeout(600);
 for (const k of keys) {
   if (k.startsWith('js:')) { await page.evaluate(k.slice(3)); await page.waitForTimeout(150); continue; }
   if (k.startsWith('wait:')) { await page.waitForTimeout(Number(k.slice(5))); continue; }
+  if (k.startsWith('until:')) {
+    // until:<js expression>:<timeout ms>  waits until the expression is truthy in the page.
+    const body = k.slice(6);
+    const sep = body.lastIndexOf(':');
+    const expr = body.slice(0, sep);
+    const timeout = Number(body.slice(sep + 1)) || 10000;
+    try { await page.waitForFunction(expr, undefined, { timeout, polling: 50 }); }
+    catch { problems.push(`[until] timed out waiting for: ${expr}`); }
+    await page.waitForTimeout(120);
+    continue;
+  }
   if (k === 'reload') { await page.reload({ waitUntil: 'networkidle' }); await page.waitForSelector('canvas'); await page.waitForTimeout(600); continue; }
   const [key, ms = '300'] = k.split(':');
   await page.keyboard.down(key);
@@ -42,7 +53,7 @@ await page.screenshot({ path: out, clip });
 const state = await page.evaluate(() => {
   const d = window.__debug;
   if (!d) return null;
-  return { player: d.player, state: d.state, dialogue: d.dialogue, submit: d.submit ?? undefined, notebook: d.notebook ?? undefined, lab: d.lab ?? undefined, map: d.map ?? undefined };
+  return { player: d.player, state: d.state, dialogue: d.dialogue, submit: d.submit ?? undefined, notebook: d.notebook ?? undefined, lab: d.lab ?? undefined, map: d.map ?? undefined, nameEntry: d.nameEntry ?? undefined, introTitle: d.introTitle ?? undefined, playerName: d.playerName ?? undefined };
 }).catch(() => null);
 await browser.close();
 

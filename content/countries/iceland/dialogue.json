@@ -4,15 +4,36 @@
       "label": "Greet",
       "byLevel": {
         "0": {
-          "lines": ["Oh. Hello.", "Not many people walk out this far.", "You're not from the town, are you?"],
+          "lines": [
+            "Oh. Hello.",
+            "Not many people walk out this far.",
+            "You're not from the town, are you?"
+          ],
           "note": "A woman by the path. Polite, a little guarded.",
           "choices": [
-            { "text": "Just visiting. Nice weather!", "trust": 1, "reply": ["It is, for once.", "Enjoy it while it lasts."] },
-            { "text": "Where am I, exactly?", "trust": 0, "reply": ["Outside town. The path takes you back.", "Follow it west. No, east. East."] }
+            {
+              "text": "Just visiting. Nice weather!",
+              "trust": 1,
+              "reply": [
+                "It is, for once.",
+                "Enjoy it while it lasts."
+              ]
+            },
+            {
+              "text": "Where am I, exactly?",
+              "trust": 0,
+              "reply": [
+                "Outside town. The path takes you back.",
+                "Follow it west. No, east. East."
+              ]
+            }
           ]
         },
         "1": {
-          "lines": ["Hello again.", "Still walking? Good. Most people drive."],
+          "lines": [
+            "Hello again, {player}.",
+            "Still walking? Good. Most people drive."
+          ],
           "trust": 1,
           "note": "Sigrún remembers you."
         }
@@ -20,10 +41,16 @@
     },
     "lake": {
       "label": "Ask about the lake",
-      "requires": { "scanned": "lake", "level": 1 },
+      "requires": {
+        "scanned": "lake",
+        "level": 1
+      },
       "byLevel": {
         "1": {
-          "lines": ["The lake? Colder than it looks.", "People swim in it in summer. I don't."],
+          "lines": [
+            "The lake? Colder than it looks.",
+            "People swim in it in summer. I don't."
+          ],
           "trust": 2,
           "note": "Sigrún: the lake is cold. People swim in it in summer."
         }
@@ -31,10 +58,16 @@
     },
     "cairn": {
       "label": "Ask about the stone pile",
-      "requires": { "scanned": "cairn", "level": 1 },
+      "requires": {
+        "scanned": "cairn",
+        "level": 1
+      },
       "byLevel": {
         "1": {
-          "lines": ["Someone built it so the path can be found in fog.", "Don't knock it over. People still use them."],
+          "lines": [
+            "Someone built it so the path can be found in fog.",
+            "Don't knock it over. People still use them."
+          ],
           "trust": 2,
           "note": "Sigrún: stone piles mark the path in fog. Don't knock them over."
         }

@@ -278,3 +278,23 @@ export function makeAlienTrueForm(scene: Phaser.Scene, key = 'alien'): void {
   r(3, 16, 4, 2, OUT); r(9, 16, 4, 2, OUT); r(4, 16, 2, 1, '#3f9d8c'); r(10, 16, 2, 1, '#3f9d8c');
   tex.refresh();
 }
+
+/** The professor's true form, 16x28: taller, violet, a glasses line across the eye band, a hair-bun antenna. */
+export function makeAlienTeacher(scene: Phaser.Scene, key = 'alien.teacher'): void {
+  if (scene.textures.exists(key)) return;
+  const tex = scene.textures.createCanvas(key, 16, 28);
+  if (!tex) return;
+  const ctx = tex.getContext();
+  const r = (x: number, y: number, w: number, h: number, c: string) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
+  const OUT = '#1a1c20';
+  r(3, 26, 10, 2, 'rgba(0,0,0,0.28)');
+  r(7, 0, 2, 3, OUT); r(6, 0, 4, 2, '#d9b8ff'); // bun
+  r(2, 3, 12, 22, OUT); r(1, 6, 14, 12, OUT);
+  r(3, 4, 10, 20, '#9a7bd1'); r(2, 7, 12, 10, '#9a7bd1');
+  r(3, 18, 10, 6, '#6e55a8'); // long coat
+  r(3, 7, 10, 4, '#f4f1e8'); r(3, 8, 10, 1, OUT); // eye band with glasses line
+  r(4, 8, 2, 2, OUT); r(10, 8, 2, 2, OUT); r(4, 8, 1, 1, '#ffe9a8'); r(10, 8, 1, 1, '#ffe9a8');
+  r(7, 13, 2, 1, OUT);
+  r(3, 24, 4, 2, OUT); r(9, 24, 4, 2, OUT);
+  tex.refresh();
+}

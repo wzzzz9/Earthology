@@ -1,14 +1,101 @@
 {
-  "pages": [
-    { "lines": ["Student. Can you hear me? Good.", "You have landed on EaRtH20934.", "Small planet. Wet. Mostly harmless."], "note": "Ms. Lund: you have landed." },
-    { "lines": ["Your assignment: survey this planet.", "Everything you learn goes in the notebook. Press N.", "Land, rocks, sky, and the people."], "note": "Assignment: survey the planet. Notebook is N." },
-    { "lines": ["Submit from the ship when you think it is complete.", "I will mark it. I am fair.", "I am not kind."], "note": "Submit from the ship. She marks it." },
-    { "lines": ["Nobody down there may learn what you are.", "Put on a disguise before you step outside."], "note": "Nobody may learn what you are. Wear the disguise.", "choice": "disguise" },
-    { "lines": ["Acceptable. You almost look like one of them.", "Now go outside and look at things.", "Your map is M. Try not to fall in anything."], "note": "Go outside. Map is M." }
+  "university": "Nebula Hollow University",
+  "letter": [
+    "Congratulations!",
+    "You are offered a place at Nebula Hollow University.",
+    "Programme: Earthology, first year.",
+    "Report tomorrow: Spiral Arm Campus, Orbit Road 20934."
+  ],
+  "card": "The next day",
+  "meet": [
+    {
+      "speaker": "teacher",
+      "lines": [
+        "Hello. I am Professor Lund.",
+        "Earthology Department.",
+        "You must be..."
+      ],
+      "ask": "name"
+    },
+    {
+      "speaker": "player",
+      "lines": [
+        "Yes! It's my first day of university.",
+        "I'm excited to start my Earthology major!"
+      ]
+    },
+    {
+      "speaker": "teacher",
+      "lines": [
+        "Excited. Good. Hold on to that.",
+        "We start today. Right now, in fact."
+      ]
+    },
+    {
+      "speaker": "teacher",
+      "lines": [
+        "Get in."
+      ]
+    }
+  ],
+  "arrival": [
+    {
+      "speaker": "player",
+      "lines": [
+        "Where... where is this?"
+      ]
+    },
+    {
+      "speaker": "teacher",
+      "lines": [
+        "This is Earth. Planet EaRtH20934.",
+        "We do not study from books here.",
+        "We study the real thing."
+      ]
+    }
+  ],
+  "titleCard": {
+    "title": "MOON FIELD",
+    "sub": "Assignment 1: a small, cold island"
+  },
+  "cabin": [
+    {
+      "speaker": "teacher",
+      "lines": [
+        "I am staying too. Down here, I am your parent.",
+        "We moved to this town last week. That is the story.",
+        "This ship is our house. Submit your homework from it."
+      ],
+      "note": "Cover story: parent and kid, just moved here. Submit from the ship."
+    },
+    {
+      "speaker": "teacher",
+      "lines": [
+        "Nobody down here may learn what you are.",
+        "Put on a disguise before you step outside."
+      ],
+      "note": "Nobody may learn what you are. Wear the disguise.",
+      "choice": "disguise"
+    },
+    {
+      "speaker": "teacher",
+      "lines": [
+        "Acceptable. You almost look like one of them.",
+        "Notebook is N. Map is M.",
+        "Go outside. Look at things. Make a friend."
+      ],
+      "note": "Notebook N, map M. Go look at things. Make a friend."
+    }
   ],
   "disguises": {
-    "a": { "label": "The one with the beanie", "describe": "A beanie, a sweater, and a serious face." },
-    "b": { "label": "The one with the headband", "describe": "Long hair, a knitted headband, a blue coat." }
+    "a": {
+      "label": "The one with the beanie",
+      "describe": "A beanie, a sweater, and a serious face."
+    },
+    "b": {
+      "label": "The one with the headband",
+      "describe": "Long hair, a knitted headband, a blue coat."
+    }
   },
   "controls": "Arrows or WASD: walk   E: look / talk   N: notebook   M: map"
 }

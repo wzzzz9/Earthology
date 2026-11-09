@@ -8,4 +8,5 @@ export const EV = {
   dialogueClosed: 'dialogue-closed',
   stateChanged: 'state-changed',
   overlayClosed: 'overlay-closed',
+  nameEntered: 'name-entered',
 } as const;

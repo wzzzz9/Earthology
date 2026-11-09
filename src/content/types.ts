@@ -128,14 +128,23 @@ export interface TeacherDef {
   reveal: string;
 }
 
-export interface IntroPage {
+export interface IntroLine {
+  speaker: 'teacher' | 'player';
   lines: string[];
   note?: string;
+  /** "name" opens the name entry after this page. */
+  ask?: 'name';
   /** "disguise" turns this page into the disguise choice. */
   choice?: 'disguise';
 }
 export interface IntroDef {
-  pages: IntroPage[];
+  university: string;
+  letter: string[];
+  card: string;
+  meet: IntroLine[];
+  arrival: IntroLine[];
+  titleCard: { title: string; sub: string };
+  cabin: IntroLine[];
   disguises: Record<string, { label: string; describe: string }>;
   controls: string;
 }

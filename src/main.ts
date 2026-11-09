@@ -10,6 +10,7 @@ import { LabScene } from './scenes/LabScene';
 import { SubmitScene } from './scenes/SubmitScene';
 import { IntroScene } from './scenes/IntroScene';
 import { MapScene } from './scenes/MapScene';
+import { NameScene } from './scenes/NameScene';
 
 new Phaser.Game({
   type: Phaser.AUTO,
@@ -26,5 +27,5 @@ new Phaser.Game({
     default: 'arcade',
     arcade: { debug: false },
   },
-  scene: [BootScene, TitleScene, IntroScene, WorldScene, MapScene, HudScene, DialogueScene, NotebookScene, LabScene, SubmitScene],
+  scene: [BootScene, TitleScene, IntroScene, WorldScene, MapScene, HudScene, DialogueScene, NotebookScene, LabScene, SubmitScene, NameScene],
 });

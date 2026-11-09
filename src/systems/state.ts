@@ -54,6 +54,7 @@ export interface SaveData {
   rubricRevealed: boolean;
   playerPos: { x: number; y: number } | null;
   disguise: string | null;
+  playerName: string;
   introDone: boolean;
   /** Explored tile indexes of the current map (fog of war on the paper map). */
   explored: number[];
@@ -75,6 +76,7 @@ export class GameState {
   rubricRevealed = false;
   playerPos: { x: number; y: number } | null = null;
   disguise: string | null = null;
+  playerName = 'Student';
   introDone = false;
   explored: number[] = [];
   private exploredSet = new Set<number>();
@@ -102,6 +104,7 @@ export class GameState {
       rubricRevealed: this.rubricRevealed,
       playerPos: this.playerPos,
       disguise: this.disguise,
+      playerName: this.playerName,
       introDone: this.introDone,
       explored: this.explored,
     };
