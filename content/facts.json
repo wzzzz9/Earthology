@@ -43,5 +43,89 @@
     "curriculum": [],
     "source": "https://www.usgs.gov/volcanoes/glossary/basalt",
     "verified": false
+  },
+  "iceland.fish-drying": {
+    "tier": 1,
+    "text": "In Iceland, fish such as cod and haddock are dried outdoors on wooden racks by wind and cold air. Dried fish (harðfiskur) is a common snack, often eaten with butter.",
+    "fieldNote": "Fish is dried on racks by wind. Eaten with butter.",
+    "topics": [
+      "iceland",
+      "people"
+    ],
+    "curriculum": [],
+    "source": "https://en.wikipedia.org/wiki/Har%C3%B0fiskur (suggested; check against an Icelandic food source)",
+    "verified": false
+  },
+  "iceland.fish-export": {
+    "tier": 1,
+    "text": "Fish and other sea products are one of Iceland's biggest exports.",
+    "fieldNote": "Fish is one of Iceland's biggest exports.",
+    "topics": [
+      "iceland",
+      "people"
+    ],
+    "curriculum": [],
+    "source": "https://www.statice.is/statistics/economy/external-trade/ (Statistics Iceland, suggested)",
+    "verified": false
+  },
+  "iceland.geothermal-heating": {
+    "tier": 1,
+    "text": "About nine in ten homes in Iceland are heated with hot water from underground (geothermal heating).",
+    "fieldNote": "~9 in 10 Icelandic homes use geothermal heat.",
+    "topics": [
+      "iceland",
+      "people"
+    ],
+    "curriculum": [],
+    "source": "https://nea.is/geothermal/ (National Energy Authority of Iceland, suggested)",
+    "verified": false
+  },
+  "iceland.sulphur-water": {
+    "tier": 2,
+    "text": "In many parts of Iceland the hot tap water comes straight from geothermal sources and can smell of sulphur, like eggs. Cold tap water is ordinary spring or ground water.",
+    "fieldNote": "Hot tap water can smell of sulphur. Cold does not.",
+    "topics": [
+      "iceland",
+      "people"
+    ],
+    "curriculum": [],
+    "source": "https://en.wikipedia.org/wiki/Geothermal_power_in_Iceland (suggested; check with Veitur, the Reykjavík utility)",
+    "verified": false
+  },
+  "iceland.geothermal-bread": {
+    "tier": 2,
+    "text": "Some Icelanders bake dark rye bread (rúgbrauð) by burying it in hot geothermal ground for about a day.",
+    "fieldNote": "Rye bread can be baked slowly in hot ground.",
+    "topics": [
+      "iceland",
+      "people"
+    ],
+    "curriculum": [],
+    "source": "https://en.wikipedia.org/wiki/R%C3%BAgbrau%C3%B0 (suggested)",
+    "verified": false
+  },
+  "iceland.sheep-rettir": {
+    "tier": 1,
+    "text": "Icelandic sheep graze freely in the hills and highlands all summer. In September farmers gather them and sort them in stone pens. This round-up is called réttir.",
+    "fieldNote": "Sheep roam free in summer. Gathered in Sept (réttir).",
+    "topics": [
+      "iceland",
+      "people"
+    ],
+    "curriculum": [],
+    "source": "https://www.visiticeland.com/ (Visit Iceland, search 'réttir'; suggested)",
+    "verified": false
+  },
+  "iceland.christmas-eve": {
+    "tier": 2,
+    "text": "In Iceland the main Christmas celebration is on the evening of 24 December, and many people go to church that evening.",
+    "fieldNote": "Christmas is celebrated on the evening of Dec 24.",
+    "topics": [
+      "iceland",
+      "people"
+    ],
+    "curriculum": [],
+    "source": "https://en.wikipedia.org/wiki/Christmas_in_Iceland (suggested)",
+    "verified": false
   }
 }
