@@ -1,0 +1,53 @@
+{
+  "basalt": {
+    "name": "Basalt",
+    "rockType": "igneous-extrusive",
+    "region": "iceland",
+    "look": "A dark grey rock, heavy for its size. Dull surface.",
+    "color": "#3a3d44",
+    "pattern": "speckle",
+    "tests": {
+      "lens": "Tiny crystals, too small to pick out one by one.",
+      "water": "Sinks straight away.",
+      "magnet": "A faint pull. Something in it is magnetic.",
+      "acid": "No fizz.",
+      "streak": "A grey streak.",
+      "scratch": "Scratches glass. The steel nail does not mark it."
+    },
+    "facts": ["igneous.cooling-rate", "basalt.lava-rock"]
+  },
+  "obsidian": {
+    "name": "Obsidian",
+    "rockType": "igneous-extrusive",
+    "region": "iceland",
+    "look": "Black and shiny like glass, with sharp curved edges.",
+    "color": "#15161c",
+    "pattern": "shine",
+    "tests": {
+      "lens": "Smooth glass. No crystals at all.",
+      "water": "Sinks.",
+      "magnet": "Nothing.",
+      "acid": "No fizz.",
+      "streak": "A pale streak, even though the rock looks black.",
+      "scratch": "About as hard as glass. It is glass."
+    },
+    "facts": ["obsidian.volcanic-glass", "igneous.cooling-rate"]
+  },
+  "pumice": {
+    "name": "Pumice",
+    "rockType": "igneous-extrusive",
+    "region": "iceland",
+    "look": "Pale grey and strangely light. Full of tiny holes.",
+    "color": "#b9b4a6",
+    "pattern": "holes",
+    "tests": {
+      "lens": "Glassy, and riddled with tiny holes like a sponge.",
+      "water": "It floats!",
+      "magnet": "Nothing.",
+      "acid": "No fizz.",
+      "streak": "A white streak.",
+      "scratch": "Hard to test. The edges crumble."
+    },
+    "facts": ["pumice.gas-bubbles", "igneous.cooling-rate"]
+  }
+}

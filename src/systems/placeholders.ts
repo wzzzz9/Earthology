@@ -137,3 +137,32 @@ export function makePlaceholderProps(scene: Phaser.Scene): void {
     t.refresh();
   }
 }
+
+/** A rock sketch for the notebook and the lab: a blob with a pattern. 48x40. */
+export function makeSampleSketch(scene: Phaser.Scene, key: string, color: string, pattern: 'speckle' | 'shine' | 'holes' | 'plain'): void {
+  if (scene.textures.exists(key)) return;
+  const tex = scene.textures.createCanvas(key, 48, 40);
+  if (!tex) return;
+  const ctx = tex.getContext();
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(6, 26); ctx.lineTo(12, 10); ctx.lineTo(26, 5); ctx.lineTo(40, 12); ctx.lineTo(44, 26); ctx.lineTo(34, 36); ctx.lineTo(14, 36); ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = '#f4f1e8'; ctx.lineWidth = 1; ctx.stroke();
+  if (pattern === 'speckle') { ctx.fillStyle = '#6b6f78'; for (const [x, y] of [[14, 18], [22, 12], [30, 22], [20, 28], [34, 30], [26, 20]]) ctx.fillRect(x, y, 2, 2); }
+  if (pattern === 'shine') { ctx.fillStyle = '#9fb3c8'; ctx.fillRect(16, 10, 10, 2); ctx.fillRect(14, 13, 4, 2); ctx.fillStyle = '#ffffff'; ctx.fillRect(18, 11, 4, 1); }
+  if (pattern === 'holes') { ctx.fillStyle = '#6e6a60'; for (const [x, y] of [[12, 20], [18, 12], [24, 24], [30, 14], [36, 24], [22, 32], [32, 32], [16, 28], [28, 8]]) ctx.fillRect(x, y, 3, 3); }
+  tex.refresh();
+}
+
+/** Small ground rock you can pick up, 12x10. */
+export function makePickupRock(scene: Phaser.Scene, key: string, color: string): void {
+  if (scene.textures.exists(key)) return;
+  const tex = scene.textures.createCanvas(key, 12, 10);
+  if (!tex) return;
+  const ctx = tex.getContext();
+  ctx.fillStyle = color; ctx.fillRect(2, 3, 8, 6); ctx.fillRect(4, 1, 5, 2);
+  ctx.fillStyle = '#ffffff55'; ctx.fillRect(4, 3, 3, 1);
+  ctx.fillStyle = '#00000055'; ctx.fillRect(2, 8, 8, 1);
+  tex.refresh();
+}

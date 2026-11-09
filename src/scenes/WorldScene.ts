@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import {
-  makePlaceholderTileset, makePlaceholderPlayer, makePlaceholderShip, makeSparkle, makePlaceholderProps,
+  makePlaceholderTileset, makePlaceholderPlayer, makePlaceholderShip, makeSparkle, makePlaceholderProps, makePickupRock,
   PLAYER_W, PLAYER_H,
 } from '../systems/placeholders';
 import { MoveInput } from '../systems/input';
@@ -13,13 +13,14 @@ import { bus, EV } from '../systems/events';
 const SPEED = 70; // px per second, a relaxed walking pace for 16px tiles
 const REACH = 22; // px from the point in front of the player to an interactable
 
-type Kind = 'scan' | 'npc' | 'ship';
+type Kind = 'scan' | 'npc' | 'ship' | 'sample';
 interface Interactable {
   kind: Kind;
   id: string;
   x: number;
   y: number;
   sparkle?: Phaser.GameObjects.Image;
+  image?: Phaser.GameObjects.Image;
 }
 
 /** The current region map with the player. M2: walk. M3: notice, talk, sleep. */
@@ -27,6 +28,7 @@ export class WorldScene extends Phaser.Scene {
   private player!: Phaser.Physics.Arcade.Sprite;
   private move!: MoveInput;
   private actKey!: Phaser.Input.Keyboard.Key;
+  private bookKey!: Phaser.Input.Keyboard.Key;
   private interactables: Interactable[] = [];
   private prompt!: Phaser.GameObjects.Text;
   private busy = false;
@@ -72,6 +74,16 @@ export class WorldScene extends Phaser.Scene {
           solids.add(this.add.rectangle(x, y + 3, 12, 8).setVisible(false));
         }
         this.interactables.push({ kind: 'scan', id: o.name, x, y, sparkle: this.addSparkle(x, y - 12) });
+      } else if (o.type === 'sample') {
+        const def = content.samples[o.name];
+        if (!def) continue;
+        const pickupId = `${o.name}@${o.id}`;
+        if (state.hasPickedUp(pickupId)) continue;
+        makePickupRock(this, `rock.${o.name}`, def.color);
+        const img = this.add.image(x, y, `rock.${o.name}`).setDepth(y - 8);
+        this.interactables.push({ kind: 'sample', id: o.name, x, y, sparkle: this.addSparkle(x, y - 10), image: img });
+        // Store the pickup id on the interactable via the image name.
+        img.setName(pickupId);
       } else if (o.type === 'npc') {
         const def = content.npcs[o.name];
         makePlaceholderPlayer(this, `npc.${o.name}`, def.coat, '#222733');
@@ -104,6 +116,7 @@ export class WorldScene extends Phaser.Scene {
 
     this.move = new MoveInput(this);
     this.actKey = this.input.keyboard!.addKey('E');
+    this.bookKey = this.input.keyboard!.addKey('N');
     this.prompt = this.add
       .text(0, 0, '', { fontFamily: 'monospace', fontSize: '8px', color: '#f4f1e8', backgroundColor: '#11141cdd', padding: { x: 3, y: 1 } })
       .setOrigin(0.5, 1)
@@ -112,7 +125,11 @@ export class WorldScene extends Phaser.Scene {
 
     this.scene.launch('Hud');
     bus.on(EV.dialogueClosed, this.onDialogueClosed, this);
-    this.events.once('shutdown', () => bus.off(EV.dialogueClosed, this.onDialogueClosed, this));
+    bus.on(EV.overlayClosed, this.onDialogueClosed, this);
+    this.events.once('shutdown', () => {
+      bus.off(EV.dialogueClosed, this.onDialogueClosed, this);
+      bus.off(EV.overlayClosed, this.onDialogueClosed, this);
+    });
 
     this.installDebug();
   }
@@ -143,12 +160,14 @@ export class WorldScene extends Phaser.Scene {
   private promptFor(it: Interactable): string {
     if (it.kind === 'scan') return `E: Look at ${content.scannables[it.id]?.name.toLowerCase() ?? it.id}`;
     if (it.kind === 'npc') return `E: Talk to ${content.npcs[it.id]?.name ?? it.id}`;
+    if (it.kind === 'sample') return 'E: Pick up rock';
     return 'E: Your ship';
   }
 
   private interact(it: Interactable): void {
     if (it.kind === 'scan') return this.scan(it);
     if (it.kind === 'npc') return this.openDialogue(new Conversation(it.id));
+    if (it.kind === 'sample') return this.pickUp(it);
     return this.openDialogue(this.shipMenu());
   }
 
@@ -158,6 +177,23 @@ export class WorldScene extends Phaser.Scene {
     const added = state.addEntry({ id: it.id, kind: 'scan', section: def.section, name: def.name, line: def.line });
     it.sparkle?.setVisible(false);
     bus.emit(EV.toast, added ? `Notebook: ${def.name}. ${def.line}` : `${def.name}. Already in your notebook.`);
+  }
+
+  private pickUp(it: Interactable): void {
+    const def = content.samples[it.id];
+    const s = state.addSample(it.id, it.image?.name ?? it.id);
+    it.sparkle?.destroy();
+    it.image?.destroy();
+    this.interactables = this.interactables.filter((x) => x !== it);
+    bus.emit(EV.toast, `Picked up a rock. ${def.look} Press N to open the notebook and test it. (#${s.uid})`);
+  }
+
+  private openOverlay(key: string, data?: object): void {
+    this.busy = true;
+    this.player.setVelocity(0, 0);
+    this.player.anims.stop();
+    this.prompt.setVisible(false);
+    this.scene.launch(key, data);
   }
 
   /** The ship offers to end the day. Sleeping advances the day counter. */
@@ -200,6 +236,7 @@ export class WorldScene extends Phaser.Scene {
 
   update(): void {
     if (this.busy) return;
+    if (Phaser.Input.Keyboard.JustDown(this.bookKey)) return this.openOverlay('Notebook');
     this.move.update();
     this.player.setVelocity(this.move.vec.x * SPEED, this.move.vec.y * SPEED);
     if (this.move.moving) {
@@ -228,7 +265,13 @@ export class WorldScene extends Phaser.Scene {
     Object.defineProperties(dbg, {
       player: { get: () => ({ x: Math.round(player.x), y: Math.round(player.y) }), enumerable: true, configurable: true },
       state: {
-        get: () => ({ day: state.day, notebook: state.notebook.map((e) => e.id), relationships: state.relationships }),
+        get: () => ({
+          day: state.day,
+          notebook: state.notebook.map((e) => e.id),
+          relationships: state.relationships,
+          bag: state.bag.map((b) => ({ uid: b.uid, identified: b.identified, tests: Object.keys(b.results).length, wrong: b.wrongGuesses })),
+          facts: state.factsLearned,
+        }),
         enumerable: true,
         configurable: true,
       },

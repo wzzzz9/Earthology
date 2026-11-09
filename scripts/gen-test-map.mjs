@@ -49,7 +49,7 @@ for (let id = 1; id <= 8; id++) tiles.push({ id: id - 1, properties: [{ name: 'c
 
 const map = {
   type: 'map', version: '1.10', tiledversion: '1.11.0', orientation: 'orthogonal', renderorder: 'right-down',
-  width: W, height: H, tilewidth: T, tileheight: T, infinite: false, nextlayerid: 4, nextobjectid: 7,
+  width: W, height: H, tilewidth: T, tileheight: T, infinite: false, nextlayerid: 4, nextobjectid: 10,
   tilesets: [{ firstgid: 1, name: 'placeholder', tilewidth: T, tileheight: T, tilecount: 8, columns: 8, image: 'placeholder.png', imagewidth: 128, imageheight: 16, margin: 0, spacing: 0, tiles }],
   layers: [
     { id: 1, type: 'tilelayer', name: 'ground', width: W, height: H, x: 0, y: 0, visible: true, opacity: 1, data: ground },
@@ -62,6 +62,9 @@ const map = {
         pt(4, 'cairn', 'scan', 20, 10),
         pt(5, 'lake', 'scan', 27, 7),
         pt(6, 'sigrun', 'npc', 24, 13),
+        pt(7, 'basalt', 'sample', 10, 8),
+        pt(8, 'obsidian', 'sample', 18, 24),
+        pt(9, 'pumice', 'sample', 33, 10),
       ] },
   ],
 };

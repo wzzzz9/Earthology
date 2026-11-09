@@ -1,0 +1,25 @@
+{
+  "start": "float",
+  "nodes": {
+    "float": {
+      "question": "Drop it in water. Does it float?",
+      "test": "water",
+      "yes": { "sample": "pumice" },
+      "no": { "node": "glass" }
+    },
+    "glass": {
+      "question": "Under the hand lens, is it smooth glass with no crystals?",
+      "test": "lens",
+      "yes": { "sample": "obsidian" },
+      "no": { "node": "grain" }
+    },
+    "grain": {
+      "question": "Can you pick out single crystals, or are they too small to see?",
+      "test": "lens",
+      "yesLabel": "Too small to see",
+      "noLabel": "Big crystals",
+      "yes": { "sample": "basalt" },
+      "no": { "sample": "gabbro" }
+    }
+  }
+}

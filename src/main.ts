@@ -5,6 +5,8 @@ import { TitleScene } from './scenes/TitleScene';
 import { WorldScene } from './scenes/WorldScene';
 import { DialogueScene } from './scenes/DialogueScene';
 import { HudScene } from './scenes/HudScene';
+import { NotebookScene } from './scenes/NotebookScene';
+import { LabScene } from './scenes/LabScene';
 
 new Phaser.Game({
   type: Phaser.AUTO,
@@ -21,5 +23,5 @@ new Phaser.Game({
     default: 'arcade',
     arcade: { debug: false },
   },
-  scene: [BootScene, TitleScene, WorldScene, HudScene, DialogueScene],
+  scene: [BootScene, TitleScene, WorldScene, HudScene, DialogueScene, NotebookScene, LabScene],
 });

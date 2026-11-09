@@ -1,4 +1,4 @@
-import type { Section } from '../content/types';
+import type { Section, TestId } from '../content/types';
 import { bus, EV } from './events';
 
 export interface NotebookEntry {
@@ -8,6 +8,17 @@ export interface NotebookEntry {
   name: string;
   line: string;
   day: number;
+}
+
+/** A rock in the bag. sampleId is the truth; the player only learns it by identifying. */
+export interface BagSample {
+  uid: number;
+  sampleId: string;
+  /** Where it was picked up, so the world does not respawn it. */
+  pickupId: string;
+  results: Partial<Record<TestId, string>>;
+  identified: boolean;
+  wrongGuesses: number;
 }
 
 export interface Relationship {
@@ -23,6 +34,27 @@ export class GameState {
   day = 1;
   notebook: NotebookEntry[] = [];
   relationships: Record<string, Relationship> = {};
+  bag: BagSample[] = [];
+  factsLearned: string[] = [];
+  private nextUid = 1;
+
+  hasPickedUp(pickupId: string): boolean {
+    return this.bag.some((b) => b.pickupId === pickupId);
+  }
+
+  addSample(sampleId: string, pickupId: string): BagSample {
+    const s: BagSample = { uid: this.nextUid++, sampleId, pickupId, results: {}, identified: false, wrongGuesses: 0 };
+    this.bag.push(s);
+    bus.emit(EV.stateChanged);
+    return s;
+  }
+
+  learnFact(id: string): boolean {
+    if (this.factsLearned.includes(id)) return false;
+    this.factsLearned.push(id);
+    bus.emit(EV.stateChanged);
+    return true;
+  }
 
   hasScanned(id: string): boolean {
     return this.notebook.some((e) => e.kind === 'scan' && e.id === id);

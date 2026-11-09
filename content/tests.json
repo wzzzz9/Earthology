@@ -1,0 +1,8 @@
+{
+  "lens": { "name": "Hand lens", "verb": "Look closely", "hint": "Crystal size tells you how fast the rock cooled." },
+  "water": { "name": "Water", "verb": "Drop it in water", "hint": "Almost every rock sinks. Almost." },
+  "magnet": { "name": "Magnet", "verb": "Hold a magnet to it", "hint": "Magnetite sticks." },
+  "acid": { "name": "Acid drop", "verb": "One drop of weak acid", "hint": "Calcite fizzes. Limestone and marble react." },
+  "streak": { "name": "Streak plate", "verb": "Scrape it on the plate", "hint": "The powder colour can differ from the rock colour." },
+  "scratch": { "name": "Scratch test", "verb": "Fingernail, coin, nail, glass", "hint": "Hardness, from soft to hard." }
+}

@@ -7,4 +7,5 @@ export const EV = {
   toast: 'toast',
   dialogueClosed: 'dialogue-closed',
   stateChanged: 'state-changed',
+  overlayClosed: 'overlay-closed',
 } as const;

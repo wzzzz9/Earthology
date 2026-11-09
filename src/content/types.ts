@@ -39,3 +39,48 @@ export interface Topic {
 }
 
 export type NpcDialogue = Record<string, Topic>;
+
+export type TestId = 'lens' | 'water' | 'magnet' | 'acid' | 'streak' | 'scratch';
+
+export interface Fact {
+  tier: 1 | 2 | 3;
+  text: string;
+  fieldNote: string;
+  topics: string[];
+  curriculum: string[];
+  source: string;
+  verified: boolean;
+}
+
+export interface SampleDef {
+  name: string;
+  rockType: string;
+  region: string;
+  /** What the player sees before identifying it. */
+  look: string;
+  color: string;
+  pattern: 'speckle' | 'shine' | 'holes' | 'plain';
+  tests: Record<TestId, string>;
+  facts: string[];
+}
+
+export interface TestDef {
+  name: string;
+  verb: string;
+  hint: string;
+}
+
+export type KeyLeaf = { sample: string } | { node: string };
+export interface KeyNode {
+  question: string;
+  /** Which test's result helps answer this question. */
+  test: TestId;
+  yesLabel?: string;
+  noLabel?: string;
+  yes: KeyLeaf;
+  no: KeyLeaf;
+}
+export interface IdKey {
+  start: string;
+  nodes: Record<string, KeyNode>;
+}

@@ -11,6 +11,47 @@ let errors = 0;
 const fail = (msg) => { errors++; console.log('  ✗ ' + msg); };
 const read = (p) => JSON.parse(readFileSync(p, 'utf8'));
 
+// ---- shared content: facts, samples, tests, key ----
+const facts = read(join(root, 'facts.json'));
+const samples = read(join(root, 'samples.json'));
+const tests = read(join(root, 'tests.json'));
+const key = read(join(root, 'key.json'));
+console.log('Shared content');
+const unverified = [];
+for (const [id, f] of Object.entries(facts)) {
+  if (![1, 2, 3].includes(f.tier)) fail(`fact ${id}: bad tier`);
+  if (!f.source) fail(`fact ${id}: no source`);
+  if (!f.fieldNote) fail(`fact ${id}: no fieldNote`);
+  if (f.fieldNote.length > MAX_CHARS) fail(`fact ${id}: fieldNote too long (${f.fieldNote.length})`);
+  if (!f.verified) unverified.push(id);
+}
+for (const [id, smp] of Object.entries(samples)) {
+  for (const t of Object.keys(tests)) if (!smp.tests?.[t]) fail(`sample ${id}: missing test result for ${t}`);
+  for (const t of Object.keys(smp.tests ?? {})) if (!tests[t]) fail(`sample ${id}: unknown test ${t}`);
+  for (const f of smp.facts ?? []) if (!facts[f]) fail(`sample ${id}: unknown fact ${f}`);
+  if (!smp.look || smp.look.length > MAX_CHARS) fail(`sample ${id}: look missing or too long`);
+}
+const visitKey = (id, seen = new Set()) => {
+  if (seen.has(id)) return fail(`key: loop at ${id}`);
+  seen.add(id);
+  const n = key.nodes[id];
+  if (!n) return fail(`key: unknown node ${id}`);
+  if (!tests[n.test]) fail(`key ${id}: unknown test ${n.test}`);
+  for (const side of ['yes', 'no']) {
+    const leaf = n[side];
+    if (!leaf) { fail(`key ${id}: missing ${side}`); continue; }
+    if ('node' in leaf) visitKey(leaf.node, new Set(seen));
+    else if (!samples[leaf.sample]) console.log(`  ! key ${id}: ${side} names sample "${leaf.sample}" that has no entry yet (ok until that rock exists)`);
+  }
+};
+visitKey(key.start);
+for (const id of Object.keys(samples)) {
+  // Every sample must be reachable as a leaf of the key.
+  const leaves = Object.values(key.nodes).flatMap((n) => [n.yes, n.no]).filter((l) => 'sample' in l).map((l) => l.sample);
+  if (!leaves.includes(id)) fail(`sample ${id} is not a leaf of the identification key`);
+}
+if (unverified.length) console.log(`  ! ${unverified.length} unverified fact(s): ${unverified.join(', ')}`);
+
 for (const country of readdirSync(join(root, 'countries'))) {
   const dir = join(root, 'countries', country);
   console.log(`Country: ${country}`);
