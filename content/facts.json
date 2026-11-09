@@ -7,19 +7,19 @@
       "igneous-rocks"
     ],
     "curriculum": [],
-    "source": "https://www.bgs.ac.uk/discovering-geology/rocks-and-minerals/igneous-rocks/",
-    "verified": false
+    "source": "https://pubs.usgs.gov/gip/99/pdf/gip99_chapter2.pdf",
+    "verified": true
   },
   "pumice.gas-bubbles": {
     "tier": 1,
-    "text": "Pumice is frothy lava that cooled fast. The holes are gas bubbles that got trapped. It is so light it floats on water.",
-    "fieldNote": "Pumice: full of gas-bubble holes, floats.",
+    "text": "Pumice is frothy lava that cooled fast. The holes are gas bubbles that got trapped. It is often light enough to float on water.",
+    "fieldNote": "Pumice: full of gas-bubble holes, often floats.",
     "topics": [
       "igneous-rocks"
     ],
     "curriculum": [],
-    "source": "https://www.usgs.gov/volcanoes/glossary/pumice",
-    "verified": false
+    "source": "https://volcanoes.usgs.gov/vsc/glossary/pumice.html",
+    "verified": true
   },
   "obsidian.volcanic-glass": {
     "tier": 2,
@@ -29,8 +29,8 @@
       "igneous-rocks"
     ],
     "curriculum": [],
-    "source": "https://www.usgs.gov/volcanoes/glossary/obsidian",
-    "verified": false
+    "source": "https://volcanoes.usgs.gov/vsc/glossary/obsidian.html",
+    "verified": true
   },
   "basalt.lava-rock": {
     "tier": 1,
