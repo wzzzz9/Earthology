@@ -13,7 +13,7 @@
   "gunnar": {
     "name": "Gunnar",
     "role": "Fisherman",
-    "color": "#c9a27a",
+    "color": "#c0503a",
     "coat": "#c2462e",
     "thresholds": {
       "acquaintance": 3,
@@ -24,7 +24,7 @@
   "halldora": {
     "name": "Halldóra",
     "role": "Harbour master",
-    "color": "#e0b896",
+    "color": "#2e6f8e",
     "coat": "#1f3b5c",
     "thresholds": {
       "acquaintance": 4,
@@ -35,7 +35,7 @@
   "asta": {
     "name": "Ásta",
     "role": "Bakery owner",
-    "color": "#f0c8a8",
+    "color": "#d98aa0",
     "coat": "#e8e2d0",
     "thresholds": {
       "acquaintance": 2,
@@ -46,7 +46,7 @@
   "kari": {
     "name": "Kári",
     "role": "Child who asks too many questions",
-    "color": "#f2d0b0",
+    "color": "#e3b43a",
     "coat": "#e0a020",
     "thresholds": {
       "acquaintance": 2,
@@ -57,8 +57,8 @@
   "einar": {
     "name": "Einar",
     "role": "Geothermal plant worker",
-    "color": "#d8b090",
-    "coat": "#e07b1f",
+    "color": "#7a9a3a",
+    "coat": "#d0d4d8",
     "thresholds": {
       "acquaintance": 3,
       "friend": 11,
@@ -68,7 +68,7 @@
   "hrafnhildur": {
     "name": "Hrafnhildur",
     "role": "Sheep farmer",
-    "color": "#d9b18f",
+    "color": "#8a6a4a",
     "coat": "#6b4a2b",
     "thresholds": {
       "acquaintance": 4,
