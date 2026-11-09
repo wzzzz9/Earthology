@@ -278,7 +278,7 @@ Every milestone ends with a playable build and a commit, as in v1.
 
 1. **M1 Setup.** ✅ done Nov 10. Vite + Phaser + TypeScript, repo, hello-world on GitHub Pages.
 2. **M2 Walk.** ✅ done Nov 10. Player on a Tiled map, collisions, camera, keyboard and touch.
-3. **M3 Notice and talk.** Scan one object into the notebook. One NPC with Stranger and Acquaintance lines, a topic that unlocks after a scan, trust points, the day counter via sleeping in the ship.
+3. **M3 Notice and talk.** ✅ done Nov 10. Scan one object into the notebook. One NPC with Stranger and Acquaintance lines, a topic that unlocks after a scan, trust points, the day counter via sleeping in the ship.
 4. **M4 Notebook and rocks.** Notebook screen with sections and bars, sample testing mini-game with 3 rocks, identification key (v1 M4).
 5. **M5 Homework.** Rubric loader, submission screen, teacher feedback with hint ladder, grade bands, anti-spam rule, save and load. *This is the milestone that proves the new idea. Test it hard.*
 6. **M6 Landing.** Opening: ship lands, teacher explains the assignment on the communicator, the player picks a human disguise, the first walk into town. Map-skill basics folded in (v1 M6).

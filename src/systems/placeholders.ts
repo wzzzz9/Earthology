@@ -46,7 +46,7 @@ export function makePlaceholderTileset(scene: Phaser.Scene, key = 'placeholder')
 export const PLAYER_W = 16;
 export const PLAYER_H = 24;
 
-export function makePlaceholderPlayer(scene: Phaser.Scene, key = 'player'): void {
+export function makePlaceholderPlayer(scene: Phaser.Scene, key = 'player', coat = '#c95b3a', hat = '#3a3f55'): void {
   if (scene.textures.exists(key)) return;
   const tex = scene.textures.createCanvas(key, PLAYER_W * 8, PLAYER_H);
   if (!tex) return;
@@ -58,7 +58,7 @@ export function makePlaceholderPlayer(scene: Phaser.Scene, key = 'player'): void
       const ox = i * PLAYER_W;
       const bob = step === 1 ? 1 : 0;
       // coat
-      ctx.fillStyle = '#c95b3a';
+      ctx.fillStyle = coat;
       ctx.fillRect(ox + 4, 10 + bob, 8, 9);
       // legs
       ctx.fillStyle = '#2d3140';
@@ -69,7 +69,7 @@ export function makePlaceholderPlayer(scene: Phaser.Scene, key = 'player'): void
       ctx.fillStyle = '#f0c8a0';
       ctx.fillRect(ox + 4, 2 + bob, 8, 8);
       // hat (the disguise)
-      ctx.fillStyle = '#3a3f55';
+      ctx.fillStyle = hat;
       ctx.fillRect(ox + 3, 1 + bob, 10, 3);
       ctx.fillRect(ox + 5, 0 + bob, 6, 2);
       // eyes depend on direction
@@ -83,4 +83,57 @@ export function makePlaceholderPlayer(scene: Phaser.Scene, key = 'player'): void
     }
   });
   tex.refresh();
+}
+
+/** The ship: a grey saucer with a dome, 48x32. Home base, save point, sleep. */
+export function makePlaceholderShip(scene: Phaser.Scene, key = 'ship'): void {
+  if (scene.textures.exists(key)) return;
+  const tex = scene.textures.createCanvas(key, 48, 32);
+  if (!tex) return;
+  const ctx = tex.getContext();
+  ctx.fillStyle = '#8a8f99';
+  ctx.beginPath(); ctx.ellipse(24, 22, 22, 7, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#b9bec8';
+  ctx.beginPath(); ctx.ellipse(24, 20, 16, 4, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#7fd1e8';
+  ctx.beginPath(); ctx.ellipse(24, 15, 9, 8, 0, Math.PI, 0); ctx.fill();
+  ctx.fillStyle = '#ffd37a';
+  for (const x of [10, 18, 30, 38]) ctx.fillRect(x, 23, 2, 2);
+  ctx.fillStyle = '#454851';
+  ctx.fillRect(14, 28, 4, 3); ctx.fillRect(30, 28, 4, 3);
+  tex.refresh();
+}
+
+/** Small 4-point sparkle shown over things you can look at. */
+export function makeSparkle(scene: Phaser.Scene, key = 'sparkle'): void {
+  if (scene.textures.exists(key)) return;
+  const tex = scene.textures.createCanvas(key, 7, 7);
+  if (!tex) return;
+  const ctx = tex.getContext();
+  ctx.fillStyle = '#fff6c8';
+  ctx.fillRect(3, 0, 1, 7); ctx.fillRect(0, 3, 7, 1);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(2, 2, 3, 3);
+  tex.refresh();
+}
+
+/** Simple props: signpost and cairn, 16x16 each. */
+export function makePlaceholderProps(scene: Phaser.Scene): void {
+  if (!scene.textures.exists('prop.signpost')) {
+    const t = scene.textures.createCanvas('prop.signpost', 16, 16)!;
+    const c = t.getContext();
+    c.fillStyle = '#6e4b2a'; c.fillRect(7, 4, 2, 12);
+    c.fillStyle = '#b08a5a'; c.fillRect(3, 3, 11, 5);
+    c.fillStyle = '#6e4b2a'; c.fillRect(11, 4, 2, 1); c.fillRect(5, 5, 6, 1);
+    t.refresh();
+  }
+  if (!scene.textures.exists('prop.cairn')) {
+    const t = scene.textures.createCanvas('prop.cairn', 16, 16)!;
+    const c = t.getContext();
+    c.fillStyle = '#6b6f78'; c.fillRect(2, 10, 12, 5);
+    c.fillStyle = '#8a8f99'; c.fillRect(4, 6, 8, 4);
+    c.fillStyle = '#a0a5ae'; c.fillRect(6, 3, 4, 3);
+    c.fillStyle = '#454851'; c.fillRect(2, 14, 12, 1);
+    t.refresh();
+  }
 }

@@ -1,0 +1,20 @@
+{
+  "lake": {
+    "name": "Still lake",
+    "section": "land",
+    "line": "Cold and very clear. From the shore you can see stones on the bottom.",
+    "sketch": "#3b78c2"
+  },
+  "cairn": {
+    "name": "Stone cairn",
+    "section": "people",
+    "line": "A pile of stones someone stacked on purpose. It marks something. The path, maybe.",
+    "sketch": "#6b6f78"
+  },
+  "signpost": {
+    "name": "Wooden signpost",
+    "section": "people",
+    "line": "Letters you cannot read yet. An arrow points toward the water.",
+    "sketch": "#9c7849"
+  }
+}

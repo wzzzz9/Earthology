@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check": "node scripts/check-content.mjs",
+    "map": "node scripts/gen-test-map.mjs",
+    "shot": "node scripts/shot.mjs"
   },
   "devDependencies": {
     "playwright": "^1.65.0",

@@ -41,18 +41,28 @@ for (let i = 0; i < 45; i++) {
 // A rock wall with one gap, to test collisions properly.
 for (let y = 18; y < 28; y++) if (y !== 22 && y !== 23) walls[at(14, y)] = ROCK;
 
+// Point object at the centre of a tile.
+const pt = (id, name, type, tx, ty) => ({ id, name, type, x: tx * T + T / 2, y: ty * T + T / 2, width: 0, height: 0, point: true, visible: true, rotation: 0 });
+
 const tiles = [];
 for (let id = 1; id <= 8; id++) tiles.push({ id: id - 1, properties: [{ name: 'collides', type: 'bool', value: SOLID.includes(id) }] });
 
 const map = {
   type: 'map', version: '1.10', tiledversion: '1.11.0', orientation: 'orthogonal', renderorder: 'right-down',
-  width: W, height: H, tilewidth: T, tileheight: T, infinite: false, nextlayerid: 4, nextobjectid: 2,
+  width: W, height: H, tilewidth: T, tileheight: T, infinite: false, nextlayerid: 4, nextobjectid: 7,
   tilesets: [{ firstgid: 1, name: 'placeholder', tilewidth: T, tileheight: T, tilecount: 8, columns: 8, image: 'placeholder.png', imagewidth: 128, imageheight: 16, margin: 0, spacing: 0, tiles }],
   layers: [
     { id: 1, type: 'tilelayer', name: 'ground', width: W, height: H, x: 0, y: 0, visible: true, opacity: 1, data: ground },
     { id: 2, type: 'tilelayer', name: 'walls', width: W, height: H, x: 0, y: 0, visible: true, opacity: 1, data: walls },
     { id: 3, type: 'objectgroup', name: 'objects', visible: true, opacity: 1, x: 0, y: 0, draworder: 'topdown',
-      objects: [{ id: 1, name: 'spawn', type: 'spawn', x: 5 * T, y: 14 * T, width: 0, height: 0, point: true, visible: true, rotation: 0 }] },
+      objects: [
+        pt(1, 'spawn', 'spawn', 5, 14),
+        pt(2, 'ship', 'ship', 3, 12),
+        pt(3, 'signpost', 'scan', 8, 13),
+        pt(4, 'cairn', 'scan', 20, 10),
+        pt(5, 'lake', 'scan', 27, 7),
+        pt(6, 'sigrun', 'npc', 24, 13),
+      ] },
   ],
 };
 writeFileSync(new URL('../public/assets/maps/test-field.json', import.meta.url), JSON.stringify(map));

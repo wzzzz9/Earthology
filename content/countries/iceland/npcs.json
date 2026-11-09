@@ -1,0 +1,9 @@
+{
+  "sigrun": {
+    "name": "Sigrún",
+    "role": "Retired geologist",
+    "color": "#5b7fbf",
+    "coat": "#3f6a4a",
+    "thresholds": { "acquaintance": 3, "friend": 10, "close": 25 }
+  }
+}

@@ -1,6 +1,8 @@
 // Headless browser check for the game.
 // Usage: node scripts/shot.mjs <out.png> [keys...]
 //   keys: a sequence like "ArrowRight:800 ArrowDown:400" = hold key for ms.
+//   a step starting with "js:" runs that code in the page, e.g. js:__debug.teleport(100,200)
+//   a step "wait:500" just waits.
 // Loads http://localhost:5173/, waits for Phaser to boot, optionally presses
 // keys, saves a screenshot, and prints any console errors or page errors.
 import { chromium } from 'playwright';
@@ -23,6 +25,8 @@ await page.waitForSelector('canvas', { timeout: 10000 });
 await page.waitForTimeout(600);
 
 for (const k of keys) {
+  if (k.startsWith('js:')) { await page.evaluate(k.slice(3)); await page.waitForTimeout(150); continue; }
+  if (k.startsWith('wait:')) { await page.waitForTimeout(Number(k.slice(5))); continue; }
   const [key, ms = '300'] = k.split(':');
   await page.keyboard.down(key);
   await page.waitForTimeout(Number(ms));
@@ -31,7 +35,11 @@ for (const k of keys) {
 }
 
 await page.screenshot({ path: out });
-const state = await page.evaluate(() => window.__debug ?? null).catch(() => null);
+const state = await page.evaluate(() => {
+  const d = window.__debug;
+  if (!d) return null;
+  return { player: d.player, state: d.state, dialogue: d.dialogue };
+}).catch(() => null);
 await browser.close();
 
 console.log(`screenshot: ${out}`);

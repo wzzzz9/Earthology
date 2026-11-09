@@ -1,13 +1,35 @@
 import Phaser from 'phaser';
-import { makePlaceholderTileset, makePlaceholderPlayer, PLAYER_W, PLAYER_H } from '../systems/placeholders';
+import {
+  makePlaceholderTileset, makePlaceholderPlayer, makePlaceholderShip, makeSparkle, makePlaceholderProps,
+  PLAYER_W, PLAYER_H,
+} from '../systems/placeholders';
 import { MoveInput } from '../systems/input';
+import { content } from '../content';
+import { state } from '../systems/state';
+import { Conversation } from '../systems/conversation';
+import type { DialogueSource } from './DialogueScene';
+import { bus, EV } from '../systems/events';
 
 const SPEED = 70; // px per second, a relaxed walking pace for 16px tiles
+const REACH = 22; // px from the point in front of the player to an interactable
 
-/** The current region map with the player. M2: walk around with collisions. */
+type Kind = 'scan' | 'npc' | 'ship';
+interface Interactable {
+  kind: Kind;
+  id: string;
+  x: number;
+  y: number;
+  sparkle?: Phaser.GameObjects.Image;
+}
+
+/** The current region map with the player. M2: walk. M3: notice, talk, sleep. */
 export class WorldScene extends Phaser.Scene {
   private player!: Phaser.Physics.Arcade.Sprite;
   private move!: MoveInput;
+  private actKey!: Phaser.Input.Keyboard.Key;
+  private interactables: Interactable[] = [];
+  private prompt!: Phaser.GameObjects.Text;
+  private busy = false;
 
   constructor() {
     super('World');
@@ -16,6 +38,9 @@ export class WorldScene extends Phaser.Scene {
   create(): void {
     makePlaceholderTileset(this);
     makePlaceholderPlayer(this);
+    makePlaceholderShip(this);
+    makeSparkle(this);
+    makePlaceholderProps(this);
 
     const map = this.make.tilemap({ key: 'map.test-field' });
     const tileset = map.addTilesetImage('placeholder', 'placeholder')!;
@@ -24,19 +49,44 @@ export class WorldScene extends Phaser.Scene {
     ground.setCollisionByProperty({ collides: true });
     walls.setCollisionByProperty({ collides: true });
 
-    const spawn = map.findObject('objects', (o) => o.name === 'spawn');
-    const sx = spawn?.x ?? map.widthInPixels / 2;
-    const sy = spawn?.y ?? map.heightInPixels / 2;
+    const objects = map.getObjectLayer('objects')?.objects ?? [];
+    const spawn = objects.find((o) => o.name === 'spawn');
 
-    this.player = this.physics.add.sprite(sx, sy, 'player', 'down0');
-    // Collide with the feet only, so the head can overlap a rock above.
+    this.player = this.physics.add.sprite(spawn?.x ?? 100, spawn?.y ?? 100, 'player', 'down0');
     this.player.body!.setSize(10, 8).setOffset((PLAYER_W - 10) / 2, PLAYER_H - 8);
     this.player.setCollideWorldBounds(true);
     this.player.setDepth(10);
 
+    const solids = this.physics.add.staticGroup();
+    for (const o of objects) {
+      const x = o.x ?? 0;
+      const y = o.y ?? 0;
+      if (o.type === 'ship') {
+        const ship = this.add.image(x, y - 8, 'ship').setDepth(5);
+        solids.add(this.add.rectangle(x, y, 44, 14).setVisible(false));
+        this.interactables.push({ kind: 'ship', id: 'ship', x, y: y + 4 });
+        void ship;
+      } else if (o.type === 'scan') {
+        if (this.textures.exists(`prop.${o.name}`)) {
+          this.add.image(x, y, `prop.${o.name}`).setDepth(y);
+          solids.add(this.add.rectangle(x, y + 3, 12, 8).setVisible(false));
+        }
+        this.interactables.push({ kind: 'scan', id: o.name, x, y, sparkle: this.addSparkle(x, y - 12) });
+      } else if (o.type === 'npc') {
+        const def = content.npcs[o.name];
+        makePlaceholderPlayer(this, `npc.${o.name}`, def.coat, '#222733');
+        this.add.image(x, y - 4, `npc.${o.name}`, 'down0').setDepth(y);
+        solids.add(this.add.rectangle(x, y + 2, 10, 8).setVisible(false));
+        this.interactables.push({ kind: 'npc', id: o.name, x, y });
+      }
+    }
+    // Hide sparkles for things already in the notebook (relevant once saving exists).
+    for (const it of this.interactables) if (it.kind === 'scan' && state.hasScanned(it.id)) it.sparkle?.setVisible(false);
+
     this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     this.physics.add.collider(this.player, ground);
     this.physics.add.collider(this.player, walls);
+    this.physics.add.collider(this.player, solids);
 
     for (const dir of ['down', 'up', 'left', 'right'] as const) {
       this.anims.create({
@@ -53,17 +103,103 @@ export class WorldScene extends Phaser.Scene {
     cam.setRoundPixels(true);
 
     this.move = new MoveInput(this);
+    this.actKey = this.input.keyboard!.addKey('E');
+    this.prompt = this.add
+      .text(0, 0, '', { fontFamily: 'monospace', fontSize: '8px', color: '#f4f1e8', backgroundColor: '#11141cdd', padding: { x: 3, y: 1 } })
+      .setOrigin(0.5, 1)
+      .setDepth(100)
+      .setVisible(false);
 
-    // Debug hook read by scripts/shot.mjs so headless checks can confirm movement.
-    const player = this.player;
-    (window as unknown as { __debug: unknown }).__debug = {
-      get player() {
-        return { x: Math.round(player.x), y: Math.round(player.y) };
+    this.scene.launch('Hud');
+    bus.on(EV.dialogueClosed, this.onDialogueClosed, this);
+    this.events.once('shutdown', () => bus.off(EV.dialogueClosed, this.onDialogueClosed, this));
+
+    this.installDebug();
+  }
+
+  private addSparkle(x: number, y: number): Phaser.GameObjects.Image {
+    const s = this.add.image(x, y, 'sparkle').setDepth(50);
+    this.tweens.add({ targets: s, alpha: 0.2, scale: 0.7, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    return s;
+  }
+
+  /** The interactable nearest to the spot just in front of the player, if within reach. */
+  private target(): Interactable | null {
+    const f = this.move.facing;
+    const px = this.player.x + (f === 'left' ? -12 : f === 'right' ? 12 : 0);
+    const py = this.player.y + 6 + (f === 'up' ? -12 : f === 'down' ? 12 : 0);
+    let best: Interactable | null = null;
+    let bestD = REACH;
+    for (const it of this.interactables) {
+      const d = Phaser.Math.Distance.Between(px, py, it.x, it.y);
+      if (d < bestD) {
+        bestD = d;
+        best = it;
+      }
+    }
+    return best;
+  }
+
+  private promptFor(it: Interactable): string {
+    if (it.kind === 'scan') return `E: Look at ${content.scannables[it.id]?.name.toLowerCase() ?? it.id}`;
+    if (it.kind === 'npc') return `E: Talk to ${content.npcs[it.id]?.name ?? it.id}`;
+    return 'E: Your ship';
+  }
+
+  private interact(it: Interactable): void {
+    if (it.kind === 'scan') return this.scan(it);
+    if (it.kind === 'npc') return this.openDialogue(new Conversation(it.id));
+    return this.openDialogue(this.shipMenu());
+  }
+
+  private scan(it: Interactable): void {
+    const def = content.scannables[it.id];
+    if (!def) return;
+    const added = state.addEntry({ id: it.id, kind: 'scan', section: def.section, name: def.name, line: def.line });
+    it.sparkle?.setVisible(false);
+    bus.emit(EV.toast, added ? `Notebook: ${def.name}. ${def.line}` : `${def.name}. Already in your notebook.`);
+  }
+
+  /** The ship offers to end the day. Sleeping advances the day counter. */
+  private shipMenu(): DialogueSource {
+    let step = 0;
+    const page = (lines: string[], choices?: string[]) => ({ speaker: 'Ship', color: '#8a8f99', lines, choices });
+    return {
+      next: (choice?: number) => {
+        if (step === 0) {
+          step = 1;
+          return page([`Day ${state.day}. The cabin is warm.`, 'Sleep until tomorrow?'], ['Sleep', 'Not yet']);
+        }
+        if (step === 1 && choice === 0) {
+          step = 2;
+          this.sleep();
+          return page([`Day ${state.day}.`, 'The light outside has changed.']);
+        }
+        return null;
       },
     };
   }
 
+  private sleep(): void {
+    state.nextDay();
+    this.cameras.main.flash(600, 10, 12, 18);
+  }
+
+  private openDialogue(source: DialogueSource): void {
+    this.busy = true;
+    this.player.setVelocity(0, 0);
+    this.player.anims.stop();
+    this.prompt.setVisible(false);
+    this.scene.launch('Dialogue', { source });
+  }
+
+  private onDialogueClosed(): void {
+    // Small delay so the key that closed the dialogue does not re-open it.
+    this.time.delayedCall(120, () => (this.busy = false));
+  }
+
   update(): void {
+    if (this.busy) return;
     this.move.update();
     this.player.setVelocity(this.move.vec.x * SPEED, this.move.vec.y * SPEED);
     if (this.move.moving) {
@@ -72,5 +208,31 @@ export class WorldScene extends Phaser.Scene {
       this.player.anims.stop();
       this.player.setFrame(`${this.move.facing}0`);
     }
+    this.player.setDepth(this.player.y + 12);
+
+    const it = this.target();
+    if (it) {
+      this.prompt.setText(this.promptFor(it)).setPosition(this.player.x, this.player.y - 16).setVisible(true);
+      if (Phaser.Input.Keyboard.JustDown(this.actKey)) this.interact(it);
+    } else {
+      this.prompt.setVisible(false);
+    }
+  }
+
+  /** Debug hooks read by scripts/shot.mjs so headless checks can confirm behaviour. */
+  private installDebug(): void {
+    const player = this.player;
+    const w = window as unknown as { __debug: Record<string, unknown> };
+    const dbg = (w.__debug ??= {});
+    // defineProperties keeps these as live getters; Object.assign would copy snapshots.
+    Object.defineProperties(dbg, {
+      player: { get: () => ({ x: Math.round(player.x), y: Math.round(player.y) }), enumerable: true, configurable: true },
+      state: {
+        get: () => ({ day: state.day, notebook: state.notebook.map((e) => e.id), relationships: state.relationships }),
+        enumerable: true,
+        configurable: true,
+      },
+      teleport: { value: (x: number, y: number) => (player.body as Phaser.Physics.Arcade.Body).reset(x, y), enumerable: true, configurable: true },
+    });
   }
 }
