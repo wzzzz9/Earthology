@@ -20,3 +20,4 @@
 - Node is installed via nvm in WSL. In a non-interactive shell run `export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"` first.
 - Stack: Vite + TypeScript + Phaser 4. Internal resolution 480x270, pixelArt on.
 - `npm run dev` for the dev server, `npm run build` for a production build into dist/.
+- Visual check: with the dev server running (`npm run dev`), `node scripts/shot.mjs out.png Enter:200 ArrowRight:1500` loads the game headless, presses keys, saves a screenshot and prints console errors. Use it before calling a step done.

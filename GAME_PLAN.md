@@ -276,8 +276,8 @@ If AI small talk is ever added (5.4), it is a separate optional service and must
 
 Every milestone ends with a playable build and a commit, as in v1.
 
-1. **M1 Setup.** Vite + Phaser + TypeScript, repo, hello-world on GitHub Pages.
-2. **M2 Walk.** Player on a Tiled map, collisions, camera, keyboard and touch.
+1. **M1 Setup.** ✅ done Nov 10. Vite + Phaser + TypeScript, repo, hello-world on GitHub Pages.
+2. **M2 Walk.** ✅ done Nov 10. Player on a Tiled map, collisions, camera, keyboard and touch.
 3. **M3 Notice and talk.** Scan one object into the notebook. One NPC with Stranger and Acquaintance lines, a topic that unlocks after a scan, trust points, the day counter via sleeping in the ship.
 4. **M4 Notebook and rocks.** Notebook screen with sections and bars, sample testing mini-game with 3 rocks, identification key (v1 M4).
 5. **M5 Homework.** Rubric loader, submission screen, teacher feedback with hint ladder, grade bands, anti-spam rule, save and load. *This is the milestone that proves the new idea. Test it hard.*
