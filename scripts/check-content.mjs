@@ -85,6 +85,45 @@ for (const country of readdirSync(join(root, 'countries'))) {
     }
   }
   for (const npcId of Object.keys(npcs)) if (!dialogue[npcId]) fail(`npc ${npcId} has no dialogue`);
+
+  // ---- rubric ----
+  if (existsSync(join(dir, 'rubric.json'))) {
+    const rubric = read(join(dir, 'rubric.json'));
+    const teacher = existsSync(join(dir, 'teacher.json')) ? read(join(dir, 'teacher.json')) : null;
+    if (!teacher) fail('rubric without teacher.json');
+    let total = 0;
+    let needsFriend = 0; // weight only reachable above Acquaintance
+    const ids = new Set();
+    for (const it of rubric.items) {
+      if (ids.has(it.id)) fail(`rubric ${it.id}: duplicate id`);
+      ids.add(it.id);
+      total += it.weight;
+      if (!Array.isArray(it.hints) || it.hints.length !== 3) fail(`rubric ${it.id}: needs exactly 3 hints (nudge, clue, answer)`);
+      for (const h of it.hints ?? []) if (h.length > MAX_CHARS * 2) fail(`rubric ${it.id}: hint too long (${h.length})`);
+      const sb = it.satisfiedBy ?? {};
+      if ('scanned' in sb && !scannables[sb.scanned]) fail(`rubric ${it.id}: unknown scannable ${sb.scanned}`);
+      if ('identified' in sb && !samples[sb.identified]) fail(`rubric ${it.id}: unknown sample ${sb.identified}`);
+      if ('factLearned' in sb && !facts[sb.factLearned]) fail(`rubric ${it.id}: unknown fact ${sb.factLearned}`);
+      if ('relationshipAtLeast' in sb) {
+        if (!npcs[sb.relationshipAtLeast.npc]) fail(`rubric ${it.id}: unknown npc`);
+        if (sb.relationshipAtLeast.level > 1) needsFriend += it.weight;
+      }
+      if ('entry' in sb) {
+        const [npcId, topicId] = sb.entry.split('.');
+        const topic = dialogue[npcId]?.[topicId];
+        if (!topic) fail(`rubric ${it.id}: entry ${sb.entry} matches no dialogue topic`);
+        else if ((topic.requires?.level ?? 0) > 1) needsFriend += it.weight;
+      }
+    }
+    if (total !== 100) fail(`rubric weights sum to ${total}, expected 100`);
+    const pass = rubric.passMark ?? 60;
+    if (100 - needsFriend < pass) fail(`a plot-skipper (never above Acquaintance) can only reach ${100 - needsFriend}, below the pass mark ${pass}`);
+    else console.log(`  ok: a player who never goes above Acquaintance can reach ${100 - needsFriend}/100 (pass mark ${pass})`);
+    if (teacher) {
+      for (const b of teacher.bands) for (const l of b.lines) if (l.length > MAX_CHARS) fail(`teacher band ${b.name}: line too long: "${l}"`);
+      if (teacher.spam.length !== 3) fail('teacher.spam must have 3 lines');
+    }
+  }
 }
 
 if (errors) { console.log(`\n${errors} problem(s).`); process.exit(1); }

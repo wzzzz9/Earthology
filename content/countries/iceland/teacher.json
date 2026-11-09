@@ -1,0 +1,80 @@
+{
+  "name": "Ms. Beatrice Lund",
+  "color": "#8e6bbf",
+  "reading": [
+    "Received.",
+    "Reading."
+  ],
+  "bands": [
+    {
+      "min": 0,
+      "name": "Keep going",
+      "stamp": null,
+      "lines": [
+        "You travelled to a planet and wrote down almost nothing.",
+        "Go outside. Look at things. Then write them down."
+      ]
+    },
+    {
+      "min": 40,
+      "name": "Encouragement",
+      "stamp": "sticker",
+      "lines": [
+        "There is a real start here. I can see where you have been.",
+        "Keep at it. I mean that."
+      ]
+    },
+    {
+      "min": 60,
+      "name": "Pass",
+      "stamp": "bronze",
+      "lines": [
+        "This is a pass.",
+        "I have seen worse from students",
+        "who were actually from Earth."
+      ]
+    },
+    {
+      "min": 80,
+      "name": "Credit",
+      "stamp": "silver",
+      "lines": [
+        "Good work. Genuinely.",
+        "A few gaps, but I can tell you were there."
+      ]
+    },
+    {
+      "min": 100,
+      "name": "Perfect",
+      "stamp": "gold",
+      "lines": [
+        "Complete. Nothing missing.",
+        "I once got lost on a planet with one continent.",
+        "Do not tell anyone."
+      ]
+    }
+  ],
+  "sectionNames": {
+    "land": "Land",
+    "rocks": "Rocks",
+    "earth": "Earth",
+    "sky": "Sky",
+    "people": "People",
+    "sketches": "Sketches"
+  },
+  "sectionLines": {
+    "strong": "{section}: strong.",
+    "ok": "{section}: fair. Some gaps.",
+    "thin": "{section}: thin.",
+    "empty": "{section}: nothing at all."
+  },
+  "hintIntro": "Weakest part: {section}.",
+  "spam": [
+    "This is the same homework you just sent me.",
+    "Same again. I am not re-reading it.",
+    "Send this once more and I will fail you. I won't. But I will stop reading."
+  ],
+  "locked": "Bring me {n} new things first. Then I will read it.",
+  "unlockNeeded": 3,
+  "reveal": "Since it is complete, here is the full marking sheet. You earned it."
+}

@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { installAutosave } from '../systems/save';
 
 /** Loads assets and content, then hands off to the title screen. */
 export class BootScene extends Phaser.Scene {
@@ -11,6 +12,7 @@ export class BootScene extends Phaser.Scene {
   }
 
   create(): void {
+    installAutosave();
     this.scene.start('Title');
   }
 }

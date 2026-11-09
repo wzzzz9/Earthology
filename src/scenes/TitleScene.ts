@@ -1,5 +1,7 @@
 import Phaser from 'phaser';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config';
+import { hasSave, peekSave, loadSave, clearSave } from '../systems/save';
+import { state } from '../systems/state';
 
 /** M1 placeholder title screen. Proves the build and deploy pipeline works. */
 export class TitleScene extends Phaser.Scene {
@@ -40,8 +42,9 @@ export class TitleScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
+    const save = hasSave() ? peekSave() : null;
     const prompt = this.add
-      .text(cx, GAME_HEIGHT - 40, 'Press Enter to land', {
+      .text(cx, GAME_HEIGHT - 40, save ? `Enter: continue (Day ${save.day})` : 'Press Enter to land', {
         fontFamily: 'monospace',
         fontSize: '10px',
         color: '#f4f1e8',
@@ -50,16 +53,25 @@ export class TitleScene extends Phaser.Scene {
     this.tweens.add({ targets: prompt, alpha: 0.3, duration: 700, yoyo: true, repeat: -1 });
 
     this.add
-      .text(cx, GAME_HEIGHT - 16, 'Arrows or WASD to walk', {
+      .text(cx, GAME_HEIGHT - 16, save ? 'X: start a new game (deletes the save)' : 'Arrows or WASD to walk', {
         fontFamily: 'monospace',
         fontSize: '8px',
         color: '#5c6577',
       })
       .setOrigin(0.5);
 
-    const start = () => this.scene.start('World');
+    const start = () => {
+      if (save) loadSave();
+      this.scene.start('World');
+    };
+    const fresh = () => {
+      clearSave();
+      state.reset();
+      this.scene.start('World');
+    };
     this.input.keyboard!.once('keydown-ENTER', start);
     this.input.keyboard!.once('keydown-SPACE', start);
+    this.input.keyboard!.once('keydown-X', fresh);
     this.input.once('pointerdown', start);
   }
 }

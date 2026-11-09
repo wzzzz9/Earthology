@@ -5,7 +5,9 @@ import factsJson from '../../content/facts.json';
 import samplesJson from '../../content/samples.json';
 import testsJson from '../../content/tests.json';
 import keyJson from '../../content/key.json';
-import type { Scannable, NpcDef, NpcDialogue, Fact, SampleDef, TestDef, TestId, IdKey } from './types';
+import rubricJson from '../../content/countries/iceland/rubric.json';
+import teacherJson from '../../content/countries/iceland/teacher.json';
+import type { Scannable, NpcDef, NpcDialogue, Fact, SampleDef, TestDef, TestId, IdKey, Rubric, TeacherDef } from './types';
 
 /** All game content, bundled at build time. Never hard-code facts in src/. */
 export const content = {
@@ -16,6 +18,8 @@ export const content = {
   samples: samplesJson as Record<string, SampleDef>,
   tests: testsJson as Record<TestId, TestDef>,
   key: keyJson as IdKey,
+  rubric: rubricJson as Rubric,
+  teacher: teacherJson as TeacherDef,
 };
 
 export const TEST_ORDER: TestId[] = ['lens', 'water', 'magnet', 'acid', 'streak', 'scratch'];

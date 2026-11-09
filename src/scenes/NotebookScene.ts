@@ -6,6 +6,7 @@ import { state, type BagSample } from '../systems/state';
 import { bus, EV } from '../systems/events';
 import { List } from '../ui/List';
 import { makeSampleSketch } from '../systems/placeholders';
+import { evaluate, bandFor } from '../systems/rubric';
 
 type Tab = { id: Section | 'bag'; label: string };
 const TABS: Tab[] = [
@@ -30,6 +31,7 @@ export class NotebookScene extends Phaser.Scene {
   private detail!: Phaser.GameObjects.Text;
   private sketch!: Phaser.GameObjects.Image;
   private hint!: Phaser.GameObjects.Text;
+  private bars: Phaser.GameObjects.Rectangle[] = [];
 
   constructor() {
     super('Notebook');
@@ -48,6 +50,10 @@ export class NotebookScene extends Phaser.Scene {
     this.add.text(GAME_WIDTH - 28, 22, `Day ${state.day}`, { fontFamily: 'monospace', fontSize: '9px', color: '#5a4a2a' }).setOrigin(1, 0);
 
     this.tabTexts = TABS.map((t, i) => this.add.text(28, 40 + i * 14, t.label, { fontFamily: 'monospace', fontSize: '9px', color: '#5a4a2a' }));
+    // Progress bars under each section tab. They fill, but never say what is missing.
+    this.bars = TABS.map((_t, i) => this.add.rectangle(28, 40 + i * 14 + 11, 0, 2, 0xb5451b).setOrigin(0, 0));
+    const best = state.bestScore ? bandFor(state.bestScore) : null;
+    if (best?.stamp) this.add.text(GAME_WIDTH - 28, GAME_HEIGHT - 24, `[ ${best.stamp.toUpperCase()} ]  best ${state.bestScore}`, { fontFamily: 'monospace', fontSize: '8px', color: '#b5451b' }).setOrigin(1, 1);
     this.list = new List(this, 100, 40, 11, '9px', 150);
     this.detail = this.add.text(262, 40, '', { fontFamily: 'monospace', fontSize: '9px', color: '#2b2418', lineSpacing: 2, wordWrap: { width: GAME_WIDTH - 262 - 32 } });
     this.sketch = this.add.image(GAME_WIDTH - 60, GAME_HEIGHT - 60, '__DEFAULT').setVisible(false);
@@ -83,6 +89,12 @@ export class NotebookScene extends Phaser.Scene {
   }
 
   private refresh(): void {
+    const ev = evaluate();
+    this.bars.forEach((b, i) => {
+      const sec = ev.sections.find((x) => x.section === TABS[i].id);
+      b.width = sec && sec.total ? Math.round((sec.got / sec.total) * 56) : 0;
+      b.setVisible(!!sec);
+    });
     this.tabTexts.forEach((t, i) => {
       const id = TABS[i].id;
       const n = id === 'bag' ? state.bag.length : this.entriesFor(id).length;

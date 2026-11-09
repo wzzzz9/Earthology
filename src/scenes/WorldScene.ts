@@ -9,6 +9,7 @@ import { state } from '../systems/state';
 import { Conversation } from '../systems/conversation';
 import type { DialogueSource } from './DialogueScene';
 import { bus, EV } from '../systems/events';
+import { saveNow } from '../systems/save';
 
 const SPEED = 70; // px per second, a relaxed walking pace for 16px tiles
 const REACH = 22; // px from the point in front of the player to an interactable
@@ -54,7 +55,8 @@ export class WorldScene extends Phaser.Scene {
     const objects = map.getObjectLayer('objects')?.objects ?? [];
     const spawn = objects.find((o) => o.name === 'spawn');
 
-    this.player = this.physics.add.sprite(spawn?.x ?? 100, spawn?.y ?? 100, 'player', 'down0');
+    const start = state.playerPos ?? { x: spawn?.x ?? 100, y: spawn?.y ?? 100 };
+    this.player = this.physics.add.sprite(start.x, start.y, 'player', 'down0');
     this.player.body!.setSize(10, 8).setOffset((PLAYER_W - 10) / 2, PLAYER_H - 8);
     this.player.setCollideWorldBounds(true);
     this.player.setDepth(10);
@@ -204,9 +206,14 @@ export class WorldScene extends Phaser.Scene {
       next: (choice?: number) => {
         if (step === 0) {
           step = 1;
-          return page([`Day ${state.day}. The cabin is warm.`, 'Sleep until tomorrow?'], ['Sleep', 'Not yet']);
+          return page([`Day ${state.day}. The cabin is warm.`, 'What now?'], ['Submit homework', 'Sleep until tomorrow', 'Nothing']);
         }
         if (step === 1 && choice === 0) {
+          // Close this dialogue, then open the communicator once the world is free again.
+          this.time.delayedCall(200, () => this.openOverlay('Submit'));
+          return null;
+        }
+        if (step === 1 && choice === 1) {
           step = 2;
           this.sleep();
           return page([`Day ${state.day}.`, 'The light outside has changed.']);
@@ -218,6 +225,7 @@ export class WorldScene extends Phaser.Scene {
 
   private sleep(): void {
     state.nextDay();
+    saveNow();
     this.cameras.main.flash(600, 10, 12, 18);
   }
 
@@ -246,6 +254,7 @@ export class WorldScene extends Phaser.Scene {
       this.player.setFrame(`${this.move.facing}0`);
     }
     this.player.setDepth(this.player.y + 12);
+    state.playerPos = { x: Math.round(this.player.x), y: Math.round(this.player.y) };
 
     const it = this.target();
     if (it) {
@@ -271,6 +280,10 @@ export class WorldScene extends Phaser.Scene {
           relationships: state.relationships,
           bag: state.bag.map((b) => ({ uid: b.uid, identified: b.identified, tests: Object.keys(b.results).length, wrong: b.wrongGuesses })),
           facts: state.factsLearned,
+          submissions: state.submissions.map((x) => x.score),
+          bestScore: state.bestScore,
+          locked: state.lockBaseline !== null,
+          identicalStreak: state.identicalStreak,
         }),
         enumerable: true,
         configurable: true,

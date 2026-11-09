@@ -29,14 +29,105 @@ export interface Relationship {
   asked: string[];
 }
 
-/** Everything that would go in a save file. Save/load itself arrives in M5. */
+export interface Submission {
+  day: number;
+  score: number;
+  /** Fingerprint of what was submitted, to detect identical resubmissions. */
+  fingerprint: string;
+}
+
+export interface SaveData {
+  version: 1;
+  day: number;
+  notebook: NotebookEntry[];
+  relationships: Record<string, Relationship>;
+  bag: BagSample[];
+  factsLearned: string[];
+  nextUid: number;
+  submissions: Submission[];
+  hintProgress: Record<string, number>;
+  identicalStreak: number;
+  /** When locked, the "new things" count the player must exceed before the teacher reads again. */
+  lockBaseline: number | null;
+  bestScore: number;
+  rubricRevealed: boolean;
+  playerPos: { x: number; y: number } | null;
+}
+
+/** Everything that would go in a save file. */
 export class GameState {
   day = 1;
   notebook: NotebookEntry[] = [];
   relationships: Record<string, Relationship> = {};
   bag: BagSample[] = [];
   factsLearned: string[] = [];
-  private nextUid = 1;
+  nextUid = 1;
+  submissions: Submission[] = [];
+  hintProgress: Record<string, number> = {};
+  identicalStreak = 0;
+  lockBaseline: number | null = null;
+  bestScore = 0;
+  rubricRevealed = false;
+  playerPos: { x: number; y: number } | null = null;
+
+  reset(): void {
+    Object.assign(this, new GameState());
+    bus.emit(EV.stateChanged);
+  }
+
+  toJSON(): SaveData {
+    return {
+      version: 1,
+      day: this.day,
+      notebook: this.notebook,
+      relationships: this.relationships,
+      bag: this.bag,
+      factsLearned: this.factsLearned,
+      nextUid: this.nextUid,
+      submissions: this.submissions,
+      hintProgress: this.hintProgress,
+      identicalStreak: this.identicalStreak,
+      lockBaseline: this.lockBaseline,
+      bestScore: this.bestScore,
+      rubricRevealed: this.rubricRevealed,
+      playerPos: this.playerPos,
+    };
+  }
+
+  load(data: SaveData): void {
+    if (data.version !== 1) return;
+    const fresh = new GameState();
+    Object.assign(this, fresh, data);
+    bus.emit(EV.stateChanged);
+  }
+
+  /** How many "things" the player has gathered. Used by the teacher's anti-spam lock. */
+  get thingsCount(): number {
+    return this.notebook.length + this.factsLearned.length + this.bag.filter((b) => b.identified).length;
+  }
+
+  get testsRun(): number {
+    return this.bag.reduce((n, b) => n + Object.keys(b.results).length, 0);
+  }
+
+  hasScanned(id: string): boolean {
+    return this.notebook.some((e) => e.kind === 'scan' && e.id === id);
+  }
+
+  hasEntry(id: string): boolean {
+    return this.notebook.some((e) => e.id === id);
+  }
+
+  hasIdentified(sampleId: string): boolean {
+    return this.bag.some((b) => b.identified && b.sampleId === sampleId);
+  }
+
+  addEntry(entry: Omit<NotebookEntry, 'day'>): boolean {
+    if (this.notebook.some((e) => e.id === entry.id && e.kind === entry.kind)) return false;
+    this.notebook.push({ ...entry, day: this.day });
+    bus.emit(EV.stateChanged);
+    return true;
+  }
 
   hasPickedUp(pickupId: string): boolean {
     return this.bag.some((b) => b.pickupId === pickupId);
@@ -52,17 +143,6 @@ export class GameState {
   learnFact(id: string): boolean {
     if (this.factsLearned.includes(id)) return false;
     this.factsLearned.push(id);
-    bus.emit(EV.stateChanged);
-    return true;
-  }
-
-  hasScanned(id: string): boolean {
-    return this.notebook.some((e) => e.kind === 'scan' && e.id === id);
-  }
-
-  addEntry(entry: Omit<NotebookEntry, 'day'>): boolean {
-    if (this.notebook.some((e) => e.id === entry.id && e.kind === entry.kind)) return false;
-    this.notebook.push({ ...entry, day: this.day });
     bus.emit(EV.stateChanged);
     return true;
   }

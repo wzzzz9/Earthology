@@ -27,6 +27,7 @@ await page.waitForTimeout(600);
 for (const k of keys) {
   if (k.startsWith('js:')) { await page.evaluate(k.slice(3)); await page.waitForTimeout(150); continue; }
   if (k.startsWith('wait:')) { await page.waitForTimeout(Number(k.slice(5))); continue; }
+  if (k === 'reload') { await page.reload({ waitUntil: 'networkidle' }); await page.waitForSelector('canvas'); await page.waitForTimeout(600); continue; }
   const [key, ms = '300'] = k.split(':');
   await page.keyboard.down(key);
   await page.waitForTimeout(Number(ms));
@@ -38,7 +39,7 @@ await page.screenshot({ path: out });
 const state = await page.evaluate(() => {
   const d = window.__debug;
   if (!d) return null;
-  return { player: d.player, state: d.state, dialogue: d.dialogue };
+  return { player: d.player, state: d.state, dialogue: d.dialogue, submit: d.submit ?? undefined, notebook: d.notebook ?? undefined, lab: d.lab ?? undefined };
 }).catch(() => null);
 await browser.close();
 

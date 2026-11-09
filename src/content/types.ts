@@ -84,3 +84,46 @@ export interface IdKey {
   start: string;
   nodes: Record<string, KeyNode>;
 }
+
+export type SatisfiedBy =
+  | { scanned: string }
+  | { identified: string }
+  | { factLearned: string }
+  | { entry: string }
+  | { testsRun: number }
+  | { relationshipAtLeast: { npc: string; level: number } };
+
+export interface RubricItem {
+  id: string;
+  section: Section;
+  weight: number;
+  satisfiedBy: SatisfiedBy;
+  /** nudge, clue, answer */
+  hints: string[];
+}
+
+export interface Rubric {
+  passMark: number;
+  items: RubricItem[];
+}
+
+export interface Band {
+  min: number;
+  name: string;
+  stamp: string | null;
+  lines: string[];
+}
+
+export interface TeacherDef {
+  name: string;
+  color: string;
+  reading: string[];
+  bands: Band[];
+  sectionNames: Record<Section, string>;
+  sectionLines: { strong: string; ok: string; thin: string; empty: string };
+  hintIntro: string;
+  spam: string[];
+  locked: string;
+  unlockNeeded: number;
+  reveal: string;
+}
