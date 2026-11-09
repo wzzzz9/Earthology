@@ -272,6 +272,17 @@ If AI small talk is ever added (5.4), it is a separate optional service and must
 
 ---
 
+## 8b. Visual direction (decided Nov 10)
+
+Reference style, in words so nothing is copied: **chibi 16-bit**. Characters about two heads tall with big expressive hair, one-pixel dark outlines on sprites and props, a saturated pastel palette, soft rounded tile edges, small drop shadows under characters, and a dialogue box with a large portrait beside the text. Iceland keeps its own palette inside that style: moss greens, black lava, glacial blue, black sand, ochre tundra, white ice.
+
+Build order for the look, each step cheap and reversible:
+
+1. Characters in chibi proportions with outlines and a shadow (code-drawn, done first so the direction can be judged).
+2. Props and boulders with outlines; tile edges softened where two ground types meet.
+3. Dialogue box restyle: rounded panel, name tag, large portrait placeholder.
+4. M9: replace the code-drawn placeholders with real pixel art (own, commissioned, or licensed packs) in the same style.
+
 ## 9. Milestones
 
 Every milestone ends with a playable build and a commit, as in v1.

@@ -12,7 +12,10 @@ const keys = process.argv.slice(3);
 const url = process.env.GAME_URL ?? 'http://localhost:5173/';
 
 const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 960, height: 540 } });
+// SHOT_SCALE=4 renders at 1920x1080 (4x game pixels); CLIP="x,y,w,h" crops the screenshot (in screen px).
+const scale = Number(process.env.SHOT_SCALE ?? 2);
+const page = await browser.newPage({ viewport: { width: 480 * scale, height: 270 * scale } });
+const clip = process.env.CLIP ? (([x, y, w, h]) => ({ x, y, width: w, height: h }))(process.env.CLIP.split(',').map(Number)) : undefined;
 const problems = [];
 page.on('console', (m) => {
   if (m.text().includes('GL Driver Message')) return; // software-GL noise in headless Chromium
@@ -35,7 +38,7 @@ for (const k of keys) {
   await page.waitForTimeout(100);
 }
 
-await page.screenshot({ path: out });
+await page.screenshot({ path: out, clip });
 const state = await page.evaluate(() => {
   const d = window.__debug;
   if (!d) return null;

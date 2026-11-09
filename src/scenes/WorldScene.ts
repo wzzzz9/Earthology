@@ -93,7 +93,7 @@ export class WorldScene extends Phaser.Scene {
         img.setName(pickupId);
       } else if (o.type === 'npc') {
         const def = content.npcs[o.name];
-        makePlaceholderPlayer(this, `npc.${o.name}`, def.coat, '#222733');
+        makePlaceholderPlayer(this, `npc.${o.name}`, { coat: def.coat, coatDark: '#2f5238', hair: '#cfd2d8', skin: '#f3cfae', hat: null, legs: '#3a3f55' });
         this.add.image(x, y - 4, `npc.${o.name}`, 'down0').setDepth(y);
         solids.add(this.add.rectangle(x, y + 2, 10, 8).setVisible(false));
         this.interactables.push({ kind: 'npc', id: o.name, x, y });

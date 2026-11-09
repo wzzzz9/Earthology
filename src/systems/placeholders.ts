@@ -80,49 +80,78 @@ export function makePlaceholderTileset(scene: Phaser.Scene, key = 'placeholder')
 }
 
 /**
- * Player spritesheet: 4 directions x 2 frames (idle, step), 16x24 each.
+ * Character spritesheet: 4 directions x 2 frames (idle, step), 16x24 each.
  * Frame order: down0, down1, up0, up1, left0, left1, right0, right1.
- * This is the human disguise; it's a simple figure for now.
+ * Chibi proportions (big head, short body), 1px dark outline, soft shadow.
  */
 export const PLAYER_W = 16;
 export const PLAYER_H = 24;
 
-export function makePlaceholderPlayer(scene: Phaser.Scene, key = 'player', coat = '#c95b3a', hat = '#3a3f55'): void {
+export interface FigureLook {
+  coat: string;
+  coatDark: string;
+  hair: string;
+  skin: string;
+  /** Hat colour, or null for bare hair. */
+  hat: string | null;
+  legs: string;
+}
+
+export const PLAYER_LOOK: FigureLook = { coat: '#e2673f', coatDark: '#b84d2e', hair: '#3b2a2a', skin: '#f3cfae', hat: '#3f4866', legs: '#2d3140' };
+
+export function makePlaceholderPlayer(scene: Phaser.Scene, key = 'player', look: FigureLook = PLAYER_LOOK): void {
   if (scene.textures.exists(key)) return;
   const tex = scene.textures.createCanvas(key, PLAYER_W * 8, PLAYER_H);
   if (!tex) return;
   const ctx = tex.getContext();
+  const OUT = '#1a1c20';
   const dirs = ['down', 'up', 'left', 'right'] as const;
   dirs.forEach((dir, d) => {
     for (let step = 0; step < 2; step++) {
       const i = d * 2 + step;
       const ox = i * PLAYER_W;
       const bob = step === 1 ? 1 : 0;
-      // coat, with a pale yoke band (an Icelandic wool-sweater nod)
-      ctx.fillStyle = coat;
-      ctx.fillRect(ox + 4, 10 + bob, 8, 9);
-      ctx.fillStyle = '#e9e4d8';
-      ctx.fillRect(ox + 4, 11 + bob, 8, 1);
-      ctx.fillRect(ox + 5, 13 + bob, 1, 1); ctx.fillRect(ox + 7, 13 + bob, 1, 1); ctx.fillRect(ox + 9, 13 + bob, 1, 1);
-      // legs
-      ctx.fillStyle = '#2d3140';
-      ctx.fillRect(ox + 4, 19, 3, 5 - bob);
-      ctx.fillRect(ox + 9, 19, 3, 5 - bob);
-      if (step === 1) ctx.fillRect(ox + 4, 22, 3, 2);
-      // head
-      ctx.fillStyle = '#f0c8a0';
-      ctx.fillRect(ox + 4, 2 + bob, 8, 8);
-      // hat (the disguise)
-      ctx.fillStyle = hat;
-      ctx.fillRect(ox + 3, 1 + bob, 10, 3);
-      ctx.fillRect(ox + 5, 0 + bob, 6, 2);
-      // eyes depend on direction
-      ctx.fillStyle = '#1a1c22';
-      if (dir === 'down') { ctx.fillRect(ox + 5, 6 + bob, 2, 2); ctx.fillRect(ox + 9, 6 + bob, 2, 2); }
-      if (dir === 'left') { ctx.fillRect(ox + 4, 6 + bob, 2, 2); }
-      if (dir === 'right') { ctx.fillRect(ox + 10, 6 + bob, 2, 2); }
-      // up: no eyes (back of head), show hair
-      if (dir === 'up') { ctx.fillStyle = '#5a3a24'; ctx.fillRect(ox + 4, 4 + bob, 8, 4); }
+      const r = (x: number, y: number, w: number, h: number, c: string) => { ctx.fillStyle = c; ctx.fillRect(ox + x, y, w, h); };
+
+      // shadow
+      r(4, 22, 8, 2, 'rgba(0,0,0,0.28)');
+      // legs (outline then fill); the step frame lifts one leg
+      r(4, 17, 3, 6 - bob, OUT); r(9, 17, 3, 6 - bob, OUT);
+      r(5, 17, 1, 5 - bob, look.legs); r(10, 17, 1, 5 - bob, look.legs);
+      if (step === 1) { r(4, 21, 3, 1, OUT); }
+      // body
+      r(3, 12 + bob, 10, 6, OUT);
+      r(4, 13 + bob, 8, 4, look.coat);
+      r(4, 16 + bob, 8, 1, look.coatDark);
+      // yoke band (Icelandic sweater nod)
+      r(4, 13 + bob, 8, 1, '#efe9dc'); r(5, 14 + bob, 1, 1, '#efe9dc'); r(7, 14 + bob, 1, 1, '#efe9dc'); r(9, 14 + bob, 1, 1, '#efe9dc');
+      // arms
+      r(2, 13 + bob, 2, 4, OUT); r(12, 13 + bob, 2, 4, OUT);
+      r(3, 14 + bob, 1, 2, look.coat); r(12, 14 + bob, 1, 2, look.coat);
+      // head: outline, skin, hair
+      r(3, 2 + bob, 10, 11, OUT);
+      r(4, 3 + bob, 8, 9, look.skin);
+      if (dir === 'up') {
+        r(4, 3 + bob, 8, 7, look.hair);
+      } else {
+        r(4, 3 + bob, 8, 3, look.hair);
+        r(4, 6 + bob, 1, 3, look.hair); r(11, 6 + bob, 1, 3, look.hair);
+        if (dir === 'left') r(10, 6 + bob, 2, 2, look.hair);
+        if (dir === 'right') r(4, 6 + bob, 2, 2, look.hair);
+      }
+      // hat (the disguise): a beanie over the hair
+      if (look.hat) {
+        r(3, 1 + bob, 10, 4, OUT);
+        r(4, 2 + bob, 8, 2, look.hat);
+        r(4, 4 + bob, 8, 1, '#efe9dc');
+      }
+      // eyes
+      if (dir === 'down') { r(5, 8 + bob, 2, 2, OUT); r(9, 8 + bob, 2, 2, OUT); r(5, 8 + bob, 1, 1, '#ffffff'); r(9, 8 + bob, 1, 1, '#ffffff'); }
+      if (dir === 'left') { r(5, 8 + bob, 2, 2, OUT); r(5, 8 + bob, 1, 1, '#ffffff'); }
+      if (dir === 'right') { r(9, 8 + bob, 2, 2, OUT); r(10, 8 + bob, 1, 1, '#ffffff'); }
+      // cheeks
+      if (dir === 'down') { r(4, 10 + bob, 1, 1, '#f0a58a'); r(11, 10 + bob, 1, 1, '#f0a58a'); }
+
       tex.add(`${dir}${step}`, 0, ox, 0, PLAYER_W, PLAYER_H);
     }
   });
