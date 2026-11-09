@@ -61,11 +61,20 @@ export function makePlaceholderTileset(scene: Phaser.Scene, key = 'placeholder')
   fill(7, '#0b0d14');
   // 9, 10, 13, 14: moss-covered lava, four variants so the field does not read as a grid.
   // Base is dark lava; moss is laid on in rounded blotches of two greens.
+  // Moss is laid on as many small tufts, so the field reads as a carpet of moss rather than tree tops.
   const lava = (i: number, blots: [number, number, number, number][], bright: [number, number, number, number][], cracks: [number, number, number?, number?][]) => {
     fill(i, '#2e3137');
     px(i, '#24262b', [[0, 0, 16, 1], [0, 15, 16, 1]]);
-    for (const [x, y, w, h] of blots) blotch(i, '#6f9a4a', x, y, w, h);
-    for (const [x, y, w, h] of bright) blotch(i, '#8fb85c', x, y, w, h);
+    for (const [x, y, w, h] of blots) {
+      for (let yy = y; yy < y + h; yy += 2) for (let xx = x; xx < x + w; xx += 2) {
+        if (((xx * 7 + yy * 13 + i * 5) % 11) < 7) px(i, '#6f9a4a', [[xx, yy, 2, 2]]);
+      }
+    }
+    for (const [x, y, w, h] of bright) {
+      for (let yy = y; yy < y + h; yy += 2) for (let xx = x; xx < x + w; xx += 2) {
+        if (((xx * 5 + yy * 3 + i) % 7) < 3) px(i, '#8fb85c', [[xx, yy, 1, 1]]);
+      }
+    }
     px(i, '#1c1e23', cracks);
   };
   lava(8, [[0, 1, 8, 7], [8, 8, 8, 7]], [[1, 2, 4, 3], [10, 9, 4, 3]], [[9, 2, 3, 2], [2, 11, 3, 2]]);
@@ -297,4 +306,93 @@ export function makeAlienTeacher(scene: Phaser.Scene, key = 'alien.teacher'): vo
   r(7, 13, 2, 1, OUT);
   r(3, 24, 4, 2, OUT); r(9, 24, 4, 2, OUT);
   tex.refresh();
+}
+
+/**
+ * Earth, drawn with Graphics so it can be any size: layered ocean, shaped continents,
+ * ice caps, cloud swirls, a shadowed night side, atmosphere rim and a highlight.
+ */
+export function drawEarth(scene: Phaser.Scene, x: number, y: number, r: number): Phaser.GameObjects.Graphics {
+  const g = scene.add.graphics();
+  const k = r / 48;
+  // atmosphere
+  g.fillStyle(0x7fb3e6, 0.10); g.fillCircle(x, y, r * 1.16);
+  g.fillStyle(0x9fd0e3, 0.12); g.fillCircle(x, y, r * 1.08);
+  // ocean, lighter toward the sunlit upper-left
+  g.fillStyle(0x2f68b8, 1); g.fillCircle(x, y, r);
+  g.fillStyle(0x3a7bd5, 1); g.fillCircle(x - 4 * k, y - 4 * k, r * 0.9);
+  g.fillStyle(0x4b8fe0, 1); g.fillCircle(x - 10 * k, y - 10 * k, r * 0.62);
+  // continents: irregular shapes, clipped by redrawing the ocean edge afterwards
+  const land = (pts: [number, number][], color: number) => {
+    g.fillStyle(color, 1);
+    g.fillPoints(pts.map(([px, py]) => new Phaser.Math.Vector2(x + px * k, y + py * k)), true);
+  };
+  land([[-34, -22], [-18, -30], [-6, -24], [-10, -10], [-20, 2], [-30, -2], [-38, -12]], 0x5bb36a);
+  land([[-14, 6], [-4, 2], [4, 10], [0, 26], [-8, 30], [-14, 20]], 0x6cbf77);
+  land([[6, -34], [26, -30], [36, -16], [30, -4], [16, -6], [8, -14], [4, -24]], 0x5bb36a);
+  land([[14, 4], [28, 8], [30, 20], [20, 26], [12, 16]], 0x6cbf77);
+  land([[-2, -8], [8, -10], [10, 0], [2, 2]], 0x7fa05d);
+  // deserts and mountains as small accents
+  g.fillStyle(0xd9c79a, 1); g.fillCircle(x + 20 * k, y - 18 * k, 4 * k); g.fillCircle(x - 24 * k, y - 14 * k, 3 * k);
+  g.fillStyle(0x4f8a3a, 1); g.fillCircle(x - 8 * k, y + 18 * k, 3 * k);
+  // ice caps
+  g.fillStyle(0xeef5f8, 1); g.fillEllipse(x + 2 * k, y - r + 5 * k, 30 * k, 10 * k); g.fillEllipse(x - 4 * k, y + r - 4 * k, 26 * k, 7 * k);
+  // clouds
+  g.fillStyle(0xffffff, 0.75);
+  for (const [cx, cy, w] of [[-26, -4, 22], [6, -26, 16], [22, 10, 18], [-10, 28, 14], [-2, 12, 10], [30, -8, 8]]) {
+    g.fillEllipse(x + cx * k, y + cy * k, w * k, 4.5 * k); g.fillEllipse(x + (cx + 4) * k, y + (cy - 2) * k, w * 0.5 * k, 3.5 * k);
+  }
+  // night side: a dark disc offset to the lower-right, clipped to the globe
+  g.fillStyle(0x0b0d14, 0.35); g.fillCircle(x + 14 * k, y + 12 * k, r * 0.95);
+  // re-trim the edge so nothing pokes out of the disc
+  g.lineStyle(3 * k, 0x0b0d14, 0.0);
+  // highlight
+  g.fillStyle(0xffffff, 0.35); g.fillEllipse(x - 20 * k, y - 26 * k, 12 * k, 6 * k);
+  g.fillStyle(0xffffff, 0.6); g.fillEllipse(x - 22 * k, y - 28 * k, 5 * k, 3 * k);
+  return g;
+}
+
+/**
+ * Small Icelandic trees as props: birch (white trunk, airy canopy), rowan (round canopy,
+ * red berries) and a low willow bush. About two character heights, not more; Iceland is
+ * not a forest. Each is 32x48 with the trunk base at the bottom centre.
+ */
+export function makeTrees(scene: Phaser.Scene): void {
+  const OUT = '#1a1c20';
+  const mk = (key: string, draw: (ctx: CanvasRenderingContext2D, r: (x: number, y: number, w: number, h: number, c: string) => void) => void, w = 32, h = 48) => {
+    if (scene.textures.exists(key)) return;
+    const tex = scene.textures.createCanvas(key, w, h);
+    if (!tex) return;
+    const ctx = tex.getContext();
+    const r = (x: number, y: number, ww: number, hh: number, c: string) => { ctx.fillStyle = c; ctx.fillRect(x, y, ww, hh); };
+    draw(ctx, r);
+    tex.refresh();
+  };
+  const canopy = (r: (x: number, y: number, w: number, h: number, c: string) => void, cx: number, cy: number, rad: number, dark: string, mid: string, light: string) => {
+    for (let yy = -rad; yy <= rad; yy++) {
+      const half = Math.round(Math.sqrt(rad * rad - yy * yy) * (1 + (yy % 3 === 0 ? 0.08 : 0)));
+      r(cx - half - 1, cy + yy, half * 2 + 2, 1, OUT);
+    }
+    for (let yy = -rad + 1; yy <= rad - 1; yy++) {
+      const half = Math.round(Math.sqrt(rad * rad - yy * yy));
+      r(cx - half, cy + yy, half * 2, 1, yy > rad * 0.3 ? dark : mid);
+    }
+    for (let i = 0; i < 9; i++) r(cx - rad + 2 + ((i * 7) % (rad * 2 - 4)), cy - rad + 2 + ((i * 5) % (rad - 1)), 2, 1, light);
+  };
+  mk('tree.birch', (_c, r) => {
+    r(14, 26, 4, 22, OUT); r(15, 26, 2, 21, '#e9e4d8'); r(15, 30, 2, 1, '#555'); r(15, 37, 2, 1, '#555'); r(15, 43, 1, 1, '#555');
+    canopy(r, 16, 16, 12, '#7d9a3a', '#9ab54a', '#c9d96a');
+    r(8, 42, 16, 3, 'rgba(0,0,0,0.25)');
+  });
+  mk('tree.rowan', (_c, r) => {
+    r(14, 24, 4, 24, OUT); r(15, 24, 2, 23, '#6e4b2a'); r(15, 30, 1, 10, '#8a6238');
+    canopy(r, 16, 15, 13, '#4f7a3a', '#6a9a46', '#8fb85c');
+    for (const [x, y] of [[9, 12], [19, 8], [23, 17], [12, 20], [16, 13]]) r(x, y, 2, 2, '#d9442f');
+    r(7, 43, 18, 3, 'rgba(0,0,0,0.25)');
+  });
+  mk('tree.willow', (_c, r) => {
+    canopy(r, 16, 20, 9, '#5f7f3f', '#7f9a50', '#a9b86a');
+    r(13, 27, 6, 3, OUT); r(14, 27, 4, 2, '#6e4b2a');
+    r(8, 28, 16, 2, 'rgba(0,0,0,0.25)');
+  }, 32, 32);
 }

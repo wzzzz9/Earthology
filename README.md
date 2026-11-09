@@ -1,4 +1,4 @@
-# Moon Field
+# Earthology
 
 A top-down 2D pixel adventure. You are an alien student whose final assignment
 is to survey planet EaRtH20934, a planet identical to our Earth. Walk around a

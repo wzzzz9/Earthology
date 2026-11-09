@@ -52,7 +52,8 @@ for (let x = 0; x < 28; x++) { ground[at(x, 14)] = PATH; ground[at(x, 15)] = PAT
 for (let y = 9; y < 15; y++) { ground[at(26, y)] = PATH; ground[at(27, y)] = PATH; }
 
 // Tiles that must stay walkable because an object sits there.
-const reserved = new Set([[5, 14], [3, 12], [8, 13], [20, 10], [27, 7], [24, 13], [10, 8], [18, 24], [33, 10]].map(([x, y]) => at(x, y)));
+const reserved = new Set([[5, 14], [3, 12], [8, 13], [20, 10], [27, 7], [24, 13], [10, 8], [18, 24], [33, 10],
+  [12, 11], [16, 17], [22, 7], [30, 16], [6, 18], [36, 12], [24, 3], [9, 25], [35, 20]].map(([x, y]) => at(x, y)));
 
 // Basalt border around the whole map so the player cannot leave.
 for (let x = 0; x < W; x++) { walls[at(x, 0)] = ROCK; walls[at(x, H - 1)] = ROCK; }
@@ -78,7 +79,7 @@ for (let id = 1; id <= TILECOUNT; id++) tiles.push({ id: id - 1, properties: [{ 
 
 const map = {
   type: 'map', version: '1.10', tiledversion: '1.11.0', orientation: 'orthogonal', renderorder: 'right-down',
-  width: W, height: H, tilewidth: T, tileheight: T, infinite: false, nextlayerid: 4, nextobjectid: 10,
+  width: W, height: H, tilewidth: T, tileheight: T, infinite: false, nextlayerid: 4, nextobjectid: 19,
   tilesets: [{ firstgid: 1, name: 'placeholder', tilewidth: T, tileheight: T, tilecount: TILECOUNT, columns: TILECOUNT, image: 'placeholder.png', imagewidth: T * TILECOUNT, imageheight: 16, margin: 0, spacing: 0, tiles }],
   layers: [
     { id: 1, type: 'tilelayer', name: 'ground', width: W, height: H, x: 0, y: 0, visible: true, opacity: 1, data: ground },
@@ -94,6 +95,10 @@ const map = {
         pt(7, 'basalt', 'sample', 10, 8),
         pt(8, 'obsidian', 'sample', 18, 24),
         pt(9, 'pumice', 'sample', 33, 10),
+        // a few small trees: birch and rowan near the track, willow bushes by the water
+        pt(10, 'birch', 'tree', 12, 11), pt(11, 'rowan', 'tree', 16, 17), pt(12, 'birch', 'tree', 22, 7),
+        pt(13, 'rowan', 'tree', 30, 16), pt(14, 'birch', 'tree', 6, 18), pt(15, 'willow', 'tree', 36, 12),
+        pt(16, 'willow', 'tree', 24, 3), pt(17, 'rowan', 'tree', 9, 25), pt(18, 'birch', 'tree', 35, 20),
       ] },
   ],
 };

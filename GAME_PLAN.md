@@ -1,4 +1,4 @@
-# Game Plan v2: "Moon Field" (working title)
+# Game Plan v2: "Earthology" (working title; was Moon Field until Nov 11)
 
 Nov 8, 2026. Builds on `Game Plan Field Notes (educational 2D adventure).md` (the v1 brief). Where v2 says nothing, v1 still applies (tech stack, learning tiers, fact-checking rules, art style, working rules). Where they disagree, v2 wins.
 
@@ -272,9 +272,21 @@ If AI small talk is ever added (5.4), it is a separate optional service and must
 
 ---
 
-## 8b. Visual direction (decided Nov 10)
+## 2b. Story additions (from the Nov 11 design notes)
+
+**Opening (built).** The alien at home gets an acceptance letter from Nebula Hollow University on the space computer, sleeps, and the next day meets Professor Lund at the Earthology Department. The player types their name. She summons a ship, they warp to Earth, she says "we study the real thing", the camera pulls back to the planet and the title appears. In the ship cabin she sets the cover story and the player picks a disguise.
+
+**Cover story (decided).** On Earth the professor and the student pose as a parent and a kid who just moved to the town. The ship is their house. Townspeople meet "the new family", which is a natural reason for strangers to warm up slowly and for the kid to be out asking questions. The professor marks homework at home, not from orbit.
+
+**Classes and small tasks (decided in principle, details open).** The professor runs a schedule: "Day 3, 9 o'clock, class on rocks. Be on time." A class is a short scene at the ship that teaches one idea (Tier 1), then she sets a small task with a deadline in game days: "By day 5, bring me two different rocks." Tasks come only from the professor, never from townspeople, so the no-quests rule for the town still holds. Missing a deadline is soft: "Are you all right? One more chance, day 7." Missing the second time costs something small (a comment on the report card), never a fail. Open points: how many classes per country (suggest 4 to 5), whether classes block the homework (suggest no, they only add rubric items and hints), and what the schedule looks like in the notebook (suggest a Timetable tab).
+
+**Course naming.** The game is *Earthology*, which is also the name of the student's major. One country is one *unit* of the course. A submission is a *report*. Passing a unit unlocks the next. The course grade is the average of best unit marks and only changes the ending.
+
+## 8b. Visual direction (decided Nov 10, extended Nov 11)
 
 Reference style, in words so nothing is copied: **chibi 16-bit**. Characters about two heads tall with big expressive hair, one-pixel dark outlines on sprites and props, a saturated pastel palette, soft rounded tile edges, small drop shadows under characters, and a dialogue box with a large portrait beside the text. Iceland keeps its own palette inside that style: moss greens, black lava, glacial blue, black sand, ochre tundra, white ice.
+
+Nov 11 additions: cinematic backgrounds get proper set dressing (bedroom, university hall, Icelandic night with aurora, ship cabin). Trees are small, about two character heights, varied (birch, rowan, willow bush) and sparse, because Iceland has few trees. Moss on lava is drawn as fine tufts so it never reads as tree tops. Earth is drawn with continents, ice caps, clouds, a night side and an atmosphere rim wherever it appears.
 
 Build order for the look, each step cheap and reversible:
 

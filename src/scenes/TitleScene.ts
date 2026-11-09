@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config';
 import { hasSave, peekSave, loadSave, clearSave } from '../systems/save';
 import { state } from '../systems/state';
+import { drawEarth } from '../systems/placeholders';
 
 /** M1 placeholder title screen. Proves the build and deploy pipeline works. */
 export class TitleScene extends Phaser.Scene {
@@ -14,11 +15,10 @@ export class TitleScene extends Phaser.Scene {
     const cy = GAME_HEIGHT / 2;
 
     // A small "planet" so there is something on screen besides text.
-    const planet = this.add.circle(cx, cy - 40, 28, 0x3a7bd5);
-    const land1 = this.add.circle(cx - 10, cy - 48, 9, 0x5bb36a);
-    const land2 = this.add.circle(cx + 12, cy - 32, 6, 0x5bb36a);
+    for (let i = 0; i < 40; i++) this.add.rectangle(Phaser.Math.Between(0, GAME_WIDTH), Phaser.Math.Between(0, GAME_HEIGHT), 1, 1, 0xf4f1e8, Phaser.Math.FloatBetween(0.3, 1));
+    const planet = drawEarth(this, cx, cy - 40, 30);
     this.tweens.add({
-      targets: [planet, land1, land2],
+      targets: planet,
       y: '-=4',
       duration: 1600,
       yoyo: true,
@@ -27,7 +27,7 @@ export class TitleScene extends Phaser.Scene {
     });
 
     this.add
-      .text(cx, cy + 10, 'MOON FIELD', {
+      .text(cx, cy + 10, 'EARTHOLOGY', {
         fontFamily: 'monospace',
         fontSize: '24px',
         color: '#f4f1e8',

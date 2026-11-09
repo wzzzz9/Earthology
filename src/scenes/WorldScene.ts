@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import {
-  makePlaceholderTileset, makePlaceholderPlayer, makePlaceholderShip, makeSparkle, makePlaceholderProps, makePickupRock,
+  makePlaceholderTileset, makePlaceholderPlayer, makePlaceholderShip, makeSparkle, makePlaceholderProps, makePickupRock, makeTrees,
   PLAYER_W, PLAYER_H, DISGUISES, PLAYER_LOOK,
 } from '../systems/placeholders';
 import { MoveInput } from '../systems/input';
@@ -66,6 +66,7 @@ export class WorldScene extends Phaser.Scene {
     makePlaceholderShip(this);
     makeSparkle(this);
     makePlaceholderProps(this);
+    makeTrees(this);
 
     const map = this.make.tilemap({ key: 'map.test-field' });
     const tileset = map.addTilesetImage('placeholder', 'placeholder')!;
@@ -98,6 +99,12 @@ export class WorldScene extends Phaser.Scene {
           solids.add(this.add.rectangle(x, y + 3, 12, 8).setVisible(false));
         }
         this.interactables.push({ kind: 'scan', id: o.name, x, y, sparkle: this.addSparkle(x, y - 12) });
+      } else if (o.type === 'tree') {
+        const key = `tree.${o.name}`;
+        if (!this.textures.exists(key)) continue;
+        // Trunk base sits on the object point; depth by the base so you can walk behind the canopy.
+        this.add.image(x, y + 8, key).setOrigin(0.5, 1).setDepth(y + 8);
+        solids.add(this.add.rectangle(x, y + 3, 8, 6).setVisible(false));
       } else if (o.type === 'sample') {
         const def = content.samples[o.name];
         if (!def) continue;
