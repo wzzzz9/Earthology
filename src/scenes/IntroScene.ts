@@ -290,14 +290,14 @@ export class IntroScene extends Phaser.Scene {
     this.tweens.add({ targets: alien, x: 100, duration: 540, ease: 'Sine.easeInOut' });
     await this.tween({ targets: alien, y: 124, duration: 250, ease: 'Quad.easeOut' });
     await this.tween({ targets: alien, y: 150, duration: 290, ease: 'Bounce.easeOut' });
-    alien.setTexture('alien.sleep').setOrigin(0.5, 1).setScale(2).setFlipX(false).setPosition(92, 150);
+    alien.setTexture('alien.sleep').setOrigin(0.5, 1).setScale(2).setFlipX(false).setPosition(88, 150);
     // blanket pulled up from the foot of the bed to the shoulders
     // (a container so the folded top edge and the shadow line stretch with it)
     const blanket = this.add.container(135, 145).setDepth(5);
     blanket.add([
-      this.add.rectangle(0, 0, 54, 16, P_BLANKET).setOrigin(1, 0.5).setStrokeStyle(1, 0x2a2630),
-      this.add.rectangle(0, -6, 52, 3, 0xa9c2ea).setOrigin(1, 0.5), // folded-over edge
-      this.add.rectangle(0, 6, 52, 2, 0x5f80b8).setOrigin(1, 0.5), // shadow under the fold
+      this.add.rectangle(0, 0, 40, 16, P_BLANKET).setOrigin(1, 0.5).setStrokeStyle(1, 0x2a2630),
+      this.add.rectangle(0, -6, 38, 3, 0xa9c2ea).setOrigin(1, 0.5), // folded-over edge
+      this.add.rectangle(0, 6, 38, 2, 0x5f80b8).setOrigin(1, 0.5), // shadow under the fold
     ]);
     blanket.setScale(0.15, 1);
     await this.tween({ targets: blanket, scaleX: 1, duration: 650, ease: 'Sine.easeInOut' });
