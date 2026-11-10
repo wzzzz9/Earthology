@@ -59,28 +59,29 @@ export function makePlaceholderTileset(scene: Phaser.Scene, key = 'placeholder')
   fill(6, '#33343a'); px(6, '#4a4b52', [[3, 4], [9, 7], [13, 12], [6, 11], [11, 2]]); px(6, '#26272c', [[5, 8], [12, 5], [2, 13]]);
   // 8 void
   fill(7, '#0b0d14');
-  // 9, 10, 13, 14: moss-covered lava, four variants so the field does not read as a grid.
-  // Base is dark lava; moss is laid on in rounded blotches of two greens.
-  // Moss is laid on as many small tufts, so the field reads as a carpet of moss rather than tree tops.
-  const lava = (i: number, blots: [number, number, number, number][], bright: [number, number, number, number][], cracks: [number, number, number?, number?][]) => {
-    fill(i, '#2e3137');
-    px(i, '#24262b', [[0, 0, 16, 1], [0, 15, 16, 1]]);
-    for (const [x, y, w, h] of blots) {
-      for (let yy = y; yy < y + h; yy += 2) for (let xx = x; xx < x + w; xx += 2) {
-        if (((xx * 7 + yy * 13 + i * 5) % 11) < 7) px(i, '#6f9a4a', [[xx, yy, 2, 2]]);
+  // 9, 10, 13, 14: moss-covered lava, four variants. Real Icelandic moss fields look like
+  // soft green pillows with the black rock showing only in thin seams between them, so the
+  // tiles are mostly rounded mounds of green with 1px dark cracks, never dark speckle.
+  const moss = (i: number, mounds: [number, number, number][], seams: [number, number, number, number][]) => {
+    fill(i, '#5f8a3f'); // moss shade between mounds
+    for (const [mx, my, mr] of mounds) {
+      // mound: rounded, lit from the upper left
+      for (let yy = -mr; yy <= mr; yy++) {
+        const half = Math.max(0, Math.round(Math.sqrt(mr * mr - yy * yy)));
+        px(i, '#6f9a4a', [[mx - half, my + yy, half * 2 + 1, 1]]);
       }
-    }
-    for (const [x, y, w, h] of bright) {
-      for (let yy = y; yy < y + h; yy += 2) for (let xx = x; xx < x + w; xx += 2) {
-        if (((xx * 5 + yy * 3 + i) % 7) < 3) px(i, '#8fb85c', [[xx, yy, 1, 1]]);
+      for (let yy = -mr; yy <= 0; yy++) {
+        const half = Math.max(0, Math.round(Math.sqrt(mr * mr - yy * yy) * 0.7));
+        px(i, '#86b35a', [[mx - half - 1, my + yy - 1, half * 2 + 1, 1]]);
       }
+      px(i, '#a3c86a', [[mx - 1, my - mr, 2, 1]]);
     }
-    px(i, '#1c1e23', cracks);
+    px(i, '#24262b', seams);
   };
-  lava(8, [[0, 1, 8, 7], [8, 8, 8, 7]], [[1, 2, 4, 3], [10, 9, 4, 3]], [[9, 2, 3, 2], [2, 11, 3, 2]]);
-  lava(9, [[0, 0, 16, 6], [0, 9, 7, 7], [9, 10, 7, 6]], [[2, 1, 6, 3], [10, 11, 4, 3]], [[7, 7, 3, 2]]);
-  lava(12, [[3, 0, 10, 5], [0, 6, 6, 10], [8, 7, 8, 5]], [[5, 1, 4, 2], [1, 8, 3, 4]], [[11, 13, 4, 2]]);
-  lava(13, [[0, 3, 5, 6], [6, 0, 10, 4], [5, 10, 11, 6]], [[7, 1, 5, 2], [7, 11, 5, 3]], [[1, 11, 3, 3], [12, 6, 3, 3]]);
+  moss(8, [[4, 4, 4], [12, 5, 3], [5, 12, 3], [12, 12, 3]], [[8, 0, 1, 6], [0, 8, 5, 1], [9, 9, 1, 7]]);
+  moss(9, [[6, 5, 5], [13, 11, 3], [3, 13, 2]], [[12, 0, 1, 5], [0, 11, 2, 1], [8, 13, 3, 1]]);
+  moss(12, [[3, 3, 3], [11, 4, 4], [7, 12, 4]], [[7, 1, 1, 4], [14, 9, 2, 1], [1, 10, 1, 5]]);
+  moss(13, [[8, 7, 6], [2, 13, 2], [14, 2, 2]], [[0, 4, 4, 1], [12, 13, 4, 1], [2, 0, 1, 3]]);
   // 11 ice / old snow: white-blue
   fill(10, '#dfe9ee'); px(10, '#f6fafc', [[2, 2, 5, 3], [9, 9, 5, 4]]); px(10, '#b9ccd6', [[8, 3, 4, 2], [2, 10, 4, 2], [12, 6, 2, 2]]);
   // 12 water edge: lighter shallow water

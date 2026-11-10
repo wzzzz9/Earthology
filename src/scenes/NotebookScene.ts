@@ -101,7 +101,7 @@ export class NotebookScene extends Phaser.Scene {
     const rows: { label: string; dim: boolean; detail: string[] }[] = [];
     const deadline = content.classes.deadlineDay;
     rows.push({
-      label: state.retake ? 'Retake: discovery only' : state.finalResult ? `Final: ${gradeLabel()}` : `Final report: end of day ${deadline}`,
+      label: state.retake ? 'Retake · discovery only' : state.finalResult ? `Final · ${gradeLabel()}` : `Final report · day ${deadline}`,
       dim: false,
       detail: state.retake
         ? ['RETAKE', '', 'No more classes. Everything you found stays.', 'Pass a report and the class is done.']
@@ -113,11 +113,12 @@ export class NotebookScene extends Phaser.Scene {
       const attended = state.classesAttended.includes(c.id);
       const missed = state.classesMissed.includes(c.id);
       const status = attended ? 'attended' : missed ? 'missed' : state.day > c.day ? 'missed' : state.day === c.day ? 'TODAY' : 'upcoming';
-      rows.push({ label: `Day ${c.day}  ${c.title}  (${status})`, dim: attended || missed, detail: [c.title.toUpperCase(), '', `Day ${c.day} at the ship.`, `Status: ${status}.`] });
+      const short = c.title.split(':')[0].slice(0, 14);
+      rows.push({ label: `Day ${String(c.day).padStart(2)} · ${short} · ${status}`, dim: attended || missed, detail: [c.title.toUpperCase(), '', `Day ${c.day} at the ship.`, `Status: ${status}.`, '', `Task after class: ${c.task.text}`] });
       const ts = state.tasks[c.task.id];
       if (ts) {
         const def = taskFor(c.task.id)!;
-        rows.push({ label: `   task: ${def.text} (${ts.status}, day ${ts.due})`, dim: ts.status === 'done' || ts.status === 'missed', detail: ['TASK', '', def.text, '', `Due: end of day ${ts.due}.`, `Status: ${ts.status}.`] });
+        rows.push({ label: `   task · ${ts.status} · day ${ts.due}`, dim: ts.status === 'done' || ts.status === 'missed', detail: ['TASK', '', def.text, '', `Due: end of day ${ts.due}.`, `Status: ${ts.status}.`] });
       }
     }
     return rows;
