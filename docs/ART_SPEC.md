@@ -32,7 +32,7 @@ The palette is one shared set of 40 colours, defined in `src/art/palette.ts` and
 
 The short version:
 
-- Soft and slightly desaturated. No pure white or pure black. The warm white is `WHITE`; the darkest tone is `OUTLINE`.
+- Bright and cheerful, pastel by lightness rather than greyness: saturated mid tones, no murky colours, no pure white or pure black. The warm white is `WHITE`; the darkest tone is `OUTLINE`.
 - One outline colour, `OUTLINE`, on every sprite and prop. Shadows are the same colour at low opacity (`SHADOW`, `SHADOW_SOFT`).
 - Two warm green families: grass (yellow side: `GRASS_DARK`, `GRASS`, `GRASS_LIGHT`) and moss (blue side: `MOSS_DARK`, `MOSS`, `MOSS_LIGHT`), sharing one highlight `LEAF_LIGHT`.
 - One stone ramp for lava, basalt, metal and pebbles: `ROCK_DARK`, `ROCK`, `ROCK_LIGHT`, `STONE_PALE`, plus warm `GRAVEL` for paths.

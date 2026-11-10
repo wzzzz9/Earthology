@@ -1,8 +1,8 @@
 /**
  * The one palette for the Iceland region. Owned by the Art session (docs/TEAM.md).
  *
- * Forty colours in the chibi 16-bit pastel style: soft, slightly desaturated, warm
- * greens, one outline colour. Every sprite and tile in src/systems/placeholders.ts
+ * Forty colours in the chibi 16-bit pastel style: bright and cheerful, light rather than
+ * dark, warm greens, one outline colour. Every sprite and tile in src/systems/placeholders.ts
  * draws with these names and nothing else. Reasoning and swatches: docs/art/palette.md.
  *
  * Colours that arrive from content JSON (sample colours, NPC coats, sketch colours)
@@ -18,50 +18,50 @@ export const ROCK_DARK = '#3b3944';
 export const ROCK = '#5a5866';
 export const ROCK_LIGHT = '#7f7d8a';
 export const STONE_PALE = '#aaa7ae';
-export const GRAVEL = '#9b9283';
+export const GRAVEL = '#a89a84';
 
 // Greens: fresh spring grass (yellow side), moss (blue side), one leaf highlight.
-export const GRASS_DARK = '#6a8c4e';
-export const GRASS = '#88ac62';
-export const GRASS_LIGHT = '#a6c676';
-export const MOSS_DARK = '#557a4b';
-export const MOSS = '#6f9a5e';
-export const MOSS_LIGHT = '#92ba78';
-export const LEAF_LIGHT = '#c6db8c';
+export const GRASS_DARK = '#5e9a46';
+export const GRASS = '#7fc25a';
+export const GRASS_LIGHT = '#9fd96e';
+export const MOSS_DARK = '#3f8a4e';
+export const MOSS = '#5aae63';
+export const MOSS_LIGHT = '#82cc7a';
+export const LEAF_LIGHT = '#c9ec86';
 
 // Water and ice: glacial blue, then ice, warm white and cream.
-export const WATER_DEEP = '#4b7e9a';
-export const WATER = '#619db7';
-export const WATER_LIGHT = '#8fc4d6';
-export const ICE = '#dce8ec';
+export const WATER_DEEP = '#3b86b4';
+export const WATER = '#52aad4';
+export const WATER_LIGHT = '#86d6ea';
+export const ICE = '#dff1f5';
 export const WHITE = '#f7f3ea';
 export const CREAM = '#ebe2cd';
 
 // Wood and earth.
 export const WOOD_DARK = '#5f4432';
-export const WOOD = '#8b6641';
-export const WOOD_LIGHT = '#b9936b';
+export const WOOD = '#966a40';
+export const WOOD_LIGHT = '#c69a6a';
 
 // Skin.
-export const SKIN = '#f1cfb0';
-export const BLUSH = '#e69f8b';
+export const SKIN = '#f6d3b4';
+export const BLUSH = '#f2a08e';
 
 // Accents: houses, coats, flowers, lights, the two aliens.
-export const RED = '#c8584b';
-export const RED_DARK = '#99413a';
-export const ORANGE = '#de7b4f';
-export const YELLOW = '#e7c56f';
-export const YELLOW_DARK = '#c3a053';
-export const LIGHT = '#f7dd92';
-export const BLUE = '#5e87b8';
-export const BLUE_DARK = '#44668f';
-export const NAVY = '#363b53';
-export const TEAL = '#6dc2ae';
-export const TEAL_DARK = '#499a8a';
-export const VIOLET = '#9d83cb';
-export const VIOLET_DARK = '#705b9d';
-export const LILAC = '#d6c0ed';
-export const PINK = '#eda1b8';
+export const RED = '#e05a4e';
+export const RED_DARK = '#ad3f3a';
+export const ORANGE = '#f08350';
+export const YELLOW = '#f5cf5e';
+export const YELLOW_DARK = '#cfa63e';
+export const LIGHT = '#ffe68a';
+export const BLUE = '#5b93d6';
+export const BLUE_DARK = '#3f6fae';
+export const NAVY = '#3a4068';
+export const TEAL = '#5fd3bb';
+export const TEAL_DARK = '#3fa896';
+export const VIOLET = '#a98ae0';
+export const VIOLET_DARK = '#7a5fb5';
+export const LILAC = '#dcc5f5';
+export const PINK = '#f7a3c0';
 
 /** Every palette colour by name, in the order above. */
 export const PALETTE: Record<string, string> = {
