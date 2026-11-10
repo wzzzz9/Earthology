@@ -4,13 +4,14 @@ import { content } from '../content';
 import type { IntroLine } from '../content/types';
 import { state } from '../systems/state';
 import { bus, EV } from '../systems/events';
-import { makePlaceholderShip, makeAlienTrueForm, makeAlienTeacher, makePlaceholderPlayer, DISGUISES, drawEarth } from '../systems/placeholders';
+import { makePlaceholderShip, makeAlienTrueForm, makeAlienTeacher, makeAlienSleeping, makePlaceholderPlayer, DISGUISES, drawEarth } from '../systems/placeholders';
 import type { DialogueSource } from './DialogueScene';
 import { saveNow } from '../systems/save';
 
 const CX = GAME_WIDTH / 2;
 const CY = GAME_HEIGHT / 2;
 const ALIEN_COLOR = '#5fc4b0';
+const P_BLANKET = 0x7fa0d8;
 
 /**
  * The opening cinematic, in beats:
@@ -25,6 +26,8 @@ const ALIEN_COLOR = '#5fc4b0';
  */
 export class IntroScene extends Phaser.Scene {
   private skip = false;
+  /** During non-dialogue beats, Enter also skips (dialogue pages handle Enter themselves). */
+  private enterSkips = true;
   private figure!: Phaser.GameObjects.Image;
   private caption!: Phaser.GameObjects.Text;
 
@@ -36,7 +39,9 @@ export class IntroScene extends Phaser.Scene {
     makePlaceholderShip(this);
     makeAlienTrueForm(this);
     makeAlienTeacher(this);
+    makeAlienSleeping(this);
     this.input.keyboard!.on('keydown-ESC', () => (this.skip = true));
+    this.input.keyboard!.on('keydown-ENTER', () => { if (this.enterSkips) this.skip = true; });
     void this.run();
   }
 
@@ -127,12 +132,16 @@ export class IntroScene extends Phaser.Scene {
         if (pendingResume) return; // closed only to show the name box
         bus.off(EV.dialogueClosed, onClosed);
         bus.off(EV.nameEntered, onName);
+        this.time.delayedCall(150, () => (this.enterSkips = true));
         resolve();
       };
       const onName = () => {
         pendingResume = false;
         this.scene.launch('Dialogue', { source });
       };
+      this.enterSkips = false;
+      const prevClosed = onClosed;
+      void prevClosed;
       bus.on(EV.dialogueClosed, onClosed);
       bus.on(EV.nameEntered, onName);
       this.scene.launch('Dialogue', { source });
@@ -234,7 +243,7 @@ export class IntroScene extends Phaser.Scene {
     this.add.rectangle(CX + 10, 150, 70, 8, 0x4b4470).setStrokeStyle(1, 0x1a1c20);
     this.add.rectangle(CX - 20, 165, 6, 22, 0x4b4470); this.add.rectangle(CX + 40, 165, 6, 22, 0x4b4470);
     this.add.rectangle(CX + 36, 142, 10, 6, 0xffd37a).setStrokeStyle(1, 0x1a1c20); // a mug
-    const screen = this.add.rectangle(CX + 10, 126, 54, 34, 0x11141c).setStrokeStyle(2, 0x8e6bbf);
+    this.add.rectangle(CX + 10, 126, 54, 34, 0x11141c).setStrokeStyle(2, 0x8e6bbf);
     const sglow = this.add.rectangle(CX + 10, 126, 60, 40, 0x8e6bbf, 0.08);
     this.tweens.add({ targets: sglow, alpha: 0.2, duration: 900, yoyo: true, repeat: -1 });
     const alien = this.add.image(CX - 30, 166, 'alien').setScale(2).setOrigin(0.5, 1);
@@ -243,30 +252,81 @@ export class IntroScene extends Phaser.Scene {
     await this.fade(false);
     await this.wait(900);
 
-    // Close up on the screen: zoom the camera onto it, type the letter.
-    await this.tween({ targets: this.cameras.main, zoom: 2.6, scrollX: screen.x - CX, scrollY: screen.y - CY + 10, duration: 1200, ease: 'Sine.easeInOut' });
-    const lines = content.intro.letter;
-    const letter = this.add.text(screen.x - 24, screen.y - 14, '', { fontFamily: 'monospace', fontSize: '4px', color: '#d9b8ff', lineSpacing: 1, wordWrap: { width: 50 } }).setResolution(4);
-    const full = lines.join('\n');
-    for (let i = 1; i <= full.length; i++) {
-      letter.setText(full.slice(0, i));
-      if (this.skip) break;
-      await this.wait(22);
-    }
-    this.skip = false;
-    await this.wait(1400);
+    // Lean in to the computer: a full-screen monitor view where the letter types out, sharp.
+    const sglowTween = this.tweens.add({ targets: sglow, alpha: 0.3, duration: 400, yoyo: true, repeat: 2 });
+    await this.wait(900);
+    sglowTween.stop();
+    await this.computerView(content.intro.letter);
 
-    // Back out, lights down, sleep.
-    await this.tween({ targets: this.cameras.main, zoom: 1, scrollX: 0, scrollY: 0, duration: 900, ease: 'Sine.easeInOut' });
-    letter.destroy();
-    await this.tween({ targets: alien, x: 86, y: 150, duration: 900, ease: 'Sine.easeInOut' });
-    alien.setScale(2, 1.2);
-    const dark = this.add.rectangle(CX, CY, GAME_WIDTH, GAME_HEIGHT, 0x000000, 0);
-    const zz = this.add.text(104, 120, 'z z z', { fontFamily: 'monospace', fontSize: '8px', color: '#9aa3b2' });
-    this.tweens.add({ targets: zz, y: 108, alpha: 0.2, duration: 1400, repeat: -1 });
-    await this.tween({ targets: dark, alpha: 0.75, duration: 900 });
-    await this.wait(1200);
-    await this.fade(true);
+    // Bedtime: hop over to the bed, climb in, lights down.
+    await this.tween({ targets: alien, x: 118, duration: 1000, ease: 'Sine.easeInOut', onStart: () => this.hops(alien, 6) });
+    await this.wait(250);
+    alien.setFlipX(true);
+    await this.wait(350);
+    // climb in: a little jump up onto the bed, then lie down under the blanket
+    await this.tween({ targets: alien, x: 96, y: 150, duration: 450, ease: 'Quad.easeOut', onStart: () => this.hops(alien, 1, 10) });
+    alien.setTexture('alien.sleep').setOrigin(0.5, 1).setScale(2).setFlipX(false).setPosition(92, 150);
+    const blanket = this.add.rectangle(100, 150, 60, 14, P_BLANKET).setStrokeStyle(1, 0x2a2630).setDepth(5);
+    blanket.setScale(0.2, 1);
+    await this.tween({ targets: blanket, scaleX: 1, duration: 400, ease: 'Sine.easeOut' });
+    const dark = this.add.rectangle(CX, CY, GAME_WIDTH, GAME_HEIGHT, 0x000000, 0).setDepth(800);
+    const zz = this.add.text(112, 118, 'z', { fontFamily: 'monospace', fontSize: '9px', color: '#d9b8ff' }).setDepth(801).setAlpha(0);
+    const zz2 = this.add.text(120, 110, 'z', { fontFamily: 'monospace', fontSize: '12px', color: '#d9b8ff' }).setDepth(801).setAlpha(0);
+    this.tweens.add({ targets: zz, y: 100, alpha: { from: 1, to: 0 }, duration: 1600, repeat: -1 });
+    this.tweens.add({ targets: zz2, y: 90, alpha: { from: 1, to: 0 }, duration: 1600, delay: 800, repeat: -1 });
+    this.tweens.add({ targets: glow, alpha: 0, duration: 1200 });
+    await this.tween({ targets: dark, alpha: 0.7, duration: 1500 });
+    await this.wait(1400);
+    await this.fade(true, 500);
+  }
+
+  /** A few quick hops while a sprite is moving: bounce the y by a few pixels. */
+  private hops(target: Phaser.GameObjects.Image, count: number, height = 4): void {
+    this.tweens.add({ targets: target, y: `-=${height}`, duration: 140, yoyo: true, repeat: count - 1, ease: 'Quad.easeOut' });
+  }
+
+  /**
+   * Full-screen computer view: bezel, dark screen with scanlines, the letter typed line by
+   * line at a readable size, a blinking cursor. Scrolls if the text runs past the screen.
+   * Enter or Esc finishes the typing, then continues.
+   */
+  private async computerView(lines: string[]): Promise<void> {
+    const layer = this.add.container(0, 0).setDepth(1000).setAlpha(0);
+    const bezel = this.add.rectangle(CX, CY, 440, 236, 0x3a3560).setStrokeStyle(3, 0x2a2630);
+    const screen = this.add.rectangle(CX, CY - 6, 412, 196, 0x11101c).setStrokeStyle(2, 0x8e6bbf);
+    const scan = this.add.graphics();
+    for (let y = CY - 104; y < CY + 92; y += 3) { scan.fillStyle(0xffffff, 0.035); scan.fillRect(CX - 206, y, 412, 1); }
+    const header = this.add.text(CX - 196, CY - 98, 'NEBULA HOLLOW UNIVERSITY  ·  ADMISSIONS OFFICE', { fontFamily: 'monospace', fontSize: '8px', color: '#8e6bbf' });
+    const rule = this.add.rectangle(CX, CY - 85, 396, 1, 0x4b4470);
+    const body = this.add.text(CX - 196, CY - 76, '', { fontFamily: 'monospace', fontSize: '11px', color: '#d9b8ff', lineSpacing: 6, wordWrap: { width: 392 } });
+    const cursor = this.add.rectangle(CX - 196, CY - 70, 6, 11, 0xd9b8ff).setOrigin(0, 0);
+    const foot = this.add.text(CX, CY + 104, 'Enter: continue', { fontFamily: 'monospace', fontSize: '7px', color: '#9aa3b2' }).setOrigin(0.5).setAlpha(0);
+    const light = this.add.rectangle(CX + 206, CY + 110, 6, 6, 0x5fc4b0); // power light
+    layer.add([bezel, screen, scan, header, rule, body, cursor, foot, light]);
+    this.tweens.add({ targets: cursor, alpha: 0, duration: 400, yoyo: true, repeat: -1 });
+    this.caption?.setVisible(false);
+    await this.tween({ targets: layer, alpha: 1, duration: 350 });
+
+    const full = lines.join('\n');
+    let shown = '';
+    for (let i = 0; i < full.length; i++) {
+      shown += full[i];
+      body.setText(shown);
+      // keep the last line on screen: scroll the body up if it runs past the bottom
+      const overflow = body.y + body.height - (CY + 84);
+      if (overflow > 0) body.setY(body.y - overflow);
+      // cursor after the last character
+      const lastLine = shown.split('\n').pop() ?? '';
+      cursor.setPosition(body.x + lastLine.length * 6.6 + 1, body.y + body.height - 12);
+      if (this.skip) { this.skip = false; body.setText(full); break; }
+      await this.wait(full[i] === '\n' ? 260 : 24);
+    }
+    cursor.setPosition(body.x, body.y + body.height + 4);
+    this.tweens.add({ targets: foot, alpha: 1, duration: 300 });
+    await this.wait(2600);
+    await this.tween({ targets: layer, alpha: 0, duration: 350 });
+    layer.destroy(true);
+    this.caption?.setVisible(true);
   }
 
   // ---------- 2. card ----------

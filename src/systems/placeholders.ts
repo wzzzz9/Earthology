@@ -569,3 +569,18 @@ export function makePlants(scene: Phaser.Scene): void {
   // Small stones: a couple of pebbles.
   mk('plant.stones', 10, 6, (r) => { r(1, 2, 4, 3, P.ROCK_LIGHT); r(6, 3, 3, 2, P.ROCK_LIGHT); r(1, 2, 2, 1, P.STONE_PALE); r(1, 5, 8, 1, SHADOW_SOFT); });
 }
+
+/** The alien asleep on its side, 22x12: body lying down, eye band closed, antennae drooping. */
+export function makeAlienSleeping(scene: Phaser.Scene, key = 'alien.sleep'): void {
+  if (scene.textures.exists(key)) return;
+  const tex = scene.textures.createCanvas(key, 22, 12);
+  if (!tex) return;
+  const ctx = tex.getContext();
+  const r = (x: number, y: number, w: number, h: number, c: string) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
+  r(1, 2, 18, 10, P.OUTLINE); r(0, 4, 20, 6, P.OUTLINE);
+  r(2, 3, 16, 8, P.TEAL); r(1, 5, 18, 4, P.TEAL);
+  r(3, 9, 15, 2, P.TEAL_DARK);
+  r(4, 5, 8, 3, P.WHITE); r(5, 6, 2, 1, P.OUTLINE); r(9, 6, 2, 1, P.OUTLINE); // closed eyes
+  r(18, 6, 3, 1, P.OUTLINE); r(19, 8, 3, 1, P.OUTLINE); r(20, 5, 2, 1, P.LIGHT); r(21, 7, 1, 1, P.LIGHT); // drooping antennae
+  tex.refresh();
+}
