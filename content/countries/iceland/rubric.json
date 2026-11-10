@@ -1,41 +1,245 @@
 {
   "passMark": 60,
   "items": [
-    { "id": "land.lake", "section": "land", "weight": 8,
-      "satisfiedBy": { "scanned": "lake" },
-      "hints": ["Your Land page is thin. There is water on this map. Did you look at it?", "North-east of the path there is a lake. Stand on the shore and look.", "Walk the path east to the end, then north. Press E at the sparkle by the water."] },
-    { "id": "people.signpost", "section": "people", "weight": 6,
-      "satisfiedBy": { "scanned": "signpost" },
-      "hints": ["People leave signs. You walked past one.", "There is a wooden sign right next to where you landed.", "Walk east from the ship a few steps. The signpost is on the path."] },
-    { "id": "people.cairn", "section": "people", "weight": 6,
-      "satisfiedBy": { "scanned": "cairn" },
-      "hints": ["Not every pile of stones is natural. Some were stacked by hands.", "There is a stone pile north of the path, in the open grass.", "From the signpost, walk north-east into the grass until you see stacked stones."] },
-    { "id": "rocks.basalt", "section": "rocks", "weight": 10,
-      "satisfiedBy": { "identified": "basalt" },
-      "hints": ["Your Rocks page is missing the most common rock on this planet's surface.", "A dark, heavy rock with crystals too small to see. It is lying in the grass north-west.", "North of the ship, past the scattered rocks. Pick it up, test it with the lens, and use the key."] },
-    { "id": "rocks.obsidian", "section": "rocks", "weight": 10,
-      "satisfiedBy": { "identified": "obsidian" },
-      "hints": ["One rock here is not really a rock. It is glass.", "Black and shiny, sharp edges. It is in the south field, past the rock wall.", "South-east of the ship, through the gap in the rock wall. Lens test, then the key."] },
-    { "id": "rocks.pumice", "section": "rocks", "weight": 10,
-      "satisfiedBy": { "identified": "pumice" },
-      "hints": ["Every rock sinks in water. Almost every rock.", "A pale, light rock full of holes, on the lake shore.", "Walk around the lake to its south-east shore. Drop it in water. Follow the key."] },
-    { "id": "rocks.thorough", "section": "rocks", "weight": 6,
-      "satisfiedBy": { "testsRun": 6 },
-      "hints": ["You named rocks, but did you actually test them?", "Run more field tests. Each test teaches you something, even when you already know the answer.", "Open a rock in the lab and run all six tests. Six tests in total is enough."] },
-    { "id": "earth.cooling", "section": "earth", "weight": 10,
-      "satisfiedBy": { "factLearned": "igneous.cooling-rate" },
-      "hints": ["Your Earth page says nothing about how rocks form.", "Crystal size tells you how fast the rock cooled. Identify any rock and the notebook will explain.", "Identify basalt, obsidian or pumice in the lab. The cooling-rate fact comes with it."] },
-    { "id": "earth.basalt-iceland", "section": "earth", "weight": 8,
-      "satisfiedBy": { "factLearned": "basalt.lava-rock" },
-      "hints": ["What is this country actually made of?", "The dark heavy rock is the answer. Identify it.", "Identify the basalt sample. Its fact says what most of this country is made of."] },
-    { "id": "people.sigrun", "section": "people", "weight": 10,
-      "satisfiedBy": { "relationshipAtLeast": { "npc": "sigrun", "level": 1 } },
-      "hints": ["You listed a planet's people and know none of them.", "There is a woman by the path. Say hello. Then say hello again tomorrow.", "Greet Sigrún on three different days. Be nice. She will start to open up."] },
-    { "id": "people.sigrun-lake", "section": "people", "weight": 8,
-      "satisfiedBy": { "entry": "sigrun.lake" },
-      "hints": ["Locals know things about the land that you cannot see.", "Once Sigrún knows you, ask her about something you have already looked at.", "Scan the lake, become Sigrún's acquaintance, then ask her about the lake."] },
-    { "id": "people.sigrun-cairn", "section": "people", "weight": 8,
-      "satisfiedBy": { "entry": "sigrun.cairn" },
-      "hints": ["You wrote down a pile of stones but not what it is for.", "Someone who has lived here a long time would know why people stack stones.", "Scan the cairn, then ask Sigrún about the stone pile once she knows you."] }
+    {
+      "id": "land.lake",
+      "section": "land",
+      "weight": 5,
+      "satisfiedBy": {
+        "scanned": "lake"
+      },
+      "hints": [
+        "Your Land page is thin. There is water on this map. Did you look at it?",
+        "North-east of the path there is a lake. Stand on the shore and look.",
+        "Walk the path east to the end, then north. Press E at the sparkle by the water."
+      ]
+    },
+    {
+      "id": "people.signpost",
+      "section": "people",
+      "weight": 2,
+      "satisfiedBy": {
+        "scanned": "signpost"
+      },
+      "hints": [
+        "People leave signs. You walked past one.",
+        "There is a wooden sign right next to where you landed.",
+        "Walk east from the ship a few steps. The signpost is on the path."
+      ]
+    },
+    {
+      "id": "people.cairn",
+      "section": "people",
+      "weight": 2,
+      "satisfiedBy": {
+        "scanned": "cairn"
+      },
+      "hints": [
+        "Not every pile of stones is natural. Some were stacked by hands.",
+        "There is a stone pile north of the path, in the open grass.",
+        "From the signpost, walk north-east into the grass until you see stacked stones."
+      ]
+    },
+    {
+      "id": "rocks.basalt",
+      "section": "rocks",
+      "weight": 7,
+      "satisfiedBy": {
+        "identified": "basalt"
+      },
+      "hints": [
+        "Your Rocks page is missing the most common rock on this planet's surface.",
+        "A dark, heavy rock with crystals too small to see. It is lying in the grass north-west.",
+        "North of the ship, past the scattered rocks. Pick it up, test it with the lens, and use the key."
+      ]
+    },
+    {
+      "id": "rocks.obsidian",
+      "section": "rocks",
+      "weight": 7,
+      "satisfiedBy": {
+        "identified": "obsidian"
+      },
+      "hints": [
+        "One rock here is not really a rock. It is glass.",
+        "Black and shiny, sharp edges. It is in the south field, past the rock wall.",
+        "South-east of the ship, through the gap in the rock wall. Lens test, then the key."
+      ]
+    },
+    {
+      "id": "rocks.pumice",
+      "section": "rocks",
+      "weight": 7,
+      "satisfiedBy": {
+        "identified": "pumice"
+      },
+      "hints": [
+        "Every rock sinks in water. Almost every rock.",
+        "A pale, light rock full of holes, on the lake shore.",
+        "Walk around the lake to its south-east shore. Drop it in water. Follow the key."
+      ]
+    },
+    {
+      "id": "rocks.thorough",
+      "section": "rocks",
+      "weight": 4,
+      "satisfiedBy": {
+        "testsRun": 6
+      },
+      "hints": [
+        "You named rocks, but did you actually test them?",
+        "Run more field tests. Each test teaches you something, even when you already know the answer.",
+        "Open a rock in the lab and run all six tests. Six tests in total is enough."
+      ]
+    },
+    {
+      "id": "earth.cooling",
+      "section": "earth",
+      "weight": 6,
+      "satisfiedBy": {
+        "factLearned": "igneous.cooling-rate"
+      },
+      "hints": [
+        "Your Earth page says nothing about how rocks form.",
+        "Crystal size tells you how fast the rock cooled. Identify any rock and the notebook will explain.",
+        "Identify basalt, obsidian or pumice in the lab. The cooling-rate fact comes with it."
+      ]
+    },
+    {
+      "id": "earth.basalt-iceland",
+      "section": "earth",
+      "weight": 4,
+      "satisfiedBy": {
+        "factLearned": "basalt.lava-rock"
+      },
+      "hints": [
+        "What is this country actually made of?",
+        "The dark heavy rock is the answer. Identify it.",
+        "Identify the basalt sample. Its fact says what most of this country is made of."
+      ]
+    },
+    {
+      "id": "people.sigrun",
+      "section": "people",
+      "weight": 6,
+      "satisfiedBy": {
+        "relationshipAtLeast": {
+          "npc": "sigrun",
+          "level": 1
+        }
+      },
+      "hints": [
+        "You listed a planet's people and know none of them.",
+        "There is a woman by the path. Say hello. Then say hello again tomorrow.",
+        "Greet Sigrún on three different days. Be nice. She will start to open up."
+      ]
+    },
+    {
+      "id": "people.sigrun-lake",
+      "section": "people",
+      "weight": 4,
+      "satisfiedBy": {
+        "entry": "sigrun.lake"
+      },
+      "hints": [
+        "Locals know things about the land that you cannot see.",
+        "Once Sigrún knows you, ask her about something you have already looked at.",
+        "Scan the lake, become Sigrún's acquaintance, then ask her about the lake."
+      ]
+    },
+    {
+      "id": "people.sigrun-cairn",
+      "section": "people",
+      "weight": 4,
+      "satisfiedBy": {
+        "entry": "sigrun.cairn"
+      },
+      "hints": [
+        "You wrote down a pile of stones but not what it is for.",
+        "Someone who has lived here a long time would know why people stack stones.",
+        "Scan the cairn, then ask Sigrún about the stone pile once she knows you."
+      ]
+    },
+    {
+      "id": "earth.rift",
+      "section": "earth",
+      "weight": 8,
+      "satisfiedBy": {
+        "scanned": "rift"
+      },
+      "hints": [
+        "This island is being pulled in two. You wrote nothing about it.",
+        "Far to the west there is a crack in the ground you can stand beside.",
+        "Take the track west from the ship and keep going. Look at the rift."
+      ]
+    },
+    {
+      "id": "earth.geysir",
+      "section": "earth",
+      "weight": 8,
+      "satisfiedBy": {
+        "scanned": "geysir"
+      },
+      "hints": [
+        "The ground here is hot. Did you go and see where it shows?",
+        "North of the town the ground steams and one pool spouts.",
+        "Follow the track north from the town square to the hot springs."
+      ]
+    },
+    {
+      "id": "land.waterfall",
+      "section": "land",
+      "weight": 7,
+      "satisfiedBy": {
+        "scanned": "waterfall"
+      },
+      "hints": [
+        "Water falls off things here. Loudly. You missed it.",
+        "A river comes down from the ice in the north-east and drops off a cliff.",
+        "Track east past the lake, then north along the river to the fall."
+      ]
+    },
+    {
+      "id": "rocks.columns",
+      "section": "rocks",
+      "weight": 7,
+      "satisfiedBy": {
+        "scanned": "columns"
+      },
+      "hints": [
+        "Not all rock is lumps. Some of it is shaped.",
+        "On the black beach there is a wall of stone pillars.",
+        "Walk the black beach south-east of the harbour. Look at the pillars."
+      ]
+    },
+    {
+      "id": "land.glacier",
+      "section": "land",
+      "weight": 6,
+      "satisfiedBy": {
+        "scanned": "glacier"
+      },
+      "hints": [
+        "Where does all this cold water come from?",
+        "There is a wall of ice in the north-east, where the river starts.",
+        "Go north past the lake to the ice. Stand at its edge."
+      ]
+    },
+    {
+      "id": "people.gunnar",
+      "section": "people",
+      "weight": 6,
+      "satisfiedBy": {
+        "relationshipAtLeast": {
+          "npc": "gunnar",
+          "level": 1
+        }
+      },
+      "hints": [
+        "A harbour town, and you know nobody who works the sea.",
+        "There is a fisherman on the pier most days. Say hello. Keep saying it.",
+        "Greet Gunnar on the pier on three different days."
+      ]
+    }
   ]
 }

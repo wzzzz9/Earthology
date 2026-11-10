@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import {
-  makePlaceholderTileset, makePlaceholderPlayer, makePlaceholderShip, makeSparkle, makePlaceholderProps, makePickupRock, makeTrees,
+  makePlaceholderTileset, makePlaceholderPlayer, makePlaceholderShip, makeSparkle, makePlaceholderProps, makePickupRock, makeTrees, makeIcelandProps,
   PLAYER_W, PLAYER_H, DISGUISES, PLAYER_LOOK,
 } from '../systems/placeholders';
 import { MoveInput } from '../systems/input';
@@ -68,8 +68,10 @@ export class WorldScene extends Phaser.Scene {
     makeSparkle(this);
     makePlaceholderProps(this);
     makeTrees(this);
+    makeIcelandProps(this);
 
-    const map = this.make.tilemap({ key: 'map.test-field' });
+    const map = this.make.tilemap({ key: 'map.iceland' });
+    state.mapTiles = map.width * map.height;
     const tileset = map.addTilesetImage('placeholder', 'placeholder')!;
     const ground = map.createLayer('ground', tileset)!;
     const walls = map.createLayer('walls', tileset)!;
@@ -100,6 +102,25 @@ export class WorldScene extends Phaser.Scene {
           solids.add(this.add.rectangle(x, y + 3, 12, 8).setVisible(false));
         }
         this.interactables.push({ kind: 'scan', id: o.name, x, y, sparkle: this.addSparkle(x, y - 12) });
+      } else if (o.type === 'building') {
+        const key = `bld.${o.name}`;
+        if (!this.textures.exists(key)) continue;
+        const img = this.add.image(x + 8, y + 8, key).setOrigin(0.5, 1).setDepth(y + 8);
+        const fw = img.width - 4;
+        solids.add(this.add.rectangle(x + 8, y + 2, fw, 22).setVisible(false));
+      } else if (o.type === 'prop') {
+        const key = `prop.${o.name}`;
+        if (!this.textures.exists(key)) continue;
+        const img = this.add.image(x, y + 8, key).setOrigin(0.5, 1).setDepth(y + 8);
+        solids.add(this.add.rectangle(x, y + 2, Math.max(8, img.width - 6), Math.min(12, img.height / 2)).setVisible(false));
+      } else if (o.type === 'pier') {
+        this.add.image(x, y, 'prop.pier').setDepth(1);
+      } else if (o.type === 'scanwater') {
+        // Something you look at from the shore (a boat): drawn, scannable, never walkable.
+        if (this.textures.exists(`prop.${o.name}`)) this.add.image(x, y, `prop.${o.name}`).setDepth(y);
+        this.interactables.push({ kind: 'scan', id: o.name, x, y, sparkle: this.addSparkle(x, y - 12) });
+      } else if (o.type === 'fx') {
+        this.addFx(o.name, x, y, solids);
       } else if (o.type === 'tree') {
         const key = `tree.${o.name}`;
         if (!this.textures.exists(key)) continue;
@@ -195,7 +216,7 @@ export class WorldScene extends Phaser.Scene {
     const idx = ty * this.mapInfo.width + tx;
     if (idx === this.lastTile) return;
     this.lastTile = idx;
-    const R = 4;
+    const R = 5;
     let changed = false;
     for (let dy = -R; dy <= R; dy++) {
       for (let dx = -R; dx <= R; dx++) {
@@ -207,6 +228,36 @@ export class WorldScene extends Phaser.Scene {
       }
     }
     if (changed) bus.emit(EV.stateChanged);
+  }
+
+  /** Animated landmarks: the geyser erupts now and then, steam drifts, the waterfall flickers. */
+  private addFx(name: string, x: number, y: number, solids: Phaser.Physics.Arcade.StaticGroup): void {
+    if (name === 'geyser') {
+      this.add.image(x, y, 'fx.geyser-base').setDepth(y);
+      solids.add(this.add.rectangle(x, y, 14, 8).setVisible(false));
+      const column = this.add.image(x, y - 2, 'fx.geyser-column').setOrigin(0.5, 1).setDepth(y + 1).setScale(1, 0);
+      const erupt = () => {
+        this.tweens.add({
+          targets: column, scaleY: 1, duration: 500, ease: 'Quad.easeOut', yoyo: true, hold: 900,
+          onStart: () => { if (Phaser.Math.Distance.Between(this.player.x, this.player.y, x, y) < 160) this.cameras.main.shake(300, 0.002); },
+          onComplete: () => this.time.delayedCall(Phaser.Math.Between(6000, 11000), erupt),
+        });
+      };
+      this.time.delayedCall(2500, erupt);
+    } else if (name === 'steam') {
+      for (let i = 0; i < 2; i++) {
+        const puff = this.add.image(x + i * 5 - 2, y - 6, 'fx.steam').setDepth(y + 20).setAlpha(0);
+        this.tweens.add({ targets: puff, y: y - 26, alpha: { from: 0.8, to: 0 }, duration: 2200, delay: i * 1100, repeat: -1, ease: 'Sine.easeOut' });
+      }
+    } else if (name === 'waterfall') {
+      const img = this.add.image(x + 8, y + 12, 'fx.waterfall0').setOrigin(0.5, 1).setDepth(y + 8);
+      let f = 0;
+      this.time.addEvent({ delay: 140, loop: true, callback: () => img.setTexture(`fx.waterfall${(f = 1 - f)}`) });
+      for (let i = 0; i < 2; i++) {
+        const puff = this.add.image(x + i * 8 - 4, y + 4, 'fx.steam').setDepth(y + 20).setAlpha(0);
+        this.tweens.add({ targets: puff, y: y - 10, alpha: { from: 0.6, to: 0 }, duration: 1800, delay: i * 900, repeat: -1 });
+      }
+    }
   }
 
   private addSparkle(x: number, y: number): Phaser.GameObjects.Image {

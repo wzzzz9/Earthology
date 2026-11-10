@@ -52,5 +52,41 @@
     "section": "people",
     "line": "A small white church with a red roof. The door is not locked.",
     "sketch": "#e4e0d6"
+  },
+  "rift": {
+    "name": "The rift",
+    "section": "earth",
+    "line": "A long crack in the ground, wider than a road. One side is a cliff, the other a slope.",
+    "sketch": "#1c2a3a"
+  },
+  "geysir": {
+    "name": "Spouting hot spring",
+    "section": "earth",
+    "line": "A pool that breathes. Every few minutes it throws boiling water into the air.",
+    "sketch": "#7fd1e8"
+  },
+  "waterfall": {
+    "name": "Waterfall",
+    "section": "land",
+    "line": "A grey-blue river drops off a cliff and the air is full of cold mist.",
+    "sketch": "#6fb3cf"
+  },
+  "columns": {
+    "name": "Basalt columns",
+    "section": "rocks",
+    "line": "Dark stone pillars with six sides, packed together like a honeycomb.",
+    "sketch": "#2b2e34"
+  },
+  "glacier": {
+    "name": "Glacier edge",
+    "section": "land",
+    "line": "A wall of old ice, blue inside and grey with dust on top. It creaks.",
+    "sketch": "#dfe9ee"
+  },
+  "hot-pool": {
+    "name": "Hot pool",
+    "section": "earth",
+    "line": "Milky blue water, steaming. Warm even from a step away.",
+    "sketch": "#9fd0e3"
   }
 }

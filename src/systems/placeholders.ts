@@ -8,14 +8,14 @@ import Phaser from 'phaser';
 export const TILE = 16;
 
 /**
- * Tileset, 14 tiles in a row (gid 1..14). Palette aims at Iceland: yellow-green
+ * Tileset, 16 tiles in a row (gid 1..16). Palette aims at Iceland: yellow-green
  * tundra grass, moss-covered black lava, grey gravel, glacial blue water, black sand,
  * basalt boulders, ice patches.
  *  1 tundra   2 tundra (tufts)   3 gravel path   4 water   5 basalt boulder (solid)
  *  6 mossy boulder (solid)   7 black sand   8 void   9 moss lava   10 moss lava (dense)
  *  11 ice   12 water edge (light)
  */
-export const TILE_COUNT = 14;
+export const TILE_COUNT = 16;
 
 export function makePlaceholderTileset(scene: Phaser.Scene, key = 'placeholder'): void {
   if (scene.textures.exists(key)) return;
@@ -82,6 +82,10 @@ export function makePlaceholderTileset(scene: Phaser.Scene, key = 'placeholder')
   moss(9, [[6, 5, 5], [13, 11, 3], [3, 13, 2]], [[12, 0, 1, 5], [0, 11, 2, 1], [8, 13, 3, 1]]);
   moss(12, [[3, 3, 3], [11, 4, 4], [7, 12, 4]], [[7, 1, 1, 4], [14, 9, 2, 1], [1, 10, 1, 5]]);
   moss(13, [[8, 7, 6], [2, 13, 2], [14, 2, 2]], [[0, 4, 4, 1], [12, 13, 4, 1], [2, 0, 1, 3]]);
+  // 15 chasm (the rift): near-black with a cold blue seam. 16 hot pool: milky turquoise with a pale rim.
+  fill(14, '#0c0e14'); px(14, '#182434', [[6, 2, 1, 5], [9, 9, 1, 6], [4, 12, 1, 3]]);
+  px(14, '#454a54', [[0, 0, 2, 16], [14, 0, 2, 16]]); px(14, '#6b6f78', [[0, 0, 1, 16], [15, 0, 1, 16]]); px(14, '#2b2e34', [[2, 0, 1, 16], [13, 0, 1, 16]]);
+  fill(15, '#7fd1e8'); px(15, '#a9e3f1', [[2, 3, 5, 2], [8, 9, 6, 2], [5, 12, 3, 1], [11, 2, 3, 1]]); px(15, '#e9f6fa', [[4, 4, 2, 1], [10, 10, 2, 1]]);
   // 11 ice / old snow: white-blue
   fill(10, '#dfe9ee'); px(10, '#f6fafc', [[2, 2, 5, 3], [9, 9, 5, 4]]); px(10, '#b9ccd6', [[8, 3, 4, 2], [2, 10, 4, 2], [12, 6, 2, 2]]);
   // 12 water edge: lighter shallow water
@@ -396,4 +400,99 @@ export function makeTrees(scene: Phaser.Scene): void {
     r(13, 27, 6, 3, OUT); r(14, 27, 4, 2, '#6e4b2a');
     r(8, 28, 16, 2, 'rgba(0,0,0,0.25)');
   }, 32, 32);
+}
+
+/**
+ * Town and landmark props. Each is drawn once into a canvas texture at the listed size;
+ * the base of the sprite is its bottom edge, centred.
+ */
+export function makeIcelandProps(scene: Phaser.Scene): void {
+  const OUT = '#1a1c20';
+  const mk = (key: string, w: number, h: number, draw: (r: (x: number, y: number, w: number, h: number, c: string) => void, ctx: CanvasRenderingContext2D) => void) => {
+    if (scene.textures.exists(key)) return;
+    const tex = scene.textures.createCanvas(key, w, h);
+    if (!tex) return;
+    const ctx = tex.getContext();
+    const r = (x: number, y: number, ww: number, hh: number, c: string) => { ctx.fillStyle = c; ctx.fillRect(x, y, ww, hh); };
+    draw(r, ctx);
+    tex.refresh();
+  };
+  // Icelandic corrugated-iron houses: bright walls, white trim, dark roof. 48x40.
+  const house = (key: string, wall: string, wallDark: string, roof: string) => mk(key, 48, 40, (r) => {
+    r(6, 38, 36, 2, 'rgba(0,0,0,0.25)');
+    r(3, 14, 42, 25, OUT); r(4, 15, 40, 23, wall); r(4, 30, 40, 8, wallDark);
+    for (let x = 6; x < 44; x += 4) r(x, 15, 1, 23, wallDark); // corrugation
+    r(1, 4, 46, 11, OUT); r(2, 5, 44, 9, roof); r(2, 13, 44, 1, '#f4f1e8');
+    for (let x = 4; x < 44; x += 6) r(x, 5, 1, 9, 'rgba(255,255,255,0.15)');
+    r(20, 0, 6, 6, OUT); r(21, 1, 4, 5, '#8a8f99'); // chimney
+    r(21, 22, 7, 16, OUT); r(22, 23, 5, 15, '#6e4b2a'); r(26, 30, 1, 1, '#ffd37a'); // door
+    for (const x of [8, 34]) { r(x, 20, 8, 8, OUT); r(x + 1, 21, 6, 6, '#ffd37a'); r(x + 3, 21, 1, 6, '#f4f1e8'); r(x + 1, 24, 6, 1, '#f4f1e8'); }
+  });
+  house('bld.house-red', '#c94a3a', '#9e3a2d', '#2d3140');
+  house('bld.house-blue', '#4f7fb8', '#3a6190', '#2d3140');
+  house('bld.house-yellow', '#e9c46a', '#c9a44e', '#3f4866');
+  house('bld.house-green', '#5a8a5a', '#447044', '#2d3140');
+  // White church with a red roof and a small tower. 40x56.
+  mk('bld.church', 40, 56, (r) => {
+    r(6, 54, 28, 2, 'rgba(0,0,0,0.25)');
+    r(5, 26, 30, 29, OUT); r(6, 27, 28, 27, '#f4f1e8'); r(6, 48, 28, 6, '#d9d4c8');
+    r(3, 16, 34, 11, OUT); r(4, 17, 32, 9, '#c94a3a');
+    r(14, 2, 12, 16, OUT); r(15, 3, 10, 15, '#f4f1e8'); r(13, 0, 14, 4, OUT); r(14, 1, 12, 2, '#c94a3a');
+    r(19, 0, 2, 3, OUT); r(19, 6, 2, 6, OUT); r(18, 8, 4, 1, OUT); // cross and slit
+    r(17, 38, 7, 16, OUT); r(18, 39, 5, 15, '#6e4b2a');
+    for (const x of [9, 27]) { r(x, 32, 5, 10, OUT); r(x + 1, 33, 3, 8, '#7fb3e6'); }
+  });
+  // Small fishing boat, blue hull, in the water. 24x16.
+  mk('prop.boat', 24, 16, (r) => {
+    r(1, 8, 22, 7, OUT); r(2, 9, 20, 5, '#2b6cb0'); r(2, 9, 20, 1, '#f4f1e8'); r(4, 13, 16, 1, '#1f4f82');
+    r(8, 2, 8, 7, OUT); r(9, 3, 6, 5, '#f4f1e8'); r(10, 4, 4, 2, '#7fb3e6'); r(14, 0, 2, 3, OUT);
+  });
+  // Fish drying racks: wooden frame with fish hanging. 32x24.
+  mk('prop.racks', 32, 24, (r) => {
+    r(2, 22, 28, 2, 'rgba(0,0,0,0.25)');
+    for (const x of [2, 15, 28]) { r(x, 4, 2, 19, OUT); r(x, 5, 1, 17, '#6e4b2a'); }
+    r(1, 4, 30, 2, OUT); r(1, 12, 30, 2, OUT); r(2, 5, 28, 1, '#8a6238'); r(2, 13, 28, 1, '#8a6238');
+    for (let x = 5; x < 28; x += 4) { r(x, 6, 2, 6, '#d9c7a8'); r(x, 14, 2, 6, '#d9c7a8'); r(x, 6, 1, 1, OUT); r(x, 14, 1, 1, OUT); }
+  });
+  // Hot-water pipe running along the ground, 64x10, with a warm glow line.
+  mk('prop.pipe', 64, 10, (r) => {
+    r(0, 2, 64, 7, OUT); r(1, 3, 62, 5, '#8a8f99'); r(1, 3, 62, 1, '#b9bec8'); r(1, 6, 62, 1, '#5c626d');
+    for (const x of [8, 24, 40, 56]) { r(x, 1, 4, 9, OUT); r(x + 1, 2, 2, 7, '#6b6f78'); }
+    r(0, 9, 64, 1, 'rgba(255,211,122,0.35)');
+  });
+  // Sheep sorting pens: a ring of stone walls split like a pie. 48x40.
+  mk('prop.pen', 48, 40, (r, ctx) => {
+    ctx.strokeStyle = OUT; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(24, 22, 21, 14, 0, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = '#6b6f78'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.ellipse(24, 22, 21, 14, 0, 0, Math.PI * 2); ctx.stroke();
+    for (const a of [0, 1.2, 2.4, 3.6, 4.8]) { ctx.strokeStyle = '#6b6f78'; ctx.beginPath(); ctx.moveTo(24, 22); ctx.lineTo(24 + Math.cos(a) * 20, 22 + Math.sin(a) * 13); ctx.stroke(); }
+    r(22, 8, 4, 4, OUT); r(23, 9, 2, 2, '#f4f1e8'); // one sheep left behind
+  });
+  // Basalt columns: a wall of six-sided grey pillars. 64x32.
+  mk('prop.columns-wall', 64, 32, (r) => {
+    r(0, 30, 64, 2, 'rgba(0,0,0,0.3)');
+    for (let i = 0; i < 8; i++) {
+      const x = i * 8; const top = 2 + ((i * 5) % 7);
+      r(x, top, 8, 30 - top, OUT); r(x + 1, top + 1, 6, 28 - top, i % 2 ? '#2b2e34' : '#353942'); r(x + 1, top + 1, 6, 2, '#5c626d'); r(x + 1, top + 1, 2, 27 - top, '#454a54');
+    }
+  });
+  // Glacier face: a wall of blue-white ice with a dusty top. 96x28.
+  mk('prop.glacier-face', 96, 28, (r) => {
+    r(0, 26, 96, 2, 'rgba(0,0,0,0.25)');
+    r(0, 4, 96, 23, OUT); r(1, 5, 94, 21, '#dfe9ee'); r(1, 5, 94, 3, '#9aa3b2'); r(1, 20, 94, 6, '#9fd0e3');
+    for (let x = 6; x < 92; x += 11) { r(x, 8, 2, 14, '#7fb3e6'); r(x + 5, 12, 1, 10, '#b9ccd6'); }
+    for (let x = 0; x < 96; x += 7) r(x, 2, 4, 3, OUT), r(x + 1, 3, 2, 2, '#dfe9ee');
+  });
+  // Geyser mouth (16x10), its water column (8x48, scaled by the game), and a steam puff (10x8).
+  mk('fx.geyser-base', 16, 10, (r) => { r(0, 4, 16, 6, OUT); r(1, 5, 14, 4, '#b9b4a6'); r(5, 2, 6, 4, OUT); r(6, 3, 4, 3, '#7fd1e8'); });
+  mk('fx.geyser-column', 10, 48, (r) => { r(2, 0, 6, 48, 'rgba(233,246,250,0.85)'); r(0, 0, 10, 10, 'rgba(255,255,255,0.6)'); r(4, 0, 2, 48, '#ffffff'); });
+  mk('fx.steam', 10, 8, (r) => { r(1, 3, 8, 4, 'rgba(240,246,250,0.55)'); r(3, 1, 5, 3, 'rgba(240,246,250,0.55)'); r(0, 5, 3, 2, 'rgba(240,246,250,0.4)'); });
+  // Waterfall: two frames of falling water with foam at the foot, 16x32 each.
+  for (let f = 0; f < 2; f++) mk(`fx.waterfall${f}`, 32, 36, (r) => {
+    r(0, 0, 32, 32, '#4a93b5');
+    for (let i = 0; i < 11; i++) r(1 + i * 3 + (f ? 1 : 0), 0, 1, 32, '#9fd0e3');
+    for (let y = f ? 2 : 6; y < 30; y += 8) { r(4 + (f ? 4 : 0), y, 2, 3, '#ffffff'); r(20 - (f ? 4 : 0), y + 3, 2, 3, '#ffffff'); }
+    r(0, 29, 32, 7, '#e9f6fa'); r(2, 31, 28, 3, '#ffffff'); r(0, 0, 32, 2, '#6fb3cf');
+  });
+  // Pier planks: a short wooden walkway over water, 16x16 tile-sized prop.
+  mk('prop.pier', 16, 16, (r) => { r(0, 0, 16, 16, '#6e4b2a'); for (let y = 0; y < 16; y += 4) r(0, y, 16, 1, '#5a3a24'); r(0, 0, 1, 16, OUT); r(15, 0, 1, 16, OUT); });
 }

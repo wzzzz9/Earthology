@@ -149,5 +149,64 @@
     "curriculum": [],
     "source": "https://en.wikipedia.org/wiki/Christmas_in_Iceland (suggested)",
     "verified": false
+  },
+  "plates.divergent-iceland": {
+    "tier": 1,
+    "text": "Iceland sits on the boundary where the North American and Eurasian plates move apart, about 2 cm a year. The rift at Þingvellir is that boundary at the surface.",
+    "fieldNote": "Two plates pull apart under Iceland, ~2 cm a year.",
+    "topics": [
+      "plate-tectonics",
+      "iceland"
+    ],
+    "curriculum": [],
+    "source": "https://www.thingvellir.is/en/history-nature/nature/geology/",
+    "verified": false
+  },
+  "geyser.how": {
+    "tier": 1,
+    "text": "A geyser is a hot spring that erupts. Water deep underground is heated by hot rock until it boils and blasts the water above it into the air.",
+    "fieldNote": "Geyser: underground water boils and blasts upward.",
+    "topics": [
+      "geothermal",
+      "iceland"
+    ],
+    "curriculum": [],
+    "source": "https://www.usgs.gov/faqs/what-geyser",
+    "verified": false
+  },
+  "basalt.columns": {
+    "tier": 2,
+    "text": "When a thick flow of basalt lava cools slowly, it shrinks and cracks into tall columns, often with six sides.",
+    "fieldNote": "Cooling lava shrinks and cracks into six-sided columns.",
+    "topics": [
+      "igneous-rocks"
+    ],
+    "curriculum": [],
+    "source": "https://www.usgs.gov/volcanoes/glossary/columnar-jointing",
+    "verified": false
+  },
+  "glacier.meltwater-rivers": {
+    "tier": 1,
+    "text": "Glaciers are rivers of ice that move slowly downhill. Their meltwater feeds many of Iceland's rivers and waterfalls.",
+    "fieldNote": "Glaciers melt into rivers; rivers make the waterfalls.",
+    "topics": [
+      "glaciers",
+      "iceland"
+    ],
+    "curriculum": [],
+    "source": "https://www.usgs.gov/special-topics/water-science-school/science/glaciers-and-icecaps",
+    "verified": false
+  },
+  "beach.black-sand": {
+    "tier": 1,
+    "text": "Iceland's black beaches are made of basalt broken down by the sea and by glacier floods, not of pale quartz sand like most beaches.",
+    "fieldNote": "Black sand = ground-up basalt.",
+    "topics": [
+      "igneous-rocks",
+      "coasts"
+    ],
+    "curriculum": [],
+    "source": "https://www.bgs.ac.uk/discovering-geology/",
+    "verified": false
   }
 }

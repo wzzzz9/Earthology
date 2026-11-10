@@ -18,7 +18,7 @@ export interface MapInfo {
 /** Colours for the paper map, by ground gid. Unknown gids fall back to parchment. */
 const GID_COLOR: Record<number, number> = {
   1: 0x9db37a, 2: 0xa6b97e, 3: 0xb7a98f, 4: 0x6fa8c9, 5: 0x6b6f78, 6: 0x6b6f78, 7: 0x4d4e55,
-  9: 0x6f8f55, 10: 0x7fa05d, 11: 0xe6edf0, 12: 0x9cc6da, 13: 0x6f8f55, 14: 0x7fa05d,
+  9: 0x6f8f55, 10: 0x7fa05d, 11: 0xe6edf0, 12: 0x9cc6da, 13: 0x6f8f55, 14: 0x7fa05d, 15: 0x1c2a3a, 16: 0x9fd0e3,
 };
 
 /**
@@ -48,7 +48,7 @@ export class MapScene extends Phaser.Scene {
 
     this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x0b0d14, 0.85);
     this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH - 24, GAME_HEIGHT - 16, 0xf1e9d2).setStrokeStyle(2, 0x8a7a5a);
-    this.add.text(ox, 16, 'MAP  ·  the field by the lake', { fontFamily: 'monospace', fontSize: '9px', color: '#5a4a2a' });
+    this.add.text(ox, 16, 'MAP  ·  Iceland, the south coast', { fontFamily: 'monospace', fontSize: '9px', color: '#5a4a2a' });
 
     const g = this.add.graphics();
     let explored = 0;

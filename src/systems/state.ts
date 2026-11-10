@@ -107,6 +107,8 @@ export class GameState {
   finalResult: FinalResult | null = null;
   retake = false;
   attempt = 1;
+  /** Tiles in the current map, set by the World; used for the explored percentage. */
+  mapTiles = 1;
   private exploredSet = new Set<number>();
 
   reset(): void {

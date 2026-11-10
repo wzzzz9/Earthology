@@ -9,7 +9,7 @@ import { saveNow } from './save';
 export type Notice = { lines: string[]; note?: string };
 
 const fmt = (tpl: string, vars: Record<string, string | number>) => tpl.replace(/\{(\w+)\}/g, (_, k) => String(vars[k] ?? ''));
-const exploredPct = () => Math.round((state.explored.length / (40 * 30)) * 100); // TODO: map size from the loaded map
+const exploredPct = () => Math.round((state.explored.length / Math.max(1, state.mapTiles)) * 100);
 
 export function classOnDay(day: number): ClassDef | undefined {
   if (state.retake) return undefined;

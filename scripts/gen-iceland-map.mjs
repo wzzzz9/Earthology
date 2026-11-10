@@ -1,0 +1,165 @@
+// Generates public/assets/maps/iceland.json: one connected region with a harbour town in
+// the middle and five famous places around it, stylised and close together. Deterministic.
+import { writeFileSync } from 'node:fs';
+
+const W = 80, H = 60, T = 16;
+const GRASS = 1, GRASS2 = 2, PATH = 3, WATER = 4, ROCK = 5, MOSSROCK = 6, BLACKSAND = 7, MOSSLAVA = 9, MOSSLAVA2 = 10, ICE = 11, SHALLOW = 12, MOSSLAVA3 = 13, MOSSLAVA4 = 14, CHASM = 15, HOTPOOL = 16;
+const MOSS = [MOSSLAVA, MOSSLAVA2, MOSSLAVA3, MOSSLAVA4];
+const SOLID = [WATER, ROCK, MOSSROCK, CHASM, HOTPOOL];
+const TILECOUNT = 16;
+
+let seed = 20934;
+const rnd = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+
+const ground = new Array(W * H).fill(GRASS);
+const walls = new Array(W * H).fill(0);
+const at = (x, y) => y * W + x;
+const inMap = (x, y) => x >= 0 && y >= 0 && x < W && y < H;
+const setG = (x, y, t) => { if (inMap(x, y)) ground[at(x, y)] = t; };
+
+for (let i = 0; i < ground.length; i++) if (rnd() < 0.22) ground[i] = GRASS2;
+
+const blob = (cx, cy, rx, ry, tile, rimTile = null, rim = 0.35) => {
+  for (let y = Math.floor(cy - ry - 2); y <= cy + ry + 2; y++) for (let x = Math.floor(cx - rx - 2); x <= cx + rx + 2; x++) {
+    if (!inMap(x, y)) continue;
+    const d = ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2;
+    if (d < 1) ground[at(x, y)] = tile;
+    else if (rimTile !== null && d < 1 + rim) ground[at(x, y)] = rimTile;
+  }
+};
+const line = (x0, y0, x1, y1, tile, width = 2) => {
+  const n = Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0));
+  for (let i = 0; i <= n; i++) {
+    const x = Math.round(x0 + ((x1 - x0) * i) / n), y = Math.round(y0 + ((y1 - y0) * i) / n);
+    for (let dx = 0; dx < width; dx++) for (let dy = 0; dy < width; dy++) setG(x + dx, y + dy, tile);
+  }
+};
+
+// ---- the sea along the south, with a black-sand beach to the south-east ----
+for (let y = 54; y < H; y++) for (let x = 0; x < W; x++) ground[at(x, y)] = WATER;
+for (let x = 0; x < W; x++) ground[at(x, 53)] = SHALLOW;
+for (let y = 50; y < 53; y++) for (let x = 44; x < W; x++) ground[at(x, y)] = BLACKSAND;
+for (let x = 44; x < W; x++) ground[at(x, 53)] = BLACKSAND;
+// harbour basin west of the pier, calmer water, and a stone harbour wall
+for (let y = 50; y < 54; y++) for (let x = 24; x < 40; x++) ground[at(x, y)] = y === 50 ? SHALLOW : WATER;
+for (let x = 20; x < 24; x++) for (let y = 50; y < 54; y++) ground[at(x, y)] = BLACKSAND;
+
+// ---- moss-lava fields, snow, ice ----
+blob(22, 14, 9, 5, MOSSLAVA, MOSSLAVA2, 0.4);
+blob(50, 46, 5, 2.5, MOSSLAVA2, MOSSLAVA, 0.4);
+blob(6, 36, 4, 6, MOSSLAVA, MOSSLAVA2, 0.4);
+for (let i = 0; i < ground.length; i++) if (MOSS.includes(ground[i])) ground[i] = MOSS[Math.floor(rnd() * MOSS.length)];
+blob(4, 3, 3, 1.5, ICE); blob(40, 2, 4, 1.3, ICE); blob(76, 20, 3, 2, ICE);
+// glacier in the north-east: a big ice tongue coming down from the top edge
+blob(62, 3, 10, 5, ICE); blob(62, 8, 7, 3, ICE);
+
+// ---- the rift (Þingvellir): a chasm running north-south in the west, cliffs of rock west of it ----
+line(7, 8, 9, 30, CHASM, 3);
+for (let y = 8; y < 31; y++) { if (rnd() < 0.25) walls[at(6 + Math.floor(rnd() * 1), y)] = ROCK; if (rnd() < 0.25) walls[at(12, y)] = ROCK; }
+for (let y = 6; y < 33; y++) for (let x = 2; x < 8; x++) if (rnd() < 0.35) walls[at(x, y)] = ROCK;
+
+// ---- geyser field north of town: hot pools ----
+for (const [x, y, rx, ry] of [[33, 11, 2, 1.2], [38, 9, 1.5, 1], [41, 13, 2, 1.2], [36, 16, 1.2, 1]]) blob(x, y, rx, ry, HOTPOOL, BLACKSAND, 0.5);
+
+// ---- the lake east of town ----
+blob(56, 32, 6, 3.5, WATER, SHALLOW, 0.25);
+for (let y = 26; y < 38; y++) for (let x = 48; x < 66; x++) { const d = ((x - 56) / 6) ** 2 + ((y - 32) / 3.5) ** 2; if (d >= 1.25 && d < 1.7) ground[at(x, y)] = BLACKSAND; }
+
+// ---- the river: from the glacier down the east side to the sea, with a waterfall cliff ----
+line(68, 10, 70, 20, WATER, 2); line(70, 20, 70, 53, WATER, 2);
+for (let x = 64; x < 78; x++) if (x < 70 || x > 71) { walls[at(x, 21)] = ROCK; }
+for (let y = 10; y < 54; y += 1) for (const x of [69, 72]) if (ground[at(x, y)] !== WATER && rnd() < 0.3) ground[at(x, y)] = SHALLOW;
+
+// ---- gravel tracks: ship -> town -> places ----
+line(12, 44, 50, 44, PATH, 2);                 // main street, ship to the east end of town
+line(32, 18, 32, 44, PATH, 2);                 // north to the geysers
+line(50, 36, 50, 44, PATH, 2); line(50, 36, 53, 36, PATH, 2); // to the lake shore
+line(50, 44, 66, 44, PATH, 2); line(66, 24, 66, 44, PATH, 2); // east, then north along the river to the fall
+line(46, 45, 56, 50, PATH, 2);                 // south-east down to the beach
+line(12, 31, 12, 44, PATH, 2);                 // north from the ship to the rift
+line(60, 12, 60, 26, PATH, 2); line(53, 26, 60, 26, PATH, 2); // from the lake north to the glacier
+line(30, 46, 34, 46, PATH, 2); line(32, 46, 32, 50, PATH, 2); // down to the pier
+
+// ---- objects ----
+const objs = [];
+let oid = 1;
+const pt = (name, type, tx, ty) => objs.push({ id: oid++, name, type, x: tx * T + T / 2, y: ty * T + T / 2, width: 0, height: 0, point: true, visible: true, rotation: 0 });
+pt('spawn', 'spawn', 14, 45);
+pt('ship', 'ship', 11, 42);
+pt('signpost', 'scan', 16, 43);
+// town buildings (footprint 3x2 tiles above the point) and the church
+pt('house-red', 'building', 22, 42); pt('house-yellow', 'building', 28, 42); pt('house-blue', 'building', 34, 42); pt('house-green', 'building', 40, 42);
+pt('house-blue', 'building', 24, 48); pt('house-red', 'building', 38, 48);
+pt('church', 'building', 45, 41);
+pt('church', 'scan', 45, 42);
+pt('racks', 'prop', 18, 48); pt('fish-racks', 'scan', 18, 49);
+pt('pipe', 'prop', 48, 42); pt('hot-pipe', 'scan', 48, 43);
+pt('pen', 'prop', 15, 36); pt('sheep-pen', 'scan', 15, 38);
+for (let y = 50; y < 54; y++) pt('pier', 'pier', 32, y);
+pt('boat', 'scanwater', 34, 53);
+pt('harbour-wall', 'scan', 41, 50);
+// people
+pt('sigrun', 'npc', 52, 37); pt('gunnar', 'npc', 33, 52); pt('halldora', 'npc', 40, 49); pt('asta', 'npc', 29, 43);
+pt('kari', 'npc', 26, 46); pt('einar', 'npc', 46, 43); pt('hrafnhildur', 'npc', 16, 37);
+// famous places
+pt('rift', 'scan', 11, 20);
+pt('geyser', 'fx', 36, 13); pt('geysir', 'scan', 36, 15);
+for (const [x, y] of [[33, 12], [41, 14], [38, 10]]) pt('steam', 'fx', x, y);
+pt('hot-pool', 'scan', 34, 13);
+pt('waterfall', 'fx', 70, 21); // drawn 32 wide, centred between the two river tiles pt('waterfall', 'scan', 67, 23);
+pt('columns-wall', 'prop', 60, 49); pt('columns', 'scan', 60, 50);
+pt('glacier-face', 'prop', 60, 10); pt('glacier', 'scan', 60, 12);
+pt('lake', 'scan', 53, 35); pt('cairn', 'scan', 48, 30);
+// rocks to pick up
+pt('basalt', 'sample', 10, 32); pt('obsidian', 'sample', 24, 18); pt('pumice', 'sample', 56, 52);
+// trees, sparse
+for (const [n, x, y] of [['birch', 20, 40], ['rowan', 36, 39], ['birch', 44, 36], ['willow', 54, 29], ['rowan', 30, 50], ['birch', 58, 40], ['willow', 64, 30], ['rowan', 16, 50], ['birch', 42, 46]]) pt(n, 'tree', x, y);
+
+// tiles under objects stay walkable; building footprints become solid
+const reserved = new Set(objs.map((o) => at(Math.floor(o.x / T), Math.floor(o.y / T))));
+for (const o of objs) {
+  const tx = Math.floor(o.x / T), ty = Math.floor(o.y / T);
+  if (o.type === 'building') {
+    const w = o.name === 'church' ? 3 : 3, h = o.name === 'church' ? 3 : 2;
+    for (let dy = 0; dy < h; dy++) for (let dx = -1; dx < w - 1; dx++) { if (inMap(tx + dx, ty - dy)) { walls[at(tx + dx, ty - dy)] = 0; ground[at(tx + dx, ty - dy)] = GRASS; } }
+  }
+  if (o.type === 'pier') ground[at(tx, ty)] = PATH;
+  if (o.type === 'scan' || o.type === 'npc' || o.type === 'sample' || o.type === 'spawn') {
+    if (SOLID.includes(ground[at(tx, ty)])) ground[at(tx, ty)] = ground[at(tx, ty)] === WATER || ground[at(tx, ty)] === SHALLOW ? BLACKSAND : GRASS;
+  }
+}
+// harbour wall: a line of boulders east of the basin running into the sea
+for (let y = 49; y < 56; y++) walls[at(41, y)] = ROCK;
+for (let y = 49; y < 52; y++) walls[at(42, y)] = ROCK;
+// border
+for (let x = 0; x < W; x++) { walls[at(x, 0)] = ROCK; walls[at(x, H - 1)] = ROCK; }
+for (let y = 0; y < H; y++) { walls[at(0, y)] = ROCK; walls[at(W - 1, y)] = ROCK; }
+// scattered boulders, denser on lava and by the rift, never on tracks, water, sand or objects
+for (let i = 0; i < 160; i++) {
+  const x = 2 + Math.floor(rnd() * (W - 4)), y = 2 + Math.floor(rnd() * (H - 4));
+  const g = ground[at(x, y)];
+  if ([PATH, WATER, SHALLOW, BLACKSAND, CHASM, HOTPOOL, ICE].includes(g) || reserved.has(at(x, y)) || walls[at(x, y)]) continue;
+  const onLava = MOSS.includes(g);
+  if (!onLava && rnd() < 0.7) continue;
+  walls[at(x, y)] = rnd() < 0.4 ? MOSSROCK : ROCK;
+}
+for (const r of reserved) walls[r] = 0;
+// keep every track clear of boulders
+for (let i = 0; i < ground.length; i++) if (ground[i] === PATH) walls[i] = 0;
+
+const tiles = [];
+for (let id = 1; id <= TILECOUNT; id++) tiles.push({ id: id - 1, properties: [{ name: 'collides', type: 'bool', value: SOLID.includes(id) }] });
+
+const map = {
+  type: 'map', version: '1.10', tiledversion: '1.11.0', orientation: 'orthogonal', renderorder: 'right-down',
+  width: W, height: H, tilewidth: T, tileheight: T, infinite: false, nextlayerid: 4, nextobjectid: oid,
+  properties: [{ name: 'title', type: 'string', value: 'Iceland · the south coast' }],
+  tilesets: [{ firstgid: 1, name: 'placeholder', tilewidth: T, tileheight: T, tilecount: TILECOUNT, columns: TILECOUNT, image: 'placeholder.png', imagewidth: T * TILECOUNT, imageheight: 16, margin: 0, spacing: 0, tiles }],
+  layers: [
+    { id: 1, type: 'tilelayer', name: 'ground', width: W, height: H, x: 0, y: 0, visible: true, opacity: 1, data: ground },
+    { id: 2, type: 'tilelayer', name: 'walls', width: W, height: H, x: 0, y: 0, visible: true, opacity: 1, data: walls },
+    { id: 3, type: 'objectgroup', name: 'objects', visible: true, opacity: 1, x: 0, y: 0, draworder: 'topdown', objects: objs },
+  ],
+};
+writeFileSync(new URL('../public/assets/maps/iceland.json', import.meta.url), JSON.stringify(map));
+console.log(`wrote iceland.json (${W}x${H}, ${objs.length} objects)`);
