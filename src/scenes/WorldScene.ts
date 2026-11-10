@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import {
-  makePlaceholderTileset, makePlaceholderPlayer, makePlaceholderShip, makeSparkle, makePlaceholderProps, makePickupRock, makeTrees, makeIcelandProps,
+  makePlaceholderTileset, makePlaceholderPlayer, makePlaceholderShip, makeSparkle, makePlaceholderProps, makePickupRock, makeTrees, makeIcelandProps, makePlants,
   PLAYER_W, PLAYER_H, DISGUISES, PLAYER_LOOK,
 } from '../systems/placeholders';
 import { MoveInput } from '../systems/input';
@@ -69,6 +69,7 @@ export class WorldScene extends Phaser.Scene {
     makePlaceholderProps(this);
     makeTrees(this);
     makeIcelandProps(this);
+    makePlants(this);
 
     const map = this.make.tilemap({ key: 'map.iceland' });
     state.mapTiles = map.width * map.height;
@@ -113,6 +114,9 @@ export class WorldScene extends Phaser.Scene {
         if (!this.textures.exists(key)) continue;
         const img = this.add.image(x, y + 8, key).setOrigin(0.5, 1).setDepth(y + 8);
         solids.add(this.add.rectangle(x, y + 2, Math.max(8, img.width - 6), Math.min(12, img.height / 2)).setVisible(false));
+      } else if (o.type === 'plant') {
+        const key = `plant.${o.name}`;
+        if (this.textures.exists(key)) this.add.image(x + Phaser.Math.Between(-3, 3), y + 6, key).setOrigin(0.5, 1).setDepth(y + 2);
       } else if (o.type === 'pier') {
         this.add.image(x, y, 'prop.pier').setDepth(1);
       } else if (o.type === 'scanwater') {

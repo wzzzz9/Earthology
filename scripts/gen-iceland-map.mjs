@@ -71,14 +71,16 @@ for (let x = 64; x < 78; x++) if (x < 70 || x > 71) { walls[at(x, 21)] = ROCK; }
 for (let y = 10; y < 54; y += 1) for (const x of [69, 72]) if (ground[at(x, y)] !== WATER && rnd() < 0.3) ground[at(x, y)] = SHALLOW;
 
 // ---- gravel tracks: ship -> town -> places ----
-line(12, 44, 50, 44, PATH, 2);                 // main street, ship to the east end of town
-line(32, 18, 32, 44, PATH, 2);                 // north to the geysers
-line(50, 36, 50, 44, PATH, 2); line(50, 36, 53, 36, PATH, 2); // to the lake shore
-line(50, 44, 66, 44, PATH, 2); line(66, 24, 66, 44, PATH, 2); // east, then north along the river to the fall
-line(46, 45, 56, 50, PATH, 2);                 // south-east down to the beach
-line(12, 31, 12, 44, PATH, 2);                 // north from the ship to the rift
-line(60, 12, 60, 26, PATH, 2); line(53, 26, 60, 26, PATH, 2); // from the lake north to the glacier
-line(30, 46, 34, 46, PATH, 2); line(32, 46, 32, 50, PATH, 2); // down to the pier
+// The main street is two tiles wide (about two people side by side); every other track is one.
+line(18, 44, 46, 44, PATH, 2);                 // main street through town
+line(12, 45, 18, 45, PATH, 1);                 // from the ship to the street
+line(32, 18, 32, 44, PATH, 1);                 // north to the geysers
+line(47, 45, 50, 45, PATH, 1); line(50, 36, 50, 45, PATH, 1); line(50, 36, 53, 36, PATH, 1); // to the lake shore
+line(50, 45, 66, 45, PATH, 1); line(66, 24, 66, 45, PATH, 1); // east, then north along the river to the fall
+line(47, 46, 56, 50, PATH, 1);                 // south-east down to the beach
+line(12, 31, 12, 45, PATH, 1);                 // north from the ship to the rift
+line(60, 12, 60, 26, PATH, 1); line(53, 26, 60, 26, PATH, 1); // from the lake north to the glacier
+line(32, 46, 32, 50, PATH, 1);                 // down to the pier
 
 // ---- objects ----
 const objs = [];
@@ -88,10 +90,11 @@ pt('spawn', 'spawn', 14, 45);
 pt('ship', 'ship', 11, 42);
 pt('signpost', 'scan', 16, 43);
 // town buildings (footprint 3x2 tiles above the point) and the church
-pt('house-red', 'building', 22, 42); pt('house-yellow', 'building', 28, 42); pt('house-blue', 'building', 34, 42); pt('house-green', 'building', 40, 42);
-pt('house-blue', 'building', 24, 48); pt('house-red', 'building', 38, 48);
-pt('church', 'building', 45, 41);
-pt('church', 'scan', 45, 42);
+// packed along the street: one tile between houses
+pt('house-red', 'building', 21, 42); pt('house-yellow', 'building', 25, 42); pt('house-blue', 'building', 29, 42); pt('house-green', 'building', 35, 42); pt('house-red', 'building', 39, 42);
+pt('house-blue', 'building', 23, 48); pt('house-green', 'building', 27, 48); pt('house-yellow', 'building', 37, 48);
+pt('church', 'building', 44, 41);
+pt('church', 'scan', 44, 42);
 pt('racks', 'prop', 18, 48); pt('fish-racks', 'scan', 18, 49);
 pt('pipe', 'prop', 48, 42); pt('hot-pipe', 'scan', 48, 43);
 pt('pen', 'prop', 15, 36); pt('sheep-pen', 'scan', 15, 38);
@@ -99,7 +102,7 @@ for (let y = 50; y < 54; y++) pt('pier', 'pier', 32, y);
 pt('boat', 'scanwater', 34, 53);
 pt('harbour-wall', 'scan', 41, 50);
 // people
-pt('sigrun', 'npc', 52, 37); pt('gunnar', 'npc', 33, 52); pt('halldora', 'npc', 40, 49); pt('asta', 'npc', 29, 43);
+pt('sigrun', 'npc', 52, 37); pt('gunnar', 'npc', 33, 52); pt('halldora', 'npc', 40, 49); pt('asta', 'npc', 26, 43);
 pt('kari', 'npc', 26, 46); pt('einar', 'npc', 46, 43); pt('hrafnhildur', 'npc', 16, 37);
 // famous places
 pt('rift', 'scan', 11, 20);
@@ -112,8 +115,29 @@ pt('glacier-face', 'prop', 60, 10); pt('glacier', 'scan', 60, 12);
 pt('lake', 'scan', 53, 35); pt('cairn', 'scan', 48, 30);
 // rocks to pick up
 pt('basalt', 'sample', 10, 32); pt('obsidian', 'sample', 24, 18); pt('pumice', 'sample', 56, 52);
-// trees, sparse
-for (const [n, x, y] of [['birch', 20, 40], ['rowan', 36, 39], ['birch', 44, 36], ['willow', 54, 29], ['rowan', 30, 50], ['birch', 58, 40], ['willow', 64, 30], ['rowan', 16, 50], ['birch', 42, 46]]) pt(n, 'tree', x, y);
+// trees in small clusters: behind the houses, along the river and lake, by the ship
+for (const [n, x, y] of [
+  ['birch', 20, 39], ['rowan', 23, 38], ['birch', 33, 39], ['rowan', 36, 38], ['birch', 42, 37], ['willow', 46, 38],
+  ['willow', 54, 29], ['birch', 58, 28], ['willow', 62, 34], ['rowan', 60, 40], ['birch', 63, 41],
+  ['birch', 64, 30], ['rowan', 64, 36], ['willow', 68, 40], ['birch', 64, 48],
+  ['rowan', 16, 50], ['birch', 14, 48], ['willow', 10, 46], ['birch', 9, 40],
+  ['rowan', 30, 51], ['willow', 22, 51], ['birch', 46, 48], ['rowan', 52, 48],
+  ['birch', 28, 24], ['willow', 36, 24], ['birch', 44, 20], ['rowan', 14, 34],
+]) pt(n, 'tree', x, y);
+// low plants everywhere the ground is plain grass: lupine near water and the town, cotton grass on wet ground, shrubs and tufts elsewhere
+let planted = 0;
+for (let i = 0; i < 2600 && planted < 420; i++) {
+  const x = 2 + Math.floor(rnd() * (W - 4)), y = 2 + Math.floor(rnd() * (H - 4));
+  const g = ground[at(x, y)];
+  if (![GRASS, GRASS2].includes(g) || walls[at(x, y)]) continue;
+  if (objs.some((o) => Math.abs(o.x / T - x) < 1.5 && Math.abs(o.y / T - y) < 1.5)) continue;
+  const nearWater = [[1, 0], [-1, 0], [0, 1], [0, -1], [2, 0], [-2, 0], [0, 2], [0, -2]].some(([dx, dy]) => inMap(x + dx, y + dy) && [WATER, SHALLOW].includes(ground[at(x + dx, y + dy)]));
+  const nearTown = x > 16 && x < 50 && y > 36 && y < 52;
+  const roll = rnd();
+  const name = nearWater ? (roll < 0.5 ? 'cotton' : 'lupine') : nearTown ? (roll < 0.4 ? 'lupine' : roll < 0.7 ? 'tuft' : 'shrub') : roll < 0.35 ? 'shrub' : roll < 0.75 ? 'tuft' : roll < 0.9 ? 'stones' : 'lupine';
+  pt(name, 'plant', x, y);
+  planted++;
+}
 
 // tiles under objects stay walkable; building footprints become solid
 const reserved = new Set(objs.map((o) => at(Math.floor(o.x / T), Math.floor(o.y / T))));

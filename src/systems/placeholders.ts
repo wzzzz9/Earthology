@@ -496,3 +496,37 @@ export function makeIcelandProps(scene: Phaser.Scene): void {
   // Pier planks: a short wooden walkway over water, 16x16 tile-sized prop.
   mk('prop.pier', 16, 16, (r) => { r(0, 0, 16, 16, '#6e4b2a'); for (let y = 0; y < 16; y += 4) r(0, y, 16, 1, '#5a3a24'); r(0, 0, 1, 16, OUT); r(15, 0, 1, 16, OUT); });
 }
+
+/** Low plants scattered on the ground: lupine, cotton grass, a shrub, a grass tuft. No collision. */
+export function makePlants(scene: Phaser.Scene): void {
+  const OUT = '#1a1c20';
+  const mk = (key: string, w: number, h: number, draw: (r: (x: number, y: number, w: number, h: number, c: string) => void) => void) => {
+    if (scene.textures.exists(key)) return;
+    const tex = scene.textures.createCanvas(key, w, h);
+    if (!tex) return;
+    const ctx = tex.getContext();
+    draw((x, y, ww, hh, c) => { ctx.fillStyle = c; ctx.fillRect(x, y, ww, hh); });
+    tex.refresh();
+  };
+  // Nootka lupine: purple-blue flower spikes over a fan of leaves (very Icelandic in June).
+  mk('plant.lupine', 14, 16, (r) => {
+    r(2, 12, 10, 4, '#4f7a3a'); r(1, 13, 12, 2, '#5f8a3f'); r(3, 11, 2, 1, '#6f9a4a'); r(9, 11, 2, 1, '#6f9a4a');
+    for (const [x, top] of [[3, 3], [6, 0], [9, 2]]) { r(x, top, 3, 12 - top, '#6c5fc7'); r(x + 1, top, 1, 12 - top, '#8e82e0'); r(x, top, 1, 1, OUT); r(x + 2, top + 2, 1, 1, '#f4f1e8'); }
+  });
+  // Cotton grass: thin stems with white tufts.
+  mk('plant.cotton', 12, 14, (r) => {
+    for (const [x, top] of [[2, 4], [6, 1], [9, 5]]) { r(x + 1, top + 3, 1, 11 - top, '#86964f'); r(x, top, 3, 3, '#f4f1e8'); r(x + 1, top, 1, 1, '#ffffff'); }
+    r(1, 12, 10, 2, '#7d9150');
+  });
+  // Low shrub: a rounded dark-green mound with lighter top.
+  mk('plant.shrub', 16, 12, (r) => {
+    r(1, 4, 14, 7, OUT); r(2, 5, 12, 5, '#4f7a3a'); r(3, 3, 10, 2, OUT); r(4, 4, 8, 2, '#6a9a46'); r(5, 4, 3, 1, '#8fb85c'); r(2, 10, 12, 1, '#2d4a26');
+  });
+  // Grass tuft: a few blades.
+  mk('plant.tuft', 10, 8, (r) => {
+    for (const [x, top] of [[1, 3], [3, 1], [5, 0], [7, 2]]) r(x, top, 1, 8 - top, '#98a85d');
+    r(2, 5, 6, 1, '#86964f'); r(8, 4, 1, 4, '#86964f');
+  });
+  // Small stones: a couple of pebbles.
+  mk('plant.stones', 10, 6, (r) => { r(1, 2, 4, 3, '#6b6f78'); r(6, 3, 3, 2, '#6b6f78'); r(1, 2, 2, 1, '#8a8f99'); r(1, 5, 8, 1, 'rgba(0,0,0,0.2)'); });
+}
