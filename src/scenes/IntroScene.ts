@@ -303,6 +303,13 @@ export class IntroScene extends Phaser.Scene {
     const foot = this.add.text(CX, CY + 104, 'Enter: continue', { fontFamily: 'monospace', fontSize: '7px', color: '#9aa3b2' }).setOrigin(0.5).setAlpha(0);
     const light = this.add.rectangle(CX + 206, CY + 110, 6, 6, 0x5fc4b0); // power light
     layer.add([bezel, screen, scan, header, rule, body, cursor, foot, light]);
+    // Hard clip: nothing of the letter can draw outside the screen glass, however long it gets.
+    const clip = this.make.graphics({ x: 0, y: 0 }, false);
+    clip.fillStyle(0xffffff, 1);
+    clip.fillRect(CX - 206, CY - 82, 412, 166);
+    const mask = clip.createGeometryMask();
+    body.setMask(mask);
+    cursor.setMask(mask);
     this.tweens.add({ targets: cursor, alpha: 0, duration: 400, yoyo: true, repeat: -1 });
     this.caption?.setVisible(false);
     await this.tween({ targets: layer, alpha: 1, duration: 350 });
@@ -326,6 +333,7 @@ export class IntroScene extends Phaser.Scene {
     await this.wait(2600);
     await this.tween({ targets: layer, alpha: 0, duration: 350 });
     layer.destroy(true);
+    clip.destroy();
     this.caption?.setVisible(true);
   }
 
