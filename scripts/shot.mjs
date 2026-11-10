@@ -12,7 +12,7 @@ const keys = process.argv.slice(3);
 const url = process.env.GAME_URL ?? 'http://localhost:5173/';
 
 const browser = await chromium.launch();
-// SHOT_SCALE=4 renders at 1920x1080 (4x game pixels); CLIP="x,y,w,h" crops the screenshot (in screen px).
+// SHOT_SCALE=4 renders at 1920x1080 (the canvas is 960x540, so that is 2x canvas pixels); CLIP="x,y,w,h" crops the screenshot (in screen px).
 const scale = Number(process.env.SHOT_SCALE ?? 2);
 const page = await browser.newPage({ viewport: { width: 480 * scale, height: 270 * scale } });
 // Dialogue text appears instantly in tests (SHOT_SLOWTEXT=1 keeps the typewriter).

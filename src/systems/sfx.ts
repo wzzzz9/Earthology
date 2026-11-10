@@ -85,6 +85,19 @@ export const sfx = {
     const base = rnd(300, 420);
     tone({ type: 'sine', from: base, to: base * 2.1, dur: 0.11, vol: 0.5 });
   },
+  /** One big jump (into bed): a longer bubble. */
+  hop(): void {
+    tone({ type: 'sine', from: 280, to: 760, dur: 0.18, vol: 0.5 });
+  },
+  /** A sleepy yawn: slow slide down. */
+  yawn(): void {
+    tone({ type: 'sine', from: 540, to: 300, dur: 0.55, vol: 0.25 });
+  },
+  /** Lights out: two soft falling notes. */
+  sleep(): void {
+    tone({ type: 'triangle', from: 523, dur: 0.35, vol: 0.22 });
+    tone({ type: 'triangle', from: 392, dur: 0.5, vol: 0.22, delay: 0.4 });
+  },
   /** Menu cursor moved. */
   tick(): void {
     tone({ type: 'triangle', from: 880, dur: 0.04, vol: 0.3 });

@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { GAME_WIDTH, GAME_HEIGHT } from './config';
+import { GAME_WIDTH, GAME_HEIGHT, RENDER_SCALE } from './config';
 import { BootScene } from './scenes/BootScene';
 import { TitleScene } from './scenes/TitleScene';
 import { WorldScene } from './scenes/WorldScene';
@@ -17,15 +17,15 @@ import { NameScene } from './scenes/NameScene';
 // computed in device pixels and converted back (it may be a fraction in CSS units).
 const bestZoom = () => {
   const dpr = window.devicePixelRatio || 1;
-  const z = Math.floor(Math.min((window.innerWidth * dpr) / GAME_WIDTH, (window.innerHeight * dpr) / GAME_HEIGHT));
+  const z = Math.floor(Math.min((window.innerWidth * dpr) / (GAME_WIDTH * RENDER_SCALE), (window.innerHeight * dpr) / (GAME_HEIGHT * RENDER_SCALE)));
   return Math.max(1, z) / dpr;
 };
 
 const game = new Phaser.Game({
   type: Phaser.AUTO,
   parent: 'game',
-  width: GAME_WIDTH,
-  height: GAME_HEIGHT,
+  width: GAME_WIDTH * RENDER_SCALE,
+  height: GAME_HEIGHT * RENDER_SCALE,
   pixelArt: true,
   backgroundColor: '#0b0d14',
   scale: {

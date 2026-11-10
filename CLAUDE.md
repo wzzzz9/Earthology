@@ -25,6 +25,7 @@
 - Map check: `npm run check:map` walks the generated Iceland map from the spawn and fails if any scannable, person, rock or the ship cannot be reached on foot. Run it after changing the map generator.
 
 ## Text and sound
-- Pixel fonts only: `FONT.body` (Tiny5) at 8/16/24px, `FONT.retro` (Press Start 2P) at 8/16px, from `src/ui/font.ts`. Any other family or size blurs after zoom. Fonts load in Boot before any scene starts.
-- Zoom is whole device pixels per game pixel (`bestZoom()` in main.ts accounts for display scaling).
+- The canvas is 2x the game size (`RENDER_SCALE`); every scene calls `hiRes(this)` first in create(). Camera zoom values are in render units (zoom 1 game = `RENDER_SCALE`).
+- Pixel fonts only, always with `resolution: TEXT_RES`: `FONT.body` (Jersey 15) at `SIZE.body`/`SIZE.big`, `FONT.retro` (Press Start 2P) at `SIZE.retro`/`SIZE.retroBig`, from `src/ui/font.ts`. Any other family or size blurs. Fonts load in Boot before any scene starts.
+- Zoom is whole device pixels per canvas pixel (`bestZoom()` in main.ts accounts for display scaling). Headless shots: use SHOT_SCALE=4 for 1920x1080.
 - Sounds are synthesised in `src/systems/sfx.ts` (no audio files). Key `0` toggles sound. Dialogue types out; the headless harness sets `__debug.fastText` so tests see whole pages (`SHOT_SLOWTEXT=1` to keep the typewriter).

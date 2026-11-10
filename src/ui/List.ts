@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { FONT } from './font';
+import { FONT, SIZE, TEXT_RES } from './font';
 import { sfx } from '../systems/sfx';
 
 export interface ListItem {
@@ -22,7 +22,7 @@ export class List {
   /** Row colours: selected, normal, dimmed. Defaults suit dark panels; the notebook passes ink. */
   colors = { on: '#ffd37a', off: '#f4f1e8', dim: '#7a8294' };
 
-  constructor(scene: Phaser.Scene, x: number, y: number, rowH = 11, fontSize = '8px', width?: number) {
+  constructor(scene: Phaser.Scene, x: number, y: number, rowH = 12, fontSize: string = SIZE.body, width?: number) {
     this.scene = scene;
     this.x = x;
     this.y = y;
@@ -37,7 +37,7 @@ export class List {
     for (const t of this.texts) t.destroy();
     this.texts = items.map((_it, i) =>
       this.scene.add.text(this.x, this.y + i * this.rowH, '', {
-        fontFamily: FONT.body,
+        fontFamily: FONT.body, resolution: TEXT_RES,
         fontSize: this.fontSize,
         color: '#f4f1e8',
         wordWrap: this.width ? { width: this.width } : undefined,

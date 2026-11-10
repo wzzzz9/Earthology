@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-import { FONT } from '../ui/font';
+import { hiRes } from '../ui/hires';
+import { FONT, SIZE, TEXT_RES } from '../ui/font';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config';
 import { hasSave, peekSave, loadSave, clearSave } from '../systems/save';
 import { state } from '../systems/state';
@@ -12,6 +13,7 @@ export class TitleScene extends Phaser.Scene {
   }
 
   create(): void {
+    hiRes(this);
     const cx = GAME_WIDTH / 2;
     const cy = GAME_HEIGHT / 2;
 
@@ -29,16 +31,16 @@ export class TitleScene extends Phaser.Scene {
 
     this.add
       .text(cx, cy + 10, 'EARTHOLOGY', {
-        fontFamily: FONT.retro,
-        fontSize: '16px',
+        fontFamily: FONT.retro, resolution: TEXT_RES,
+        fontSize: SIZE.retroBig,
         color: '#f4f1e8',
       })
       .setOrigin(0.5);
 
     this.add
       .text(cx, cy + 36, 'Assignment: survey planet EaRtH20934', {
-        fontFamily: FONT.body,
-        fontSize: '8px',
+        fontFamily: FONT.body, resolution: TEXT_RES,
+        fontSize: SIZE.body,
         color: '#9aa3b2',
       })
       .setOrigin(0.5);
@@ -46,8 +48,8 @@ export class TitleScene extends Phaser.Scene {
     const save = hasSave() ? peekSave() : null;
     const prompt = this.add
       .text(cx, GAME_HEIGHT - 40, save ? `Enter: continue (Day ${save.day})` : 'Press Enter to land', {
-        fontFamily: FONT.body,
-        fontSize: '8px',
+        fontFamily: FONT.body, resolution: TEXT_RES,
+        fontSize: SIZE.body,
         color: '#f4f1e8',
       })
       .setOrigin(0.5);
@@ -55,8 +57,8 @@ export class TitleScene extends Phaser.Scene {
 
     this.add
       .text(cx, GAME_HEIGHT - 16, save ? 'X: start a new game (deletes the save)' : 'Arrows or WASD to walk', {
-        fontFamily: FONT.body,
-        fontSize: '8px',
+        fontFamily: FONT.body, resolution: TEXT_RES,
+        fontSize: SIZE.body,
         color: '#5c6577',
       })
       .setOrigin(0.5);

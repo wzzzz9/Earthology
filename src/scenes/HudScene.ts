@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-import { FONT } from '../ui/font';
+import { hiRes } from '../ui/hires';
+import { FONT, SIZE, TEXT_RES } from '../ui/font';
 import { GAME_WIDTH } from '../config';
 import { state } from '../systems/state';
 import { bus, EV } from '../systems/events';
@@ -19,7 +20,8 @@ export class HudScene extends Phaser.Scene {
   }
 
   create(): void {
-    const style = { fontFamily: FONT.body, fontSize: '8px', color: '#f4f1e8', backgroundColor: '#11141cdd', padding: { x: 4, y: 2 } };
+    hiRes(this);
+    const style = { fontFamily: FONT.body, resolution: TEXT_RES, fontSize: SIZE.body, color: '#f4f1e8', backgroundColor: '#11141cdd', padding: { x: 4, y: 2 } };
     this.dayText = this.add.text(6, 6, '', style);
     this.bookText = this.add.text(GAME_WIDTH - 6, 6, '', style).setOrigin(1, 0);
     this.toast = this.add

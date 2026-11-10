@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-import { FONT } from '../ui/font';
+import { hiRes } from '../ui/hires';
+import { FONT, SIZE, TEXT_RES } from '../ui/font';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config';
 import { state } from '../systems/state';
 import { bus, EV } from '../systems/events';
@@ -39,6 +40,7 @@ export class MapScene extends Phaser.Scene {
   }
 
   create(): void {
+    hiRes(this);
     const { width: W, height: H, ground, walls, player, markers } = this.info;
     const cell = 5; // tiles per grid cell
     const scale = Math.floor(Math.min((GAME_WIDTH - 120) / W, (GAME_HEIGHT - 60) / H)); // px per tile
@@ -49,7 +51,7 @@ export class MapScene extends Phaser.Scene {
 
     this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x0b0d14, 0.85);
     this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH - 24, GAME_HEIGHT - 16, 0xf1e9d2).setStrokeStyle(2, 0x8a7a5a);
-    this.add.text(ox, 16, 'MAP  ·  Iceland, the south coast', { fontFamily: FONT.body, fontSize: '8px', color: '#5a4a2a' });
+    this.add.text(ox, 16, 'MAP  ·  Iceland, the south coast', { fontFamily: FONT.body, resolution: TEXT_RES, fontSize: SIZE.body, color: '#5a4a2a' });
 
     const g = this.add.graphics();
     let explored = 0;
@@ -71,10 +73,10 @@ export class MapScene extends Phaser.Scene {
     for (let x = 0; x <= W; x += cell) g.lineBetween(ox + x * scale, oy, ox + x * scale, oy + mapH);
     for (let y = 0; y <= H; y += cell) g.lineBetween(ox, oy + y * scale, ox + mapW, oy + y * scale);
     for (let x = 0; x < W; x += cell) {
-      this.add.text(ox + (x + cell / 2) * scale, oy - 8, String.fromCharCode(65 + x / cell), { fontFamily: FONT.body, fontSize: '8px', color: '#5a4a2a' }).setOrigin(0.5);
+      this.add.text(ox + (x + cell / 2) * scale, oy - 8, String.fromCharCode(65 + x / cell), { fontFamily: FONT.body, resolution: TEXT_RES, fontSize: SIZE.body, color: '#5a4a2a' }).setOrigin(0.5);
     }
     for (let y = 0; y < H; y += cell) {
-      this.add.text(ox - 8, oy + (y + cell / 2) * scale, String(y / cell + 1), { fontFamily: FONT.body, fontSize: '8px', color: '#5a4a2a' }).setOrigin(0.5);
+      this.add.text(ox - 8, oy + (y + cell / 2) * scale, String(y / cell + 1), { fontFamily: FONT.body, resolution: TEXT_RES, fontSize: SIZE.body, color: '#5a4a2a' }).setOrigin(0.5);
     }
 
     // Markers (only on explored tiles)
@@ -87,7 +89,7 @@ export class MapScene extends Phaser.Scene {
       const color = m.kind === 'ship' ? 0x8e6bbf : m.kind === 'npc' ? 0xb5451b : 0x2b6cb0;
       this.add.rectangle(p.x, p.y, 4, 4, color).setStrokeStyle(1, 0x1a1c20);
       const label = m.kind === 'ship' ? 'ship' : m.kind === 'npc' ? content.npcs[m.id]?.name ?? m.id : content.scannables[m.id]?.name ?? m.id;
-      if (m.kind !== 'scan' || state.hasScanned(m.id)) this.add.text(p.x + 4, p.y - 3, label, { fontFamily: FONT.body, fontSize: '8px', color: '#2b2418' });
+      if (m.kind !== 'scan' || state.hasScanned(m.id)) this.add.text(p.x + 4, p.y - 3, label, { fontFamily: FONT.body, resolution: TEXT_RES, fontSize: SIZE.body, color: '#2b2418' });
     }
     const pp = toPx(player.x, player.y);
     const you = this.add.rectangle(pp.x, pp.y, 5, 5, 0xffd37a).setStrokeStyle(1, 0x1a1c20);
@@ -104,11 +106,11 @@ export class MapScene extends Phaser.Scene {
     g.fillTriangle(cxr, cyr - 14, cxr - 4, cyr, cxr + 4, cyr);
     g.fillStyle(0x5a4a2a, 1);
     g.fillTriangle(cxr, cyr + 14, cxr - 4, cyr, cxr + 4, cyr);
-    this.add.text(cxr, cyr - 22, 'N', { fontFamily: FONT.body, fontSize: '8px', color: '#b5451b' }).setOrigin(0.5);
+    this.add.text(cxr, cyr - 22, 'N', { fontFamily: FONT.body, resolution: TEXT_RES, fontSize: SIZE.body, color: '#b5451b' }).setOrigin(0.5);
 
     const pct = Math.round((explored / (W * H)) * 100);
-    this.add.text(GAME_WIDTH - 24, GAME_HEIGHT - 44, [`You: ${col}${row}`, `Explored: ${pct}%`], { fontFamily: FONT.body, fontSize: '8px', color: '#5a4a2a', align: 'right' }).setOrigin(1, 1);
-    this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 14, 'Esc or M: close', { fontFamily: FONT.body, fontSize: '8px', color: '#9aa3b2' }).setOrigin(0.5);
+    this.add.text(GAME_WIDTH - 24, GAME_HEIGHT - 44, [`You: ${col}${row}`, `Explored: ${pct}%`], { fontFamily: FONT.body, resolution: TEXT_RES, fontSize: SIZE.body, color: '#5a4a2a', align: 'right' }).setOrigin(1, 1);
+    this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 14, 'Esc or M: close', { fontFamily: FONT.body, resolution: TEXT_RES, fontSize: SIZE.body, color: '#9aa3b2' }).setOrigin(0.5);
 
     const kb = this.input.keyboard!;
     kb.on('keydown-ESC', this.close, this);

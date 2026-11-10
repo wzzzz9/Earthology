@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-import { FONT } from '../ui/font';
+import { hiRes } from '../ui/hires';
+import { FONT, SIZE, TEXT_RES } from '../ui/font';
 import { sfx } from '../systems/sfx';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config';
 import type { Page } from '../systems/conversation';
@@ -13,7 +14,7 @@ export interface DialogueSource {
 
 const MIN_BOX_H = 64;
 const PAD = 8;
-const LINE_H = 11;
+const LINE_H = 12;
 
 /**
  * Overlay scene: one text box at the bottom, speaker name, placeholder portrait,
@@ -45,19 +46,20 @@ export class DialogueScene extends Phaser.Scene {
   }
 
   create(): void {
+    hiRes(this);
     this.box = this.add.rectangle(GAME_WIDTH / 2, 0, GAME_WIDTH - 12, MIN_BOX_H, 0x11141c, 0.94).setStrokeStyle(1, 0xf4f1e8);
     this.portrait = this.add.rectangle(6 + PAD + 20, 0, 40, 48, 0x5b7fbf);
-    this.portraitLetter = this.add.text(0, 0, '?', { fontFamily: FONT.body, fontSize: '16px', color: '#f4f1e8' }).setOrigin(0.5);
+    this.portraitLetter = this.add.text(0, 0, '?', { fontFamily: FONT.body, resolution: TEXT_RES, fontSize: SIZE.big, color: '#f4f1e8' }).setOrigin(0.5);
     const textX = 6 + PAD + 48;
-    this.nameText = this.add.text(textX, 0, '', { fontFamily: FONT.body, fontSize: '8px', color: '#ffd37a' });
+    this.nameText = this.add.text(textX, 0, '', { fontFamily: FONT.body, resolution: TEXT_RES, fontSize: SIZE.body, color: '#ffd37a' });
     this.bodyText = this.add.text(textX, 0, '', {
-      fontFamily: FONT.body,
-      fontSize: '8px',
+      fontFamily: FONT.body, resolution: TEXT_RES,
+      fontSize: SIZE.body,
       color: '#f4f1e8',
       lineSpacing: 2,
       wordWrap: { width: GAME_WIDTH - textX - 16 },
     });
-    this.hint = this.add.text(GAME_WIDTH - 12, GAME_HEIGHT - 10, 'Enter: next   Esc: skip', { fontFamily: FONT.body, fontSize: '8px', color: '#5c6577' }).setOrigin(1, 0.5);
+    this.hint = this.add.text(GAME_WIDTH - 12, GAME_HEIGHT - 9, 'Enter: next   Esc: skip', { fontFamily: FONT.body, resolution: TEXT_RES, fontSize: SIZE.body, color: '#5c6577' }).setOrigin(1, 1);
 
     const kb = this.input.keyboard!;
     kb.on('keydown-ENTER', this.advance, this);
@@ -85,9 +87,11 @@ export class DialogueScene extends Phaser.Scene {
     // never makes a word jump between lines.
     this.fullBody = this.bodyText.runWordWrap(lines.join('\n'));
     const rows = this.fullBody.split('\n').length;
+    // Row height as the font really draws it (ascent + descent + line spacing).
+    const lh = this.bodyText.getTextMetrics().fontSize + 2;
 
     // Box grows to fit the rows and choices; everything is laid out from its top edge.
-    const needed = 17 + rows * LINE_H + (nChoices ? 4 + nChoices * LINE_H : 0) + 10;
+    const needed = 17 + rows * lh + (nChoices ? 4 + nChoices * LINE_H : 0) + 16;
     const h = Math.max(MIN_BOX_H, needed);
     const top = GAME_HEIGHT - h - 6;
     this.box.setSize(GAME_WIDTH - 12, h).setPosition(GAME_WIDTH / 2, top + h / 2);
@@ -103,10 +107,10 @@ export class DialogueScene extends Phaser.Scene {
     for (const t of this.choiceTexts) t.destroy();
     this.choiceTexts = [];
     if (page.choices) {
-      const baseY = top + 17 + rows * LINE_H + 4;
+      const baseY = top + 17 + rows * lh + 4;
       page.choices.forEach((c, i) => {
         this.choiceTexts.push(
-          this.add.text(this.bodyText.x + 8, baseY + i * LINE_H, c, { fontFamily: FONT.body, fontSize: '8px', color: '#f4f1e8' }),
+          this.add.text(this.bodyText.x + 8, baseY + i * LINE_H, c, { fontFamily: FONT.body, resolution: TEXT_RES, fontSize: SIZE.body, color: '#f4f1e8' }),
         );
       });
       this.hint.setText('Up/Down: choose   Enter: pick');

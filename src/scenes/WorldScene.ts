@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-import { FONT } from '../ui/font';
+import { hiRes } from '../ui/hires';
+import { FONT, SIZE, TEXT_RES } from '../ui/font';
 import { sfx } from '../systems/sfx';
 import {
   makePlaceholderTileset, makePlaceholderPlayer, makePlaceholderShip, makeSparkle, makePlaceholderProps, makePickupRock, makeTrees, makeIcelandProps, makePlants,
@@ -62,6 +63,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   create(): void {
+    hiRes(this);
     makePlaceholderTileset(this);
     const disguise = state.disguise && DISGUISES[state.disguise] ? state.disguise : 'a';
     this.playerKey = `player.${disguise}`;
@@ -197,7 +199,7 @@ export class WorldScene extends Phaser.Scene {
     this.bookKey = this.input.keyboard!.addKey('N');
     this.mapKey = this.input.keyboard!.addKey('M');
     this.prompt = this.add
-      .text(0, 0, '', { fontFamily: FONT.body, fontSize: '8px', color: '#f4f1e8', backgroundColor: '#11141cdd', padding: { x: 3, y: 1 } })
+      .text(0, 0, '', { fontFamily: FONT.body, resolution: TEXT_RES, fontSize: SIZE.body, color: '#f4f1e8', backgroundColor: '#11141cdd', padding: { x: 3, y: 1 } })
       .setOrigin(0.5, 1)
       .setDepth(100)
       .setVisible(false);

@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-import { FONT } from '../ui/font';
+import { hiRes } from '../ui/hires';
+import { FONT, SIZE, TEXT_RES } from '../ui/font';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config';
 import { state } from '../systems/state';
 import { bus, EV } from '../systems/events';
@@ -16,14 +17,15 @@ export class NameScene extends Phaser.Scene {
   }
 
   create(): void {
+    hiRes(this);
     this.value = '';
     const cx = GAME_WIDTH / 2;
     const cy = GAME_HEIGHT / 2 - 20;
     this.add.rectangle(cx, cy, 240, 70, 0x11141c, 0.96).setStrokeStyle(1, 0xf4f1e8);
-    this.add.text(cx, cy - 22, 'Your name:', { fontFamily: FONT.body, fontSize: '8px', color: '#ffd37a' }).setOrigin(0.5);
+    this.add.text(cx, cy - 22, 'Your name:', { fontFamily: FONT.body, resolution: TEXT_RES, fontSize: SIZE.body, color: '#ffd37a' }).setOrigin(0.5);
     this.add.rectangle(cx, cy, 200, 16, 0x1f2430).setStrokeStyle(1, 0x5c6577);
-    this.field = this.add.text(cx, cy, '', { fontFamily: FONT.body, fontSize: '8px', color: '#f4f1e8' }).setOrigin(0.5);
-    this.add.text(cx, cy + 22, 'Letters only. Enter to confirm.', { fontFamily: FONT.body, fontSize: '8px', color: '#9aa3b2' }).setOrigin(0.5);
+    this.field = this.add.text(cx, cy, '', { fontFamily: FONT.body, resolution: TEXT_RES, fontSize: SIZE.body, color: '#f4f1e8' }).setOrigin(0.5);
+    this.add.text(cx, cy + 22, 'Letters only. Enter to confirm.', { fontFamily: FONT.body, resolution: TEXT_RES, fontSize: SIZE.body, color: '#9aa3b2' }).setOrigin(0.5);
     this.time.addEvent({ delay: 450, loop: true, callback: () => this.paint() });
     this.paint();
 
