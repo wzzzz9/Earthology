@@ -4,6 +4,8 @@ Forty colours for everything the game draws in Iceland: ground, water, rock, mos
 
 ![Swatches](palette.svg)
 
+**Status (Nov 10):** approved by the owner on the bright version. This is the house style for Iceland. New buildings, facilities and props draw from these 40 names; a new colour is a palette change first (see rules at the end).
+
 ## Why one palette
 
 Until now each sprite picked its own colours as it was written: about 120 distinct hex codes, three different near-blacks, five unrelated greens for grass, moss and canopies, pure white and pure black in places. Side by side they fought. The fix is a small shared set with a few rules:
