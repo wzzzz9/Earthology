@@ -12,8 +12,14 @@ import { IntroScene } from './scenes/IntroScene';
 import { MapScene } from './scenes/MapScene';
 import { NameScene } from './scenes/NameScene';
 
-// Whole-number zoom only: fractional scaling smears pixels and text.
-const bestZoom = () => Math.max(1, Math.floor(Math.min(window.innerWidth / GAME_WIDTH, window.innerHeight / GAME_HEIGHT)));
+// Every game pixel must cover a whole number of *device* pixels, or the browser smears them.
+// Windows/Mac display scaling makes a CSS pixel 1.25 or 1.5 device pixels, so the zoom is
+// computed in device pixels and converted back (it may be a fraction in CSS units).
+const bestZoom = () => {
+  const dpr = window.devicePixelRatio || 1;
+  const z = Math.floor(Math.min((window.innerWidth * dpr) / GAME_WIDTH, (window.innerHeight * dpr) / GAME_HEIGHT));
+  return Math.max(1, z) / dpr;
+};
 
 const game = new Phaser.Game({
   type: Phaser.AUTO,

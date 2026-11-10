@@ -1,4 +1,6 @@
 import Phaser from 'phaser';
+import { FONT } from '../ui/font';
+import { sfx } from '../systems/sfx';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config';
 import type { Page } from '../systems/conversation';
 import { bus, EV } from '../systems/events';
@@ -29,6 +31,8 @@ export class DialogueScene extends Phaser.Scene {
   private choiceTexts: Phaser.GameObjects.Text[] = [];
   private hint!: Phaser.GameObjects.Text;
   private box!: Phaser.GameObjects.Rectangle;
+  private fullBody = '';
+  private reveal?: Phaser.Time.TimerEvent;
 
   constructor() {
     super('Dialogue');
@@ -43,17 +47,17 @@ export class DialogueScene extends Phaser.Scene {
   create(): void {
     this.box = this.add.rectangle(GAME_WIDTH / 2, 0, GAME_WIDTH - 12, MIN_BOX_H, 0x11141c, 0.94).setStrokeStyle(1, 0xf4f1e8);
     this.portrait = this.add.rectangle(6 + PAD + 20, 0, 40, 48, 0x5b7fbf);
-    this.portraitLetter = this.add.text(0, 0, '?', { fontFamily: 'monospace', fontSize: '20px', color: '#f4f1e8' }).setOrigin(0.5);
+    this.portraitLetter = this.add.text(0, 0, '?', { fontFamily: FONT.body, fontSize: '16px', color: '#f4f1e8' }).setOrigin(0.5);
     const textX = 6 + PAD + 48;
-    this.nameText = this.add.text(textX, 0, '', { fontFamily: 'monospace', fontSize: '9px', color: '#ffd37a' });
+    this.nameText = this.add.text(textX, 0, '', { fontFamily: FONT.body, fontSize: '8px', color: '#ffd37a' });
     this.bodyText = this.add.text(textX, 0, '', {
-      fontFamily: 'monospace',
-      fontSize: '9px',
+      fontFamily: FONT.body,
+      fontSize: '8px',
       color: '#f4f1e8',
       lineSpacing: 2,
       wordWrap: { width: GAME_WIDTH - textX - 16 },
     });
-    this.hint = this.add.text(GAME_WIDTH - 12, GAME_HEIGHT - 10, 'Enter: next   Esc: skip', { fontFamily: 'monospace', fontSize: '7px', color: '#5c6577' }).setOrigin(1, 0.5);
+    this.hint = this.add.text(GAME_WIDTH - 12, GAME_HEIGHT - 10, 'Enter: next   Esc: skip', { fontFamily: FONT.body, fontSize: '8px', color: '#5c6577' }).setOrigin(1, 0.5);
 
     const kb = this.input.keyboard!;
     kb.on('keydown-ENTER', this.advance, this);
@@ -77,9 +81,13 @@ export class DialogueScene extends Phaser.Scene {
     this.selected = 0;
     const lines = page.lines.slice(0, 3).map((l) => l.replace(/\{player\}/g, state.playerName));
     const nChoices = page.choices?.length ?? 0;
+    // Wrap once up front so the box can be sized from the real row count and the typewriter
+    // never makes a word jump between lines.
+    this.fullBody = this.bodyText.runWordWrap(lines.join('\n'));
+    const rows = this.fullBody.split('\n').length;
 
-    // Box grows to fit the lines and choices; everything is laid out from its top edge.
-    const needed = 17 + lines.length * LINE_H + (nChoices ? 4 + nChoices * LINE_H : 0) + 10;
+    // Box grows to fit the rows and choices; everything is laid out from its top edge.
+    const needed = 17 + rows * LINE_H + (nChoices ? 4 + nChoices * LINE_H : 0) + 10;
     const h = Math.max(MIN_BOX_H, needed);
     const top = GAME_HEIGHT - h - 6;
     this.box.setSize(GAME_WIDTH - 12, h).setPosition(GAME_WIDTH / 2, top + h / 2);
@@ -91,14 +99,14 @@ export class DialogueScene extends Phaser.Scene {
     this.nameText.setText(page.speaker);
     this.portrait.setFillStyle(Phaser.Display.Color.HexStringToColor(page.color).color);
     this.portraitLetter.setText(page.speaker.charAt(0));
-    this.bodyText.setText(lines);
+    this.startReveal();
     for (const t of this.choiceTexts) t.destroy();
     this.choiceTexts = [];
     if (page.choices) {
-      const baseY = top + 17 + lines.length * LINE_H + 4;
+      const baseY = top + 17 + rows * LINE_H + 4;
       page.choices.forEach((c, i) => {
         this.choiceTexts.push(
-          this.add.text(this.bodyText.x + 8, baseY + i * LINE_H, c, { fontFamily: 'monospace', fontSize: '9px', color: '#f4f1e8' }),
+          this.add.text(this.bodyText.x + 8, baseY + i * LINE_H, c, { fontFamily: FONT.body, fontSize: '8px', color: '#f4f1e8' }),
         );
       });
       this.hint.setText('Up/Down: choose   Enter: pick');
@@ -120,11 +128,45 @@ export class DialogueScene extends Phaser.Scene {
     if (!this.page?.choices?.length) return;
     const n = this.page.choices.length;
     this.selected = (this.selected + delta + n) % n;
+    sfx.tick();
     this.paintSelection();
+  }
+
+  /** Types the page out a character at a time with a soft bip; Enter finishes it at once. */
+  private startReveal(): void {
+    this.reveal?.remove();
+    this.reveal = undefined;
+    if ((window as unknown as { __debug?: { fastText?: boolean } }).__debug?.fastText) {
+      this.bodyText.setText(this.fullBody);
+      return;
+    }
+    let n = 0;
+    this.bodyText.setText('');
+    this.reveal = this.time.addEvent({
+      delay: 18,
+      loop: true,
+      callback: () => {
+        n += 1;
+        this.bodyText.setText(this.fullBody.slice(0, n));
+        const ch = this.fullBody[n - 1];
+        if (ch && ch !== ' ' && ch !== '\n' && n % 2 === 0) sfx.talk();
+        if (n >= this.fullBody.length) this.finishReveal();
+      },
+    });
+  }
+
+  private finishReveal(): boolean {
+    if (!this.reveal) return false;
+    this.reveal.remove();
+    this.reveal = undefined;
+    this.bodyText.setText(this.fullBody);
+    return true;
   }
 
   private advance(): void {
     if (!this.page) return;
+    if (this.finishReveal()) return;
+    sfx.tick();
     const choice = this.page.choices ? this.selected : undefined;
     this.show(this.source.next(choice));
   }
@@ -135,6 +177,7 @@ export class DialogueScene extends Phaser.Scene {
     if (this.page.note) bus.emit(EV.toast, 'Field note: ' + this.page.note);
     // On a choice page, Esc takes the last option, which content keeps as the neutral one or "Goodbye".
     if (this.page.choices?.length) this.selected = this.page.choices.length - 1;
+    this.finishReveal();
     this.advance();
   }
 

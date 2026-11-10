@@ -1,4 +1,6 @@
 import Phaser from 'phaser';
+import { FONT } from './font';
+import { sfx } from '../systems/sfx';
 
 export interface ListItem {
   label: string;
@@ -17,8 +19,10 @@ export class List {
   private rowH: number;
   private fontSize: string;
   private width?: number;
+  /** Row colours: selected, normal, dimmed. Defaults suit dark panels; the notebook passes ink. */
+  colors = { on: '#ffd37a', off: '#f4f1e8', dim: '#7a8294' };
 
-  constructor(scene: Phaser.Scene, x: number, y: number, rowH = 11, fontSize = '9px', width?: number) {
+  constructor(scene: Phaser.Scene, x: number, y: number, rowH = 11, fontSize = '8px', width?: number) {
     this.scene = scene;
     this.x = x;
     this.y = y;
@@ -33,7 +37,7 @@ export class List {
     for (const t of this.texts) t.destroy();
     this.texts = items.map((_it, i) =>
       this.scene.add.text(this.x, this.y + i * this.rowH, '', {
-        fontFamily: 'monospace',
+        fontFamily: FONT.body,
         fontSize: this.fontSize,
         color: '#f4f1e8',
         wordWrap: this.width ? { width: this.width } : undefined,
@@ -45,6 +49,7 @@ export class List {
   move(delta: number): void {
     if (!this.items.length) return;
     this.index = (this.index + delta + this.items.length) % this.items.length;
+    sfx.tick();
     this.paint();
   }
 
@@ -66,7 +71,7 @@ export class List {
       const it = this.items[i];
       const on = i === this.index;
       t.setText((on ? '> ' : '  ') + it.label);
-      t.setColor(on ? '#ffd37a' : it.dim ? '#7a8294' : '#f4f1e8');
+      t.setColor(on ? this.colors.on : it.dim ? this.colors.dim : this.colors.off);
     });
   }
 }

@@ -23,3 +23,8 @@
 - `npm run dev` for the dev server, `npm run build` for a production build into dist/.
 - Visual check: with the dev server running (`npm run dev`), `node scripts/shot.mjs out.png Enter:200 ArrowRight:1500` loads the game headless, presses keys, saves a screenshot and prints console errors. Use it before calling a step done.
 - Map check: `npm run check:map` walks the generated Iceland map from the spawn and fails if any scannable, person, rock or the ship cannot be reached on foot. Run it after changing the map generator.
+
+## Text and sound
+- Pixel fonts only: `FONT.body` (Tiny5) at 8/16/24px, `FONT.retro` (Press Start 2P) at 8/16px, from `src/ui/font.ts`. Any other family or size blurs after zoom. Fonts load in Boot before any scene starts.
+- Zoom is whole device pixels per game pixel (`bestZoom()` in main.ts accounts for display scaling).
+- Sounds are synthesised in `src/systems/sfx.ts` (no audio files). Key `0` toggles sound. Dialogue types out; the headless harness sets `__debug.fastText` so tests see whole pages (`SHOT_SLOWTEXT=1` to keep the typewriter).

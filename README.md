@@ -26,3 +26,6 @@ Live build: https://wzzzz9.github.io/Moon_Field/
 
 Pushing to `main` deploys to GitHub Pages via `.github/workflows/deploy.yml`
 (requires the repo to be public, or GitHub Pro, and Pages set to "GitHub Actions").
+
+
+Sound: press `0` to turn sound effects on or off (remembered between sessions).

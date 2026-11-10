@@ -15,6 +15,8 @@ const browser = await chromium.launch();
 // SHOT_SCALE=4 renders at 1920x1080 (4x game pixels); CLIP="x,y,w,h" crops the screenshot (in screen px).
 const scale = Number(process.env.SHOT_SCALE ?? 2);
 const page = await browser.newPage({ viewport: { width: 480 * scale, height: 270 * scale } });
+// Dialogue text appears instantly in tests (SHOT_SLOWTEXT=1 keeps the typewriter).
+await page.addInitScript((fast) => { (window.__debug ??= {}).fastText = fast; }, !process.env.SHOT_SLOWTEXT);
 const clip = process.env.CLIP ? (([x, y, w, h]) => ({ x, y, width: w, height: h }))(process.env.CLIP.split(',').map(Number)) : undefined;
 const problems = [];
 page.on('console', (m) => {

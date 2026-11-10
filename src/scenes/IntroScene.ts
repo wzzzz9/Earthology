@@ -1,4 +1,6 @@
 import Phaser from 'phaser';
+import { FONT } from '../ui/font';
+import { sfx } from '../systems/sfx';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config';
 import { content } from '../content';
 import type { IntroLine } from '../content/types';
@@ -229,7 +231,7 @@ export class IntroScene extends Phaser.Scene {
     // poster: a wanted-style Earth poster, because of course
     this.add.rectangle(200, 70, 44, 54, 0xe9e4d8).setStrokeStyle(2, 0x1a1c20);
     drawEarth(this, 200, 62, 13);
-    this.add.text(200, 84, 'EARTH', { fontFamily: 'monospace', fontSize: '6px', color: '#1a1c20' }).setOrigin(0.5);
+    this.add.text(200, 84, 'EARTH', { fontFamily: FONT.body, fontSize: '8px', color: '#1a1c20' }).setOrigin(0.5);
     // shelf with books and a plant
     this.add.rectangle(330, 100, 70, 4, 0x4b4470);
     for (const [i, c] of [0xe2673f, 0x5fc4b0, 0xffd37a, 0x8e6bbf, 0x4f7fb8].entries()) this.add.rectangle(302 + i * 9, 90, 7, 16, c).setStrokeStyle(1, 0x1a1c20);
@@ -248,7 +250,7 @@ export class IntroScene extends Phaser.Scene {
     this.tweens.add({ targets: sglow, alpha: 0.2, duration: 900, yoyo: true, repeat: -1 });
     const alien = this.add.image(CX - 30, 166, 'alien').setScale(2).setOrigin(0.5, 1);
     this.vignette();
-    this.caption = this.add.text(CX, 14, 'Home. Somewhere far away.', { fontFamily: 'monospace', fontSize: '8px', color: '#9aa3b2' }).setOrigin(0.5).setDepth(950);
+    this.caption = this.add.text(CX, 14, 'Home. Somewhere far away.', { fontFamily: FONT.body, fontSize: '8px', color: '#9aa3b2' }).setOrigin(0.5).setDepth(950);
     await this.fade(false);
     await this.wait(900);
 
@@ -270,8 +272,8 @@ export class IntroScene extends Phaser.Scene {
     blanket.setScale(0.2, 1);
     await this.tween({ targets: blanket, scaleX: 1, duration: 400, ease: 'Sine.easeOut' });
     const dark = this.add.rectangle(CX, CY, GAME_WIDTH, GAME_HEIGHT, 0x000000, 0).setDepth(800);
-    const zz = this.add.text(112, 118, 'z', { fontFamily: 'monospace', fontSize: '9px', color: '#d9b8ff' }).setDepth(801).setAlpha(0);
-    const zz2 = this.add.text(120, 110, 'z', { fontFamily: 'monospace', fontSize: '12px', color: '#d9b8ff' }).setDepth(801).setAlpha(0);
+    const zz = this.add.text(112, 118, 'z', { fontFamily: FONT.body, fontSize: '8px', color: '#d9b8ff' }).setDepth(801).setAlpha(0);
+    const zz2 = this.add.text(120, 110, 'z', { fontFamily: FONT.body, fontSize: '16px', color: '#d9b8ff' }).setDepth(801).setAlpha(0);
     this.tweens.add({ targets: zz, y: 100, alpha: { from: 1, to: 0 }, duration: 1600, repeat: -1 });
     this.tweens.add({ targets: zz2, y: 90, alpha: { from: 1, to: 0 }, duration: 1600, delay: 800, repeat: -1 });
     this.tweens.add({ targets: glow, alpha: 0, duration: 1200 });
@@ -282,7 +284,7 @@ export class IntroScene extends Phaser.Scene {
 
   /** A few quick hops while a sprite is moving: bounce the y by a few pixels. */
   private hops(target: Phaser.GameObjects.Image, count: number, height = 4): void {
-    this.tweens.add({ targets: target, y: `-=${height}`, duration: 140, yoyo: true, repeat: count - 1, ease: 'Quad.easeOut' });
+    this.tweens.add({ targets: target, y: `-=${height}`, duration: 140, yoyo: true, repeat: count - 1, ease: 'Quad.easeOut', onStart: () => sfx.step(), onRepeat: () => sfx.step() });
   }
 
   /**
@@ -296,23 +298,27 @@ export class IntroScene extends Phaser.Scene {
     const screen = this.add.rectangle(CX, CY - 6, 412, 196, 0x11101c).setStrokeStyle(2, 0x8e6bbf);
     const scan = this.add.graphics();
     for (let y = CY - 104; y < CY + 92; y += 3) { scan.fillStyle(0xffffff, 0.035); scan.fillRect(CX - 206, y, 412, 1); }
-    const header = this.add.text(CX - 196, CY - 98, 'NEBULA HOLLOW UNIVERSITY  ·  ADMISSIONS OFFICE', { fontFamily: 'monospace', fontSize: '8px', color: '#8e6bbf' });
+    const header = this.add.text(CX - 196, CY - 98, 'NEBULA HOLLOW UNIVERSITY - ADMISSIONS', { fontFamily: FONT.retro, fontSize: '8px', color: '#8e6bbf' });
     const rule = this.add.rectangle(CX, CY - 85, 396, 1, 0x4b4470);
-    const body = this.add.text(CX - 196, CY - 76, '', { fontFamily: 'monospace', fontSize: '11px', color: '#d9b8ff', lineSpacing: 6 });
-    const cursor = this.add.rectangle(CX - 196, CY - 70, 6, 11, 0xd9b8ff).setOrigin(0, 0);
-    const foot = this.add.text(CX, CY + 104, 'Enter: continue', { fontFamily: 'monospace', fontSize: '7px', color: '#9aa3b2' }).setOrigin(0.5).setAlpha(0);
+    // One text object per row, each 8 px tall in the terminal font: rows never reflow or drift.
+    const COLS = 49;
+    const ROW_H = 12;
+    const TOP = CY - 78;
+    const MAX_ROWS = Math.floor((CY + 86 - TOP) / ROW_H);
+    const rowTexts = Array.from({ length: MAX_ROWS }, (_v, i) =>
+      this.add.text(CX - 196, TOP + i * ROW_H, '', { fontFamily: FONT.retro, fontSize: '8px', color: '#d9b8ff' }),
+    );
+    const cursor = this.add.rectangle(CX - 196, TOP, 8, 9, 0xd9b8ff).setOrigin(0, 0);
+    const foot = this.add.text(CX, CY + 104, 'Enter: continue', { fontFamily: FONT.body, fontSize: '8px', color: '#9aa3b2' }).setOrigin(0.5).setAlpha(0);
     const light = this.add.rectangle(CX + 206, CY + 110, 6, 6, 0x5fc4b0); // power light
-    layer.add([bezel, screen, scan, header, rule, body, cursor, foot, light]);
+    layer.add([bezel, screen, scan, header, rule, ...rowTexts, cursor, foot, light]);
     this.tweens.add({ targets: cursor, alpha: 0, duration: 400, yoyo: true, repeat: -1 });
     this.caption?.setVisible(false);
     await this.tween({ targets: layer, alpha: 1, duration: 350 });
 
-    // Wrap by character count (monospace, ~6.6 px per character at 11 px), then type character
-    // by character. Only the last MAX_ROWS rows are ever drawn, so the letter stays inside the
-    // glass; when it grows past the bottom, the top rows roll away.
-    const COLS = 58;
-    const ROW_H = 17;
-    const MAX_ROWS = Math.floor(160 / ROW_H);
+    // Wrap by character count (8 px per character), then type character by character.
+    // Only the last MAX_ROWS rows are ever drawn, so the letter stays inside the glass; when it
+    // grows past the bottom, the top rows roll away.
     const wrapped: string[] = [];
     for (const line of lines) {
       const words = line.split(' ');
@@ -326,16 +332,19 @@ export class IntroScene extends Phaser.Scene {
     const render = (shown: string) => {
       const rows = shown.split('\n');
       const visible = rows.slice(Math.max(0, rows.length - MAX_ROWS));
-      body.setText(visible);
+      rowTexts.forEach((t, i) => t.setText(visible[i] ?? ''));
       const last = visible[visible.length - 1] ?? '';
-      cursor.setPosition(body.x + last.length * 6.6 + 1, body.y + (visible.length - 1) * ROW_H + 1);
+      cursor.setPosition(CX - 196 + last.length * 8, TOP + (visible.length - 1) * ROW_H);
     };
     let shown = '';
     for (let i = 0; i < full.length; i++) {
-      shown += full[i];
+      const ch = full[i];
+      shown += ch;
       render(shown);
+      if (ch === '\n') sfx.ret();
+      else if (ch !== ' ') sfx.key();
       if (this.skip) { this.skip = false; shown = full; render(shown); break; }
-      await this.wait(full[i] === '\n' ? 260 : 24);
+      await this.wait(ch === '\n' ? 260 : 28);
     }
     this.tweens.add({ targets: foot, alpha: 1, duration: 300 });
     await this.wait(2600);
@@ -349,7 +358,7 @@ export class IntroScene extends Phaser.Scene {
     this.clear();
     this.cameras.main.setZoom(1).setScroll(0, 0);
     this.add.rectangle(CX, CY, GAME_WIDTH, GAME_HEIGHT, 0x000000);
-    this.add.text(CX, CY, text, { fontFamily: 'monospace', fontSize: '12px', color: '#f4f1e8' }).setOrigin(0.5);
+    this.add.text(CX, CY, text, { fontFamily: FONT.body, fontSize: '16px', color: '#f4f1e8' }).setOrigin(0.5);
     await this.fade(false, 200);
     await this.wait(1400);
     await this.fade(true, 300);
@@ -387,8 +396,8 @@ export class IntroScene extends Phaser.Scene {
     for (const x of [62, 418]) { this.add.rectangle(x, floorY - 8, 14, 14, 0xb5451b).setStrokeStyle(1, 0x1a1c20); this.add.circle(x, floorY - 22, 10, 0x6f9a4a); this.add.circle(x - 6, floorY - 16, 6, 0x5fc4b0); }
     // the sign, above the floor line
     this.add.rectangle(CX, 118, 220, 30, 0x11141c).setStrokeStyle(2, 0x8e6bbf);
-    this.add.text(CX, 112, content.intro.university.toUpperCase(), { fontFamily: 'monospace', fontSize: '9px', color: '#d9b8ff' }).setOrigin(0.5);
-    this.add.text(CX, 125, 'Earthology Department', { fontFamily: 'monospace', fontSize: '7px', color: '#9aa3b2' }).setOrigin(0.5);
+    this.add.text(CX, 112, content.intro.university.toUpperCase(), { fontFamily: FONT.body, fontSize: '8px', color: '#d9b8ff' }).setOrigin(0.5);
+    this.add.text(CX, 125, 'Earthology Department', { fontFamily: FONT.body, fontSize: '8px', color: '#9aa3b2' }).setOrigin(0.5);
     this.vignette(0.25);
     const prof = this.add.image(CX + 40, GAME_HEIGHT - 76, 'alien.teacher').setScale(2.2).setOrigin(0.5, 1);
     const you = this.add.image(-20, GAME_HEIGHT - 76, 'alien').setScale(2.2).setOrigin(0.5, 1);
@@ -416,7 +425,7 @@ export class IntroScene extends Phaser.Scene {
       streaks.push(s);
       this.tweens.add({ targets: s, x: s.x - 700, duration: Phaser.Math.Between(300, 700), repeat: -1, onRepeat: () => { s.x = GAME_WIDTH + 100; s.y = Phaser.Math.Between(0, GAME_HEIGHT); } });
     }
-    this.add.text(CX, GAME_HEIGHT - 20, '(fast. very fast.)', { fontFamily: 'monospace', fontSize: '7px', color: '#5c6577' }).setOrigin(0.5);
+    this.add.text(CX, GAME_HEIGHT - 20, '(fast. very fast.)', { fontFamily: FONT.body, fontSize: '8px', color: '#5c6577' }).setOrigin(0.5);
     this.cameras.main.fadeIn(100, 0, 0, 0);
     await this.wait(1700);
     this.cameras.main.flash(300, 255, 255, 255);
@@ -450,7 +459,7 @@ export class IntroScene extends Phaser.Scene {
     this.add.image(CX - 10, GAME_HEIGHT - 80, 'alien').setScale(2.5).setOrigin(0.5, 1);
     this.add.image(CX + 30, GAME_HEIGHT - 80, 'alien.teacher').setScale(2.5).setOrigin(0.5, 1);
     this.vignette(0.3);
-    this.caption = this.add.text(CX, 14, 'Night. Cold. Smells of salt.', { fontFamily: 'monospace', fontSize: '8px', color: '#9aa3b2' }).setOrigin(0.5).setDepth(950);
+    this.caption = this.add.text(CX, 14, 'Night. Cold. Smells of salt.', { fontFamily: FONT.body, fontSize: '8px', color: '#9aa3b2' }).setOrigin(0.5).setDepth(950);
     await this.wait(500);
     await this.talk(content.intro.arrival);
   }
@@ -472,7 +481,7 @@ export class IntroScene extends Phaser.Scene {
     island.fillStyle(0x2e3137, 1); island.fillCircle(CX - 40, CY + 10, 9); island.fillCircle(CX + 55, CY + 20, 7); // lava fields
     const dot = this.add.circle(CX - 70, CY + 25, 3, 0xffd37a).setStrokeStyle(1, 0x1a1c20);
     this.tweens.add({ targets: dot, alpha: 0.3, duration: 400, yoyo: true, repeat: -1 });
-    this.add.text(CX - 70, CY + 34, 'you', { fontFamily: 'monospace', fontSize: '7px', color: '#f4f1e8' }).setOrigin(0.5);
+    this.add.text(CX - 70, CY + 34, 'you', { fontFamily: FONT.body, fontSize: '8px', color: '#f4f1e8' }).setOrigin(0.5);
     // sea texture and a foam line along the coast
     const sea = this.add.graphics();
     sea.lineStyle(1, 0x3f6f8f, 0.6);
@@ -496,8 +505,8 @@ export class IntroScene extends Phaser.Scene {
     void moon;
     this.vignette(0.25);
     this.tweens.add({ targets: planet, y: planet.y - 3, duration: 1800, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
-    const title = this.add.text(CX, CY + 62, content.intro.titleCard.title, { fontFamily: 'monospace', fontSize: '26px', color: '#f4f1e8' }).setOrigin(0.5).setAlpha(0);
-    const sub = this.add.text(CX, CY + 86, content.intro.titleCard.sub, { fontFamily: 'monospace', fontSize: '9px', color: '#9aa3b2' }).setOrigin(0.5).setAlpha(0);
+    const title = this.add.text(CX, CY + 62, content.intro.titleCard.title, { fontFamily: FONT.retro, fontSize: '16px', color: '#f4f1e8' }).setOrigin(0.5).setAlpha(0);
+    const sub = this.add.text(CX, CY + 86, content.intro.titleCard.sub, { fontFamily: FONT.body, fontSize: '8px', color: '#9aa3b2' }).setOrigin(0.5).setAlpha(0);
     this.cameras.main.setZoom(0.5);
     await this.fade(false, 300);
     await this.tween({ targets: this.cameras.main, zoom: 1, duration: 1600, ease: 'Sine.easeOut' });
@@ -535,12 +544,12 @@ export class IntroScene extends Phaser.Scene {
     this.add.rectangle(CX + 150, 146, 70, 8, 0x3a4560);
     this.add.rectangle(60, 140, 80, 26, 0x2a3044).setStrokeStyle(1, 0x3a4560); this.add.rectangle(60, 132, 76, 10, 0x4f7fb8); // bunk
     this.add.rectangle(CX, 46, 150, 58, 0x1a1030).setStrokeStyle(2, 0x8e6bbf);
-    this.add.text(CX, 24, 'SHIP  ·  CABIN', { fontFamily: 'monospace', fontSize: '8px', color: '#8e6bbf' }).setOrigin(0.5);
-    this.add.text(CX, 46, 'EaRtH20934  ·  local time: night', { fontFamily: 'monospace', fontSize: '7px', color: '#9aa3b2' }).setOrigin(0.5);
+    this.add.text(CX, 24, 'SHIP  ·  CABIN', { fontFamily: FONT.body, fontSize: '8px', color: '#8e6bbf' }).setOrigin(0.5);
+    this.add.text(CX, 46, 'EaRtH20934  ·  local time: night', { fontFamily: FONT.body, fontSize: '8px', color: '#9aa3b2' }).setOrigin(0.5);
     this.add.image(CX + 50, 156, 'alien.teacher').setScale(3).setOrigin(0.5, 1);
     this.figure = this.add.image(CX - 30, 156, 'alien').setScale(3).setOrigin(0.5, 1);
     this.vignette(0.3);
-    this.caption = this.add.text(CX, 170, 'You. Before the disguise.', { fontFamily: 'monospace', fontSize: '8px', color: '#9aa3b2' }).setOrigin(0.5).setDepth(950);
+    this.caption = this.add.text(CX, 170, 'You. Before the disguise.', { fontFamily: FONT.body, fontSize: '8px', color: '#9aa3b2' }).setOrigin(0.5).setDepth(950);
     await this.fade(false, 300);
     await this.wait(300);
     await this.talk(content.intro.cabin, (id) => this.wearDisguise(id));

@@ -1,4 +1,6 @@
 import Phaser from 'phaser';
+import { FONT } from '../ui/font';
+import { sfx } from '../systems/sfx';
 import {
   makePlaceholderTileset, makePlaceholderPlayer, makePlaceholderShip, makeSparkle, makePlaceholderProps, makePickupRock, makeTrees, makeIcelandProps, makePlants,
   PLAYER_W, PLAYER_H, DISGUISES, PLAYER_LOOK,
@@ -195,7 +197,7 @@ export class WorldScene extends Phaser.Scene {
     this.bookKey = this.input.keyboard!.addKey('N');
     this.mapKey = this.input.keyboard!.addKey('M');
     this.prompt = this.add
-      .text(0, 0, '', { fontFamily: 'monospace', fontSize: '8px', color: '#f4f1e8', backgroundColor: '#11141cdd', padding: { x: 3, y: 1 } })
+      .text(0, 0, '', { fontFamily: FONT.body, fontSize: '8px', color: '#f4f1e8', backgroundColor: '#11141cdd', padding: { x: 3, y: 1 } })
       .setOrigin(0.5, 1)
       .setDepth(100)
       .setVisible(false);
@@ -311,12 +313,14 @@ export class WorldScene extends Phaser.Scene {
     if (!def) return;
     const added = state.addEntry({ id: it.id, kind: 'scan', section: def.section, name: def.name, line: def.line });
     it.sparkle?.setVisible(false);
+    if (added) sfx.scan();
     bus.emit(EV.toast, added ? `Notebook: ${def.name}. ${def.line}` : `${def.name}. Already in your notebook.`);
   }
 
   private pickUp(it: Interactable): void {
     const def = content.samples[it.id];
     const s = state.addSample(it.id, it.image?.name ?? it.id);
+    sfx.confirm();
     it.sparkle?.destroy();
     it.image?.destroy();
     this.interactables = this.interactables.filter((x) => x !== it);
@@ -328,6 +332,7 @@ export class WorldScene extends Phaser.Scene {
     this.player.setVelocity(0, 0);
     this.player.anims.stop();
     this.prompt.setVisible(false);
+    sfx.open();
     this.scene.launch(key, data);
   }
 
@@ -442,6 +447,7 @@ export class WorldScene extends Phaser.Scene {
     this.move.update();
     this.player.setVelocity(this.move.vec.x * SPEED, this.move.vec.y * SPEED);
     if (this.move.moving) {
+      sfx.step();
       this.player.anims.play(`walk-${this.move.facing}-${state.disguise ?? 'a'}`, true);
     } else {
       this.player.anims.stop();

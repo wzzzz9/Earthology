@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { FONT } from '../ui/font';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config';
 import { content } from '../content';
 import { submit, type Feedback } from '../systems/rubric';
@@ -28,14 +29,14 @@ export class SubmitScene extends Phaser.Scene {
     this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x0b0d14, 0.92);
     // Screen bezel and glow
     this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH - 60, GAME_HEIGHT - 50, 0x1a1030).setStrokeStyle(2, 0x8e6bbf);
-    this.add.text(40, 32, 'COMMUNICATOR  ·  ' + t.name.toUpperCase(), { fontFamily: 'monospace', fontSize: '8px', color: '#8e6bbf' });
+    this.add.text(40, 32, 'COMMUNICATOR  ·  ' + t.name.toUpperCase(), { fontFamily: FONT.body, fontSize: '8px', color: '#8e6bbf' });
     // Portrait placeholder
     this.add.rectangle(40 + 24, 70, 48, 56, Phaser.Display.Color.HexStringToColor(t.color).color);
-    this.add.text(40 + 24, 70, t.name.split(' ').pop()!.charAt(0), { fontFamily: 'monospace', fontSize: '24px', color: '#f4f1e8' }).setOrigin(0.5);
-    this.big = this.add.text(110, 44, '', { fontFamily: 'monospace', fontSize: '18px', color: '#ffd37a' });
-    this.body = this.add.text(110, 70, '', { fontFamily: 'monospace', fontSize: '9px', color: '#f4f1e8', lineSpacing: 3, wordWrap: { width: GAME_WIDTH - 110 - 48 } });
-    this.stamp = this.add.text(GAME_WIDTH - 48, GAME_HEIGHT - 40, '', { fontFamily: 'monospace', fontSize: '9px', color: '#ffd37a' }).setOrigin(1, 1);
-    this.hint = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 10, 'Enter: next', { fontFamily: 'monospace', fontSize: '7px', color: '#9aa3b2' }).setOrigin(0.5);
+    this.add.text(40 + 24, 70, t.name.split(' ').pop()!.charAt(0), { fontFamily: FONT.body, fontSize: '24px', color: '#f4f1e8' }).setOrigin(0.5);
+    this.big = this.add.text(110, 44, '', { fontFamily: FONT.body, fontSize: '16px', color: '#ffd37a' });
+    this.body = this.add.text(110, 70, '', { fontFamily: FONT.body, fontSize: '8px', color: '#f4f1e8', lineSpacing: 3, wordWrap: { width: GAME_WIDTH - 110 - 48 } });
+    this.stamp = this.add.text(GAME_WIDTH - 48, GAME_HEIGHT - 40, '', { fontFamily: FONT.body, fontSize: '8px', color: '#ffd37a' }).setOrigin(1, 1);
+    this.hint = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 10, 'Enter: next', { fontFamily: FONT.body, fontSize: '8px', color: '#9aa3b2' }).setOrigin(0.5);
 
     this.feedback = submit();
     if (this.feedback.kind === 'marked') {

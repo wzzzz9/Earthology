@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { FONT } from '../ui/font';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config';
 import { content } from '../content';
 import type { Section } from '../content/types';
@@ -50,19 +51,20 @@ export class NotebookScene extends Phaser.Scene {
     // Paper
     this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH - 40, GAME_HEIGHT - 30, 0xf1e9d2).setStrokeStyle(2, 0x8a7a5a);
     this.add.rectangle(20 + 70, GAME_HEIGHT / 2, 1, GAME_HEIGHT - 40, 0xc9b98f);
-    this.add.text(28, 22, 'FIELD NOTEBOOK', { fontFamily: 'monospace', fontSize: '9px', color: '#5a4a2a' });
-    this.add.text(GAME_WIDTH - 28, 22, `Day ${state.day}`, { fontFamily: 'monospace', fontSize: '9px', color: '#5a4a2a' }).setOrigin(1, 0);
+    this.add.text(28, 22, 'FIELD NOTEBOOK', { fontFamily: FONT.body, fontSize: '8px', color: '#5a4a2a' });
+    this.add.text(GAME_WIDTH - 28, 22, `Day ${state.day}`, { fontFamily: FONT.body, fontSize: '8px', color: '#5a4a2a' }).setOrigin(1, 0);
 
     const TABS = tabs();
-    this.tabTexts = TABS.map((t, i) => this.add.text(28, 40 + i * 14, t.label, { fontFamily: 'monospace', fontSize: '9px', color: '#5a4a2a' }));
+    this.tabTexts = TABS.map((t, i) => this.add.text(28, 40 + i * 14, t.label, { fontFamily: FONT.body, fontSize: '8px', color: '#5a4a2a' }));
     // Progress bars under each section tab. They fill, but never say what is missing.
     this.bars = TABS.map((_t, i) => this.add.rectangle(28, 40 + i * 14 + 11, 0, 2, 0xb5451b).setOrigin(0, 0));
     const best = state.bestScore ? bandFor(state.bestScore) : null;
-    if (best?.stamp) this.add.text(GAME_WIDTH - 28, GAME_HEIGHT - 24, `[ ${best.stamp.toUpperCase()} ]  best ${state.bestScore}`, { fontFamily: 'monospace', fontSize: '8px', color: '#b5451b' }).setOrigin(1, 1);
-    this.list = new List(this, 100, 40, 11, '9px', 150);
-    this.detail = this.add.text(262, 40, '', { fontFamily: 'monospace', fontSize: '9px', color: '#2b2418', lineSpacing: 2, wordWrap: { width: GAME_WIDTH - 262 - 32 } });
+    if (best?.stamp) this.add.text(GAME_WIDTH - 28, GAME_HEIGHT - 24, `[ ${best.stamp.toUpperCase()} ]  best ${state.bestScore}`, { fontFamily: FONT.body, fontSize: '8px', color: '#b5451b' }).setOrigin(1, 1);
+    this.list = new List(this, 100, 40, 11, '8px', 150);
+    this.list.colors = { on: '#b5451b', off: '#2b2418', dim: '#9a8c74' };
+    this.detail = this.add.text(262, 40, '', { fontFamily: FONT.body, fontSize: '8px', color: '#2b2418', lineSpacing: 2, wordWrap: { width: GAME_WIDTH - 262 - 32 } });
     this.sketch = this.add.image(GAME_WIDTH - 60, GAME_HEIGHT - 60, '__DEFAULT').setVisible(false);
-    this.hint = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 10, '', { fontFamily: 'monospace', fontSize: '7px', color: '#9aa3b2' }).setOrigin(0.5);
+    this.hint = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 10, '', { fontFamily: FONT.body, fontSize: '8px', color: '#9aa3b2' }).setOrigin(0.5);
 
     const kb = this.input.keyboard!;
     kb.on('keydown-LEFT', () => this.switchTab(-1));

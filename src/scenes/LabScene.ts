@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { FONT } from '../ui/font';
 import { GAME_WIDTH, GAME_HEIGHT } from '../config';
 import { content, TEST_ORDER } from '../content';
 import type { KeyLeaf, TestId } from '../content/types';
@@ -40,14 +41,14 @@ export class LabScene extends Phaser.Scene {
     const def = content.samples[this.sample.sampleId];
     this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x0b0d14, 0.9);
     this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH - 40, GAME_HEIGHT - 30, 0x1b1f2a).setStrokeStyle(2, 0x5c6577);
-    this.header = this.add.text(28, 22, '', { fontFamily: 'monospace', fontSize: '9px', color: '#ffd37a' });
+    this.header = this.add.text(28, 22, '', { fontFamily: FONT.body, fontSize: '8px', color: '#ffd37a' });
     makeSampleSketch(this, `sketch.${this.sample.sampleId}`, def.color, def.pattern);
     this.add.image(28 + 48, 70, `sketch.${this.sample.sampleId}`).setScale(2);
-    this.add.text(28, 118, def.look, { fontFamily: 'monospace', fontSize: '8px', color: '#9aa3b2', wordWrap: { width: 130 } });
+    this.add.text(28, 118, def.look, { fontFamily: FONT.body, fontSize: '8px', color: '#9aa3b2', wordWrap: { width: 130 } });
 
-    this.list = new List(this, 180, 40, 12, '9px');
-    this.resultText = this.add.text(180, 128, '', { fontFamily: 'monospace', fontSize: '9px', color: '#f4f1e8', lineSpacing: 2, wordWrap: { width: GAME_WIDTH - 180 - 32 } });
-    this.hint = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 10, '', { fontFamily: 'monospace', fontSize: '7px', color: '#9aa3b2' }).setOrigin(0.5);
+    this.list = new List(this, 180, 40, 12, '8px');
+    this.resultText = this.add.text(180, 128, '', { fontFamily: FONT.body, fontSize: '8px', color: '#f4f1e8', lineSpacing: 2, wordWrap: { width: GAME_WIDTH - 180 - 32 } });
+    this.hint = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 10, '', { fontFamily: FONT.body, fontSize: '8px', color: '#9aa3b2' }).setOrigin(0.5);
 
     const kb = this.input.keyboard!;
     kb.on('keydown-UP', () => this.nav(-1));
@@ -118,7 +119,7 @@ export class LabScene extends Phaser.Scene {
     const labels = [node.yesLabel ?? 'Yes', node.noLabel ?? 'No'];
     const y = this.resultText.y + this.resultText.height + 8;
     this.keyTexts = labels.map((l, i) =>
-      this.add.text(188, y + i * 12, (i === this.keyChoice ? '> ' : '  ') + l, { fontFamily: 'monospace', fontSize: '9px', color: i === this.keyChoice ? '#ffd37a' : '#f4f1e8' }),
+      this.add.text(188, y + i * 12, (i === this.keyChoice ? '> ' : '  ') + l, { fontFamily: FONT.body, fontSize: '8px', color: i === this.keyChoice ? '#ffd37a' : '#f4f1e8' }),
     );
     this.publishDebug();
   }
@@ -146,7 +147,7 @@ export class LabScene extends Phaser.Scene {
     const y = this.resultText.y + this.resultText.height + 8;
     this.keyChoice = 0;
     this.keyTexts = ['Yes, that is what it is', 'Go back and check'].map((l, i) =>
-      this.add.text(188, y + i * 12, (i === 0 ? '> ' : '  ') + l, { fontFamily: 'monospace', fontSize: '9px', color: i === 0 ? '#ffd37a' : '#f4f1e8' }),
+      this.add.text(188, y + i * 12, (i === 0 ? '> ' : '  ') + l, { fontFamily: FONT.body, fontSize: '8px', color: i === 0 ? '#ffd37a' : '#f4f1e8' }),
     );
     this.hint.setText('Enter: choose   Esc: back to tests');
     this.publishDebug();
