@@ -16,5 +16,41 @@
     "section": "people",
     "line": "Letters you cannot read yet. An arrow points toward the water.",
     "sketch": "#9c7849"
+  },
+  "boat": {
+    "name": "Fishing boat",
+    "section": "people",
+    "line": "A small boat with a blue hull. It smells strongly of fish and diesel.",
+    "sketch": "#2f5d8a"
+  },
+  "fish-racks": {
+    "name": "Drying racks",
+    "section": "people",
+    "line": "Wooden frames with fish hanging in rows. The wind does the work.",
+    "sketch": "#a88a5c"
+  },
+  "harbour-wall": {
+    "name": "Harbour wall",
+    "section": "land",
+    "line": "A long wall of huge dark stones. The waves hit the outside, the boats sit calm inside.",
+    "sketch": "#4a4f57"
+  },
+  "hot-pipe": {
+    "name": "Hot-water pipe",
+    "section": "earth",
+    "line": "A fat pipe running along the ground. It is warm to touch. Snow has melted on top of it.",
+    "sketch": "#b0b4b8"
+  },
+  "sheep-pen": {
+    "name": "Sheep pen",
+    "section": "people",
+    "line": "A ring of stone walls split into small pens, like slices of a pie. Mostly empty.",
+    "sketch": "#8a8f6a"
+  },
+  "church": {
+    "name": "Little church",
+    "section": "people",
+    "line": "A small white church with a red roof. The door is not locked.",
+    "sketch": "#e4e0d6"
   }
 }

@@ -4,6 +4,76 @@
     "role": "Retired geologist",
     "color": "#5b7fbf",
     "coat": "#3f6a4a",
-    "thresholds": { "acquaintance": 3, "friend": 10, "close": 25 }
+    "thresholds": {
+      "acquaintance": 3,
+      "friend": 10,
+      "close": 25
+    }
+  },
+  "gunnar": {
+    "name": "Gunnar",
+    "role": "Fisherman",
+    "color": "#c0503a",
+    "coat": "#c2462e",
+    "thresholds": {
+      "acquaintance": 3,
+      "friend": 12,
+      "close": 28
+    }
+  },
+  "halldora": {
+    "name": "Halldóra",
+    "role": "Harbour master",
+    "color": "#2e6f8e",
+    "coat": "#1f3b5c",
+    "thresholds": {
+      "acquaintance": 4,
+      "friend": 12,
+      "close": 26
+    }
+  },
+  "asta": {
+    "name": "Ásta",
+    "role": "Bakery owner",
+    "color": "#d98aa0",
+    "coat": "#e8e2d0",
+    "thresholds": {
+      "acquaintance": 2,
+      "friend": 9,
+      "close": 22
+    }
+  },
+  "kari": {
+    "name": "Kári",
+    "role": "Child who asks too many questions",
+    "color": "#e3b43a",
+    "coat": "#e0a020",
+    "thresholds": {
+      "acquaintance": 2,
+      "friend": 8,
+      "close": 20
+    }
+  },
+  "einar": {
+    "name": "Einar",
+    "role": "Geothermal plant worker",
+    "color": "#7a9a3a",
+    "coat": "#d0d4d8",
+    "thresholds": {
+      "acquaintance": 3,
+      "friend": 11,
+      "close": 25
+    }
+  },
+  "hrafnhildur": {
+    "name": "Hrafnhildur",
+    "role": "Sheep farmer",
+    "color": "#8a6a4a",
+    "coat": "#6b4a2b",
+    "thresholds": {
+      "acquaintance": 4,
+      "friend": 13,
+      "close": 30
+    }
   }
 }

@@ -73,5 +73,453 @@
         }
       }
     }
+  },
+  "gunnar": {
+    "greet": {
+      "label": "Greet",
+      "byLevel": {
+        "0": {
+          "lines": [
+            "Morning.",
+            "Mind the ropes there."
+          ],
+          "note": "A fisherman coiling rope. Busy, not unfriendly.",
+          "choices": [
+            {
+              "text": "We just moved here. Hello!",
+              "trust": 1,
+              "reply": [
+                "Ah, the new family. Welcome.",
+                "You picked a windy town."
+              ]
+            },
+            {
+              "text": "What are you doing?",
+              "trust": 0,
+              "reply": [
+                "Coiling rope.",
+                "It doesn't coil itself."
+              ]
+            }
+          ]
+        },
+        "1": {
+          "lines": [
+            "{player}. Back again.",
+            "The sea was kind today. Small mercies."
+          ],
+          "trust": 1,
+          "note": "Gunnar nods at you. He remembers your name."
+        }
+      }
+    },
+    "boat": {
+      "label": "Ask about his boat",
+      "requires": {
+        "scanned": "boat",
+        "level": 1
+      },
+      "byLevel": {
+        "1": {
+          "lines": [
+            "She's older than me, near enough.",
+            "My father fished from her. Now I do."
+          ],
+          "trust": 2,
+          "note": "Gunnar: his boat belonged to his father."
+        }
+      }
+    },
+    "racks": {
+      "label": "Ask about the fish racks",
+      "requires": {
+        "scanned": "fish-racks",
+        "level": 1
+      },
+      "byLevel": {
+        "1": {
+          "lines": [
+            "That's how we dry fish. Just wind and cold air.",
+            "Dried fish with butter. Best snack there is."
+          ],
+          "trust": 2,
+          "note": "Gunnar: fish is dried on racks by the wind. Eaten with butter."
+        }
+      }
+    }
+  },
+  "halldora": {
+    "greet": {
+      "label": "Greet",
+      "byLevel": {
+        "0": {
+          "lines": [
+            "Good day.",
+            "Stay back from the edge, please."
+          ],
+          "note": "A woman with a clipboard. She watches everything.",
+          "choices": [
+            {
+              "text": "We just moved in. I'll be careful!",
+              "trust": 1,
+              "reply": [
+                "Good. Welcome to town, then.",
+                "Most kids aren't so polite."
+              ]
+            },
+            {
+              "text": "Is this your harbour?",
+              "trust": 0,
+              "reply": [
+                "I look after it.",
+                "Nobody owns the sea."
+              ]
+            }
+          ]
+        },
+        "1": {
+          "lines": [
+            "Hello, {player}.",
+            "Quiet day. I like quiet days."
+          ],
+          "trust": 1,
+          "note": "Halldóra gives you a small smile."
+        }
+      }
+    },
+    "wall": {
+      "label": "Ask about the harbour wall",
+      "requires": {
+        "scanned": "harbour-wall",
+        "level": 1
+      },
+      "byLevel": {
+        "1": {
+          "lines": [
+            "The wall keeps the big waves out.",
+            "In a winter storm, you'll see why we need it."
+          ],
+          "trust": 2,
+          "note": "Halldóra: the harbour wall keeps out big waves."
+        }
+      }
+    },
+    "boats": {
+      "label": "Ask about the boats",
+      "requires": {
+        "scanned": "boat",
+        "level": 1
+      },
+      "byLevel": {
+        "1": {
+          "lines": [
+            "I know every boat here, and who sails it.",
+            "Fish is a big part of how this country earns."
+          ],
+          "trust": 2,
+          "note": "Halldóra: fish is one of Iceland's biggest exports."
+        }
+      }
+    }
+  },
+  "asta": {
+    "greet": {
+      "label": "Greet",
+      "byLevel": {
+        "0": {
+          "lines": [
+            "Hello. We open early.",
+            "Everything on the left is from this morning."
+          ],
+          "note": "A baker with flour on her sleeves. Polite, a little busy.",
+          "choices": [
+            {
+              "text": "We're new in town. It smells amazing!",
+              "trust": 1,
+              "reply": [
+                "Ha! That's the cinnamon buns.",
+                "Welcome. Tell your family we're here."
+              ]
+            },
+            {
+              "text": "Just looking.",
+              "trust": 0,
+              "reply": [
+                "Looking is free.",
+                "Buns are not."
+              ]
+            }
+          ]
+        },
+        "1": {
+          "lines": [
+            "{player}! Good morning.",
+            "I saved the last bun. Don't tell anyone."
+          ],
+          "trust": 1,
+          "note": "Ásta waves when you come in."
+        }
+      }
+    },
+    "church": {
+      "label": "Ask about the church",
+      "requires": {
+        "scanned": "church",
+        "level": 1
+      },
+      "byLevel": {
+        "1": {
+          "lines": [
+            "My grandmother sang in that church.",
+            "On Christmas Eve, half the town goes. I bake all week."
+          ],
+          "trust": 2,
+          "note": "Ásta: half the town goes to church on Christmas Eve."
+        }
+      }
+    },
+    "pipe": {
+      "label": "Ask about the hot pipe",
+      "requires": {
+        "scanned": "hot-pipe",
+        "level": 1
+      },
+      "byLevel": {
+        "1": {
+          "lines": [
+            "Hot water from the ground heats our homes.",
+            "Some people even bake rye bread in hot earth."
+          ],
+          "trust": 2,
+          "note": "Ásta: rye bread can be baked slowly in hot ground."
+        }
+      }
+    }
+  },
+  "kari": {
+    "greet": {
+      "label": "Greet",
+      "byLevel": {
+        "0": {
+          "lines": [
+            "Who are you?",
+            "Why are you looking at everything?",
+            "Is that your real hair?"
+          ],
+          "note": "A kid in a yellow coat. Stares at you a lot.",
+          "choices": [
+            {
+              "text": "We just moved here. I'm new!",
+              "trust": 1,
+              "reply": [
+                "New from where? Why here?",
+                "Do you like fish? Everyone here likes fish."
+              ]
+            },
+            {
+              "text": "Just walking.",
+              "trust": 0,
+              "reply": [
+                "Walking where?",
+                "Why?"
+              ]
+            }
+          ]
+        },
+        "1": {
+          "lines": [
+            "{player}! Where were you?",
+            "Did you know you walk funny?",
+            "Not bad funny. Just funny."
+          ],
+          "trust": 1,
+          "note": "Kári is pleased to see you. Very pleased."
+        }
+      }
+    },
+    "church": {
+      "label": "Ask about the church",
+      "requires": {
+        "scanned": "church",
+        "level": 1
+      },
+      "byLevel": {
+        "1": {
+          "lines": [
+            "Why is the door never locked?",
+            "Mamma says nobody steals from a church.",
+            "Would you? I wouldn't. Probably."
+          ],
+          "trust": 2,
+          "note": "Kári: the church door is never locked."
+        }
+      }
+    },
+    "pen": {
+      "label": "Ask about the sheep pen",
+      "requires": {
+        "scanned": "sheep-pen",
+        "level": 1
+      },
+      "byLevel": {
+        "1": {
+          "lines": [
+            "In September the sheep come down from the hills.",
+            "Everyone helps sort them. Why don't sheep get lost?",
+            "Do you have sheep where you're from?"
+          ],
+          "trust": 2,
+          "note": "Kári: sheep come down from the hills in September."
+        }
+      }
+    }
+  },
+  "einar": {
+    "greet": {
+      "label": "Greet",
+      "byLevel": {
+        "0": {
+          "lines": [
+            "Hello.",
+            "Don't climb on anything here. It's hot."
+          ],
+          "note": "A man in an orange work jacket. Polite, careful.",
+          "choices": [
+            {
+              "text": "We just moved here. Hi!",
+              "trust": 1,
+              "reply": [
+                "Welcome. Is your house warm enough?",
+                "If not, it's probably the valves."
+              ]
+            },
+            {
+              "text": "What is this place?",
+              "trust": 0,
+              "reply": [
+                "It's where the hot water comes from.",
+                "Well, it comes from the ground. We just move it."
+              ]
+            }
+          ]
+        },
+        "1": {
+          "lines": [
+            "Hi, {player}.",
+            "Long shift. Good to see a friendly face."
+          ],
+          "trust": 1,
+          "note": "Einar remembers you."
+        }
+      }
+    },
+    "pipe": {
+      "label": "Ask about the hot pipe",
+      "requires": {
+        "scanned": "hot-pipe",
+        "level": 1
+      },
+      "byLevel": {
+        "1": {
+          "lines": [
+            "That pipe carries water heated deep underground.",
+            "Most homes in Iceland are heated that way."
+          ],
+          "trust": 2,
+          "note": "Einar: most Icelandic homes are heated with hot water from underground."
+        }
+      }
+    },
+    "smell": {
+      "label": "Ask why the tap water smells",
+      "requires": {
+        "scanned": "hot-pipe",
+        "level": 1
+      },
+      "byLevel": {
+        "1": {
+          "lines": [
+            "The eggy smell? That's sulphur from the ground.",
+            "Only the hot tap. The cold water is clean and fresh."
+          ],
+          "trust": 1,
+          "note": "Einar: hot tap water can smell of sulphur. Cold water does not."
+        }
+      }
+    }
+  },
+  "hrafnhildur": {
+    "greet": {
+      "label": "Greet",
+      "byLevel": {
+        "0": {
+          "lines": [
+            "Hello.",
+            "Close the gate behind you, if you came through it."
+          ],
+          "note": "A farmer in a thick wool jumper. Watches you closely.",
+          "choices": [
+            {
+              "text": "We just moved here. I closed it!",
+              "trust": 1,
+              "reply": [
+                "Good. Then we'll get along.",
+                "Welcome to town."
+              ]
+            },
+            {
+              "text": "Are those your sheep?",
+              "trust": 0,
+              "reply": [
+                "Some of them.",
+                "The rest think they own me."
+              ]
+            }
+          ]
+        },
+        "1": {
+          "lines": [
+            "{player}. You again.",
+            "Gates closed? Good."
+          ],
+          "trust": 1,
+          "note": "Hrafnhildur almost smiles."
+        }
+      }
+    },
+    "pen": {
+      "label": "Ask about the sheep pen",
+      "requires": {
+        "scanned": "sheep-pen",
+        "level": 1
+      },
+      "byLevel": {
+        "1": {
+          "lines": [
+            "In summer the sheep roam free in the hills.",
+            "In September we gather them and sort them here."
+          ],
+          "trust": 2,
+          "note": "Hrafnhildur: sheep roam free all summer. In September they are gathered and sorted."
+        }
+      }
+    },
+    "cairn": {
+      "label": "Ask about the stone pile",
+      "requires": {
+        "scanned": "cairn",
+        "level": 1
+      },
+      "byLevel": {
+        "1": {
+          "lines": [
+            "My grandfather stacked stones on that path.",
+            "He walked it to church every Sunday. In any weather."
+          ],
+          "trust": 1,
+          "note": "Hrafnhildur: her grandfather walked the old path to church."
+        }
+      }
+    }
   }
 }
