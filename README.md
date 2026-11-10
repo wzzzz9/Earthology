@@ -22,7 +22,7 @@ npm run dev
 npm run build
 ```
 
-Live build: https://wzzzz9.github.io/moon_field/
+Live build: https://wzzzz9.github.io/Moon_Field/
 
 Pushing to `main` deploys to GitHub Pages via `.github/workflows/deploy.yml`
 (requires the repo to be public, or GitHub Pro, and Pages set to "GitHub Actions").
