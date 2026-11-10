@@ -74,8 +74,8 @@ One tileset image, **272x16**, 17 tiles in a single row, no margin and no spacin
 
 | # | Tile | What it is | Walkable |
 | --- | --- | --- | --- |
-| 1 | Tundra grass | Muted yellow-green grass with a few tufts. The most common ground | Yes |
-| 2 | Dry tundra | Paler, drier variant of tile 1, to break up large fields | Yes |
+| 1 | Tundra grass | Fresh green grass with a few three-blade tufts. The most common ground | Yes |
+| 2 | Tundra variant | Same base colour as tile 1, different tufts and one soft lighter patch. Varies the texture without making a checkerboard | Yes |
 | 3 | Gravel path | Grey-brown gravel with pebbles | Yes |
 | 4 | Glacial water | Blue-turquoise deep water with ripples | No |
 | 5 | Basalt boulder | Rounded dark boulder, lit from the upper left | No |
@@ -94,7 +94,7 @@ One tileset image, **272x16**, 17 tiles in a single row, no margin and no spacin
 
 Notes for the artist:
 
-- **Seamless.** Every ground tile must tile with itself in both directions, and tiles 1 and 2 must sit next to each other without a visible seam. The same goes for the four moss lava tiles.
+- **Seamless.** Every ground tile must tile with itself in both directions, and tiles 1 and 2 must share one base colour so a field of them reads as one meadow, not a grid. The same goes for the four moss lava tiles.
 - **Moss is fine tufts.** Draw moss as many small tufts of 1 to 2 px so a field of it reads as a carpet, never as tree tops. The four variants exist so the field does not look like a grid.
 - **Boulders (5, 6)** are drawn on a separate layer above the ground. The placeholder bakes tundra green behind them. **Proposed:** give the finished boulders a transparent background so they can sit on any ground.
 - **Soft edges.** Section 8b asks for softened edges where two ground types meet. The placeholder set has no transition tiles. **Proposed:** a later second row of edge and corner tiles for grass/gravel, grass/lava, grass/sand and water/shore. This needs a map and code change, so it is not part of the one-for-one replacement.

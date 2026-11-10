@@ -20,14 +20,14 @@ export const ROCK_LIGHT = '#7f7d8a';
 export const STONE_PALE = '#aaa7ae';
 export const GRAVEL = '#9b9283';
 
-// Greens: ochre tundra grass (yellow side), moss (blue side), one leaf highlight.
-export const GRASS_DARK = '#6f7e47';
-export const GRASS = '#88985c';
-export const GRASS_LIGHT = '#a4b26c';
-export const MOSS_DARK = '#5b7845';
-export const MOSS = '#759b58';
-export const MOSS_LIGHT = '#98b96e';
-export const LEAF_LIGHT = '#bccb7e';
+// Greens: fresh spring grass (yellow side), moss (blue side), one leaf highlight.
+export const GRASS_DARK = '#6a8c4e';
+export const GRASS = '#88ac62';
+export const GRASS_LIGHT = '#a6c676';
+export const MOSS_DARK = '#557a4b';
+export const MOSS = '#6f9a5e';
+export const MOSS_LIGHT = '#92ba78';
+export const LEAF_LIGHT = '#c6db8c';
 
 // Water and ice: glacial blue, then ice, warm white and cream.
 export const WATER_DEEP = '#4b7e9a';

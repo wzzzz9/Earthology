@@ -24,27 +24,27 @@
 <text x="328" y="138" font-family="monospace" font-size="8" fill="#2a2630">GRAVEL</text>
 <text x="328" y="174" font-family="monospace" font-size="8" fill="#2a2630">#9b9283</text>
 <text x="12" y="208" font-family="monospace" font-size="12" fill="#2a2630">Greens</text>
-<rect x="12" y="216" width="72" height="56" rx="4" fill="#6f7e47" stroke="#2a2630" stroke-width="1"/>
+<rect x="12" y="216" width="72" height="56" rx="4" fill="#6a8c4e" stroke="#2a2630" stroke-width="1"/>
 <text x="16" y="230" font-family="monospace" font-size="8" fill="#f7f3ea">GRASS_DARK</text>
-<text x="16" y="266" font-family="monospace" font-size="8" fill="#f7f3ea">#6f7e47</text>
-<rect x="90" y="216" width="72" height="56" rx="4" fill="#88985c" stroke="#2a2630" stroke-width="1"/>
+<text x="16" y="266" font-family="monospace" font-size="8" fill="#f7f3ea">#6a8c4e</text>
+<rect x="90" y="216" width="72" height="56" rx="4" fill="#88ac62" stroke="#2a2630" stroke-width="1"/>
 <text x="94" y="230" font-family="monospace" font-size="8" fill="#2a2630">GRASS</text>
-<text x="94" y="266" font-family="monospace" font-size="8" fill="#2a2630">#88985c</text>
-<rect x="168" y="216" width="72" height="56" rx="4" fill="#a4b26c" stroke="#2a2630" stroke-width="1"/>
+<text x="94" y="266" font-family="monospace" font-size="8" fill="#2a2630">#88ac62</text>
+<rect x="168" y="216" width="72" height="56" rx="4" fill="#a6c676" stroke="#2a2630" stroke-width="1"/>
 <text x="172" y="230" font-family="monospace" font-size="8" fill="#2a2630">GRASS_LIGHT</text>
-<text x="172" y="266" font-family="monospace" font-size="8" fill="#2a2630">#a4b26c</text>
-<rect x="246" y="216" width="72" height="56" rx="4" fill="#5b7845" stroke="#2a2630" stroke-width="1"/>
+<text x="172" y="266" font-family="monospace" font-size="8" fill="#2a2630">#a6c676</text>
+<rect x="246" y="216" width="72" height="56" rx="4" fill="#557a4b" stroke="#2a2630" stroke-width="1"/>
 <text x="250" y="230" font-family="monospace" font-size="8" fill="#f7f3ea">MOSS_DARK</text>
-<text x="250" y="266" font-family="monospace" font-size="8" fill="#f7f3ea">#5b7845</text>
-<rect x="324" y="216" width="72" height="56" rx="4" fill="#759b58" stroke="#2a2630" stroke-width="1"/>
+<text x="250" y="266" font-family="monospace" font-size="8" fill="#f7f3ea">#557a4b</text>
+<rect x="324" y="216" width="72" height="56" rx="4" fill="#6f9a5e" stroke="#2a2630" stroke-width="1"/>
 <text x="328" y="230" font-family="monospace" font-size="8" fill="#2a2630">MOSS</text>
-<text x="328" y="266" font-family="monospace" font-size="8" fill="#2a2630">#759b58</text>
-<rect x="402" y="216" width="72" height="56" rx="4" fill="#98b96e" stroke="#2a2630" stroke-width="1"/>
+<text x="328" y="266" font-family="monospace" font-size="8" fill="#2a2630">#6f9a5e</text>
+<rect x="402" y="216" width="72" height="56" rx="4" fill="#92ba78" stroke="#2a2630" stroke-width="1"/>
 <text x="406" y="230" font-family="monospace" font-size="8" fill="#2a2630">MOSS_LIGHT</text>
-<text x="406" y="266" font-family="monospace" font-size="8" fill="#2a2630">#98b96e</text>
-<rect x="480" y="216" width="72" height="56" rx="4" fill="#bccb7e" stroke="#2a2630" stroke-width="1"/>
+<text x="406" y="266" font-family="monospace" font-size="8" fill="#2a2630">#92ba78</text>
+<rect x="480" y="216" width="72" height="56" rx="4" fill="#c6db8c" stroke="#2a2630" stroke-width="1"/>
 <text x="484" y="230" font-family="monospace" font-size="8" fill="#2a2630">LEAF_LIGHT</text>
-<text x="484" y="266" font-family="monospace" font-size="8" fill="#2a2630">#bccb7e</text>
+<text x="484" y="266" font-family="monospace" font-size="8" fill="#2a2630">#c6db8c</text>
 <text x="12" y="300" font-family="monospace" font-size="12" fill="#2a2630">Water and ice</text>
 <rect x="12" y="308" width="72" height="56" rx="4" fill="#4b7e9a" stroke="#2a2630" stroke-width="1"/>
 <text x="16" y="322" font-family="monospace" font-size="8" fill="#f7f3ea">WATER_DEEP</text>

@@ -49,10 +49,18 @@ export function makePlaceholderTileset(scene: Phaser.Scene, key = 'placeholder')
     if (mossy) { blotch(i, P.MOSS, 7, 3, 6, 4); px(i, P.MOSS_LIGHT, [[8, 4, 3, 1], [3, 9, 2, 2]]); }
   };
 
-  // 1 tundra grass: muted yellow-green with a few tufts
-  fill(0, P.GRASS); px(0, P.GRASS_LIGHT, [[2, 3, 2], [9, 7, 2], [5, 12, 2], [12, 13, 2]]); px(0, P.GRASS_DARK, [[6, 5], [13, 2], [3, 9], [10, 11]]);
-  // 2 tundra variant: paler, drier
-  fill(1, P.GRASS_LIGHT); px(1, P.LEAF_LIGHT, [[4, 4, 2], [11, 9, 2], [7, 13, 2]]); px(1, P.GRASS, [[2, 11], [13, 4], [8, 7]]);
+  // Grass texture: small three-blade tufts (a 'V' of lighter green with a bright tip) and a
+  // soft shade pixel under each, instead of single dots. Both tundra tiles share the same base
+  // colour so a field of them reads as one meadow, not a checkerboard.
+  const tuft = (i: number, x: number, y: number, bright = false) => {
+    px(i, P.GRASS_LIGHT, [[x, y, 1, 2], [x + 2, y, 1, 2], [x + 1, y + 1, 1, 1]]);
+    if (bright) px(i, P.LEAF_LIGHT, [[x + 2, y, 1, 1]]);
+    px(i, P.GRASS_DARK, [[x + 1, y + 2, 1, 1]]);
+  };
+  // 1 tundra grass: the common ground
+  fill(0, P.GRASS); tuft(0, 2, 2, true); tuft(0, 9, 5); tuft(0, 4, 10); tuft(0, 11, 11, true); px(0, P.GRASS_LIGHT, [[13, 2], [7, 13]]);
+  // 2 tundra variant: same base, a lighter patch and different tufts
+  fill(1, P.GRASS); blotch(1, P.GRASS_LIGHT, 8, 2, 6, 4); tuft(1, 2, 5); tuft(1, 10, 3, true); tuft(1, 6, 11, true); tuft(1, 12, 12); px(1, P.GRASS_DARK, [[4, 14]]);
   // 3 gravel path: grey-brown with pebbles
   fill(2, P.GRAVEL); px(2, P.STONE_PALE, [[3, 5, 2], [10, 10, 2], [7, 13]]); px(2, P.ROCK_LIGHT, [[6, 3], [12, 6], [2, 12], [9, 8]]);
   // 4 glacial water: blue-turquoise with ripples
@@ -92,7 +100,7 @@ export function makePlaceholderTileset(scene: Phaser.Scene, key = 'placeholder')
   px(14, P.ROCK, [[0, 0, 2, 16], [14, 0, 2, 16]]); px(14, P.ROCK_LIGHT, [[0, 0, 1, 16], [15, 0, 1, 16]]); px(14, P.ROCK_DARK, [[2, 0, 1, 16], [13, 0, 1, 16]]);
   fill(15, P.WATER_LIGHT); px(15, P.ICE, [[2, 3, 5, 2], [8, 9, 6, 2], [5, 12, 3, 1], [11, 2, 3, 1]]); px(15, P.WHITE, [[4, 4, 2, 1], [10, 10, 2, 1]]);
   // 17 stepping stones: grass with two or three flat grey stones, for side paths.
-  fill(16, P.GRASS); px(16, P.GRASS_LIGHT, [[2, 13, 2], [12, 2, 2]]);
+  fill(16, P.GRASS); tuft(16, 12, 1); px(16, P.GRASS_LIGHT, [[7, 14, 2, 1]]);
   for (const [x, y, w, h] of [[2, 3, 6, 5], [9, 9, 6, 5], [3, 11, 3, 2]]) { px(16, P.ROCK_LIGHT, [[x, y, w, h]]); px(16, P.STONE_PALE, [[x + 1, y + 1, w - 2, h - 2]]); px(16, P.ROCK, [[x, y + h - 1, w, 1]]); }
   // 11 ice / old snow: white-blue
   fill(10, P.ICE); px(10, P.WHITE, [[2, 2, 5, 3], [9, 9, 5, 4]]); px(10, P.WATER_LIGHT, [[8, 3, 4, 2], [2, 10, 4, 2], [12, 6, 2, 2]]);
@@ -547,9 +555,9 @@ export function makePlants(scene: Phaser.Scene): void {
     for (const [x, top] of [[2, 4], [6, 1], [9, 5]]) { r(x + 1, top + 3, 1, 11 - top, P.GRASS_LIGHT); r(x, top, 3, 3, P.ICE); r(x + 1, top, 1, 1, P.WHITE); }
     r(1, 12, 10, 2, P.GRASS);
   });
-  // Low shrub: a rounded dark-green mound with lighter top.
+  // Low shrub: a rounded green mound, lit on top, shaded underneath.
   mk('plant.shrub', 16, 12, (r) => {
-    r(1, 4, 14, 7, OUT); r(2, 5, 12, 5, P.MOSS_DARK); r(3, 3, 10, 2, OUT); r(4, 4, 8, 2, P.MOSS); r(5, 4, 3, 1, P.MOSS_LIGHT); r(2, 10, 12, 1, alpha(P.OUTLINE, 0.35));
+    r(1, 4, 14, 7, OUT); r(2, 5, 12, 5, P.MOSS); r(3, 3, 10, 2, OUT); r(4, 4, 8, 2, P.MOSS_LIGHT); r(5, 4, 3, 1, P.LEAF_LIGHT); r(2, 9, 12, 2, P.MOSS_DARK);
   });
   // Grass tuft: a few blades.
   mk('plant.tuft', 10, 8, (r) => {

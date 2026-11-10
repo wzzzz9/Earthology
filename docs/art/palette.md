@@ -10,10 +10,22 @@ Until now each sprite picked its own colours as it was written: about 120 distin
 
 - **Soft, slightly desaturated.** Nothing fully saturated, nothing pure white or pure black. The brightest white is a warm `#f7f3ea`; the darkest tone is the outline.
 - **One outline colour** (`OUTLINE`, a warm near-black with a hint of plum) on every sprite and prop. Shadows are the same colour at low opacity, so lines and shadows belong to one family.
-- **Warm greens.** The two green families lean yellow (grass) or blue (moss) but both sit on the warm side, so a field of tundra, moss, canopies and shrubs reads as one landscape.
+- **Fresh, warm greens.** The grass family is a clean spring green (yellow-side highlights, cool-side shade), not olive. Moss sits a step deeper and bluer. Both are warm enough that a field of grass, moss, canopies and shrubs reads as one landscape. The ochre of Iceland's tundra is carried by the gravel and wood tones, not by the grass base.
 - **Three tones per material** at most: a base, a highlight, a shade. Stone and water have an extra step because they cover large areas.
 - **The accents carry the colour.** Houses, coats, flowers, lamps and the aliens get the saturated notes. The ground stays quiet so they stand out.
 - **Iceland still reads as Iceland:** ochre tundra, black lava with moss pillows, glacial blue, black sand, white ice.
+
+## Reference style (described, not copied)
+
+The owner pointed at *Fields of Mistria* as the kind of ground they like. Looking at it and writing down what makes it work, in words only:
+
+- The grass base is a fresh mid green that is clearly green, not khaki. Highlights lean yellow, shade leans a little cool.
+- Texture is small blade tufts (three-pixel "V" shapes in a lighter green, with the odd bright tip), scattered thinly, never a grid of single dots.
+- Variation across a field comes from texture and soft lighter patches, not from switching base colour tile by tile, so the ground never reads as a checkerboard.
+- Ground carries no dark outlines; the outline is kept for characters, props and trees, which lifts them off the ground.
+- Plants and flowers are frequent but small, and read as light sprinkles over the green rather than dark blobs.
+
+The tundra tiles follow those points: one base colour on every grass tile, three-blade tufts with a shade pixel beneath, a soft lighter blotch on the variant tile, and shrubs lit from the top so they sit in the field instead of punching holes in it.
 
 ## The colours
 
@@ -38,13 +50,13 @@ Until now each sprite picked its own colours as it was written: about 120 distin
 
 | Name | Hex | Used for |
 | --- | --- | --- |
-| `GRASS_DARK` | `#6f7e47` | Tundra shade tufts, willow canopy shade |
-| `GRASS` | `#88985c` | Tundra base (the most common tile), birch canopy shade, stepping-stone grass |
-| `GRASS_LIGHT` | `#a4b26c` | Dry tundra base, tundra tufts, birch canopy, cotton-grass stems |
-| `MOSS_DARK` | `#5b7845` | Shade between moss pillows, rowan canopy shade, shrub body, lupine leaves, green house shade |
-| `MOSS` | `#759b58` | Moss pillows, rowan canopy, green house wall, Earth continents |
-| `MOSS_LIGHT` | `#98b96e` | Lit side of moss pillows, moss on boulders and the cairn, rowan highlights |
-| `LEAF_LIGHT` | `#bccb7e` | Brightest leaf highlight: moss pillow tops, birch and willow highlights, grass tufts, dry-tundra tufts |
+| `GRASS_DARK` | `#6a8c4e` | Shade pixel under each grass tuft, willow canopy shade |
+| `GRASS` | `#88ac62` | The one grass base: every tundra tile, under boulders and stepping stones; birch canopy shade |
+| `GRASS_LIGHT` | `#a6c676` | Grass tufts and light patches, birch canopy, cotton-grass stems |
+| `MOSS_DARK` | `#557a4b` | Shade between moss pillows, rowan canopy shade, shrub body, lupine leaves, green house shade |
+| `MOSS` | `#6f9a5e` | Moss pillows, rowan canopy, green house wall, Earth continents |
+| `MOSS_LIGHT` | `#92ba78` | Lit side of moss pillows, moss on boulders and the cairn, rowan highlights |
+| `LEAF_LIGHT` | `#c6db8c` | Brightest leaf highlight: grass tuft tips, moss pillow tops, birch and willow highlights, shrub tops |
 
 ### Water and ice
 
@@ -127,7 +139,7 @@ For anyone comparing against the previous look:
 | --- | --- |
 | Outline `#1a1c20` (cold black) | `OUTLINE` `#2a2630` (warm, softer) |
 | Pure `#ffffff`, `#f4f1e8`, `#f6fafc` | `WHITE` `#f7f3ea` |
-| Grass `#7d9150` / `#86964f` | `GRASS` / `GRASS_LIGHT`, a step warmer |
+| Grass `#7d9150` / `#86964f` (two olive bases) | One fresh green base `GRASS`; the second tile differs only in texture |
 | Moss `#5f8a3f` / `#6f9a4a` / `#86b35a` / `#a3c86a` | `MOSS_DARK` / `MOSS` / `MOSS_LIGHT` / `LEAF_LIGHT` |
 | Birch canopy `#7d9a3a` / `#9ab54a` / `#c9d96a` | `GRASS` / `GRASS_LIGHT` / `LEAF_LIGHT` (shares the grass family instead of its own) |
 | Water `#4a93b5` / `#6fb3cf` / `#9fd0e3` | `WATER` / `WATER_LIGHT` / `ICE` |
