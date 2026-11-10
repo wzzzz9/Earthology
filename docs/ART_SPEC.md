@@ -28,118 +28,26 @@ Some sprites are shown enlarged in cutscenes (the aliens at 2x to 3x, the ship a
 
 ## 3. Palette
 
-All hex codes below are taken from `placeholders.ts`. Start from these. New colours are allowed when a sprite needs them, but add them to this table so the set stays small.
+The palette is one shared set of 40 colours, defined in `src/art/palette.ts` and explained with swatches in [`docs/art/palette.md`](art/palette.md). Every sprite and tile in `placeholders.ts` uses those names and nothing else, so that page is the single source for hex codes. Do not copy hex codes from this spec; read them from the palette.
 
-### 3.1 Shared
+The short version:
 
-| Hex | Use |
-| --- | --- |
-| `#1a1c20` | **Outline colour** for every sprite and prop. Also boulder base shadow |
-| `#0b0d14` | Void, deepest dark, night side of Earth |
-| `#efe9dc` | Cream: sweater yoke, hat band |
-| `#f4f1e8` | Off-white: alien eye band, sketch outline, UI text |
-| `#ffffff` | Eye highlights, sparkle core |
-| `#ffd37a` | Warm light: ship lamps, antenna lights, name tag text |
-| `#fff6c8` | Sparkle rays |
+- Soft and slightly desaturated. No pure white or pure black. The warm white is `WHITE`; the darkest tone is `OUTLINE`.
+- One outline colour, `OUTLINE`, on every sprite and prop. Shadows are the same colour at low opacity (`SHADOW`, `SHADOW_SOFT`).
+- Two warm green families: grass (yellow side: `GRASS_DARK`, `GRASS`, `GRASS_LIGHT`) and moss (blue side: `MOSS_DARK`, `MOSS`, `MOSS_LIGHT`), sharing one highlight `LEAF_LIGHT`.
+- One stone ramp for lava, basalt, metal and pebbles: `ROCK_DARK`, `ROCK`, `ROCK_LIGHT`, `STONE_PALE`, plus warm `GRAVEL` for paths.
+- Water and ice: `WATER_DEEP`, `WATER`, `WATER_LIGHT`, `ICE`.
+- Wood: `WOOD_DARK`, `WOOD`, `WOOD_LIGHT`. Skin: `SKIN`, `BLUSH`.
+- Accents carry the saturated notes: `RED`, `ORANGE`, `YELLOW`, `LIGHT`, `BLUE`, `NAVY`, `TEAL`, `VIOLET`, `LILAC`, `PINK` and their dark partners.
+- Colours that arrive from content JSON (sample colours, NPC coats) are snapped to the nearest palette colour by `snap()`.
 
-### 3.2 Iceland ground
-
-| Hex | Use |
-| --- | --- |
-| `#7d9150` | Tundra grass base |
-| `#8ea35c` | Tundra tuft, light |
-| `#6a7f42` | Tundra tuft, dark |
-| `#86964f` | Dry tundra base |
-| `#98a85d` | Dry tundra, light |
-| `#6f8244` | Dry tundra, dark |
-| `#8a8378` | Gravel base |
-| `#a39b8d` | Gravel pebble, light |
-| `#6c665d` | Gravel pebble, dark |
-| `#4a93b5` | Glacial water base |
-| `#6fb3cf` | Water ripple, light. Also shallow-water base |
-| `#9fd0e3` | Shallow water highlight |
-| `#3a7a98` | Water ripple, dark |
-| `#33343a` | Black sand base |
-| `#4a4b52` | Black sand grain, light |
-| `#26272c` | Black sand grain, dark |
-| `#2e3137` | Lava rock base |
-| `#24262b` | Lava rock edge |
-| `#1c1e23` | Lava crack |
-| `#6f9a4a` | Moss |
-| `#8fb85c` | Moss, bright |
-| `#dfe9ee` | Ice base |
-| `#f6fafc` | Ice highlight |
-| `#b9ccd6` | Ice shade |
-
-### 3.3 Basalt (boulders, cairn)
-
-| Hex | Use |
-| --- | --- |
-| `#2b2e34` | Basalt body |
-| `#454a54` | Basalt mid |
-| `#5c626d` | Basalt highlight |
-
-### 3.4 Characters
-
-| Hex | Use |
-| --- | --- |
-| `#f3cfae` | Skin |
-| `#f0a58a` | Cheek blush |
-| `#e2673f` / `#b84d2e` | Disguise A coat / coat shade |
-| `#3b2a2a` | Disguise A hair |
-| `#3f4866` | Disguise A beanie |
-| `#2d3140` | Disguise A legs |
-| `#4f7fb8` / `#3a6190` | Disguise B coat / coat shade |
-| `#6b3f2a` | Disguise B hair |
-| `#e9c46a` | Disguise B headband |
-| `#3a3f55` | Disguise B legs, NPC legs |
-| `#3f6a4a` / `#2f5238` | Sigrún coat / coat shade |
-| `#cfd2d8` | Sigrún hair (grey) |
-
-### 3.5 Aliens and ship
-
-| Hex | Use |
-| --- | --- |
-| `#5fc4b0` / `#3f9d8c` | Student alien body / shade |
-| `#9fd8ff` | Student alien eye glint |
-| `#9a7bd1` / `#6e55a8` | Professor body / long coat |
-| `#d9b8ff` | Professor bun |
-| `#ffe9a8` | Professor eye glint |
-| `#8a8f99` | Ship hull |
-| `#b9bec8` | Ship hull, upper band |
-| `#7fd1e8` | Ship dome |
-| `#454851` | Ship landing feet |
-
-### 3.6 Trees and wood
-
-| Hex | Use |
-| --- | --- |
-| `#e9e4d8` | Birch trunk |
-| `#555555` | Birch bark marks |
-| `#7d9a3a` / `#9ab54a` / `#c9d96a` | Birch canopy dark / mid / light |
-| `#6e4b2a` | Brown wood: rowan trunk, willow stem, signpost post |
-| `#8a6238` | Rowan trunk highlight |
-| `#4f7a3a` / `#6a9a46` / `#8fb85c` | Rowan canopy dark / mid / light |
-| `#d9442f` | Rowan berries |
-| `#5f7f3f` / `#7f9a50` / `#a9b86a` | Willow canopy dark / mid / light |
-| `#b08a5a` | Signpost board |
-
-### 3.7 Rock samples
-
-| Hex | Use |
-| --- | --- |
-| `#3a3d44` | Basalt sample |
-| `#15161c` | Obsidian sample |
-| `#b9b4a6` | Pumice sample |
-| `#6b6f78` | Speckle marks |
-| `#9fb3c8` | Shine marks |
-| `#6e6a60` | Hole marks |
+New art is allowed new colours only by changing the palette first, with the reason written into `palette.md`.
 
 ## 4. Outline and shadow rules
 
 **Outline**
 
-- One pixel wide, colour `#1a1c20`, around the outside of every character, alien, prop, tree and boulder.
+- One pixel wide, colour `OUTLINE` (`#2a2630`, a warm near-black), around the outside of every character, alien, prop, tree and boulder.
 - The outline sits **inside** the canvas. Do not grow the canvas to fit it.
 - Interior lines (where an arm meets the body, hair meets the face) use the same colour, one pixel.
 - Ground tiles have **no** outline. They must tile seamlessly.
@@ -149,11 +57,11 @@ Several placeholders do not have an outline yet (ship, signpost, pickup rocks, s
 
 **Shadow**
 
-- Characters and aliens: a flat dark strip under the feet, about 8 to 10 px wide and 2 px tall, centred. Black at 28% opacity (`rgba(0,0,0,0.28)`).
-- Trees: the same, 16 to 18 px wide and 2 to 3 px tall, black at 25% opacity.
+- Characters and aliens: a flat dark strip under the feet, about 8 to 10 px wide and 2 px tall, centred. `OUTLINE` at 30% opacity (`SHADOW`).
+- Trees: the same, 16 to 18 px wide and 2 to 3 px tall, `OUTLINE` at 22% opacity (`SHADOW_SOFT`).
 - The shadow is part of the sprite and sits in the bottom rows of the canvas.
 - Shadows are flat. No gradients, no blur.
-- Boulders use a solid dark base (`#1a1c20`) instead of a transparent shadow.
+- Boulders use a solid `OUTLINE` base instead of a transparent shadow.
 
 **Shading**
 
@@ -162,7 +70,7 @@ Several placeholders do not have an outline yet (ship, signpost, pickup rocks, s
 
 ## 5. Tiles
 
-One tileset image, **224x16**, 14 tiles in a single row, no margin and no spacing. The tile order must not change, because the map file refers to tiles by position.
+One tileset image, **272x16**, 17 tiles in a single row, no margin and no spacing. The tile order must not change, because the map file refers to tiles by position.
 
 | # | Tile | What it is | Walkable |
 | --- | --- | --- | --- |
@@ -173,13 +81,16 @@ One tileset image, **224x16**, 14 tiles in a single row, no margin and no spacin
 | 5 | Basalt boulder | Rounded dark boulder, lit from the upper left | No |
 | 6 | Mossy boulder | Same boulder with a moss cap | No |
 | 7 | Black sand | Near-black sand with grey grains | Yes |
-| 8 | Void | Flat `#0b0d14`. Fills space outside the map | Yes (unused in play) |
+| 8 | Void | Flat `VOID`. Fills space outside the map | Yes (unused in play) |
 | 9 | Moss lava A | Dark lava rock with fine moss tufts | Yes |
 | 10 | Moss lava B | Denser moss | Yes |
 | 11 | Ice | White-blue ice or old snow | Yes |
 | 12 | Shallow water | Lighter water for lake edges | Yes |
 | 13 | Moss lava C | Third variant | Yes |
 | 14 | Moss lava D | Fourth variant | Yes |
+| 15 | Chasm | The rift floor: near-black with a cold navy seam and grey rock edges | Yes (the map keeps you out) |
+| 16 | Hot pool | Milky pale turquoise with lighter ripples and white glints | Yes |
+| 17 | Stepping stones | Tundra grass with two or three flat grey stones, for side paths | Yes |
 
 Notes for the artist:
 
@@ -258,12 +169,30 @@ All props have the outline from section 4. Sizes are fixed.
 | Ship | 48x32 | A grey flying saucer: wide flat hull, a lighter upper band, a glacial-blue glass dome on top, four small warm lamps along the rim, two short dark landing feet. It is the family's house, the save point and where the player sleeps, so it should feel cosy, not menacing. Shown at 2x in the opening |
 | Cairn | 16x16 | A stack of three basalt stones, widest at the bottom, with two small touches of moss and a dark base line |
 | Signpost | 16x16 | A brown wooden post with a lighter board near the top and a suggestion of carved writing. No readable text |
-| Birch | 32x48 | Thin white trunk with dark bark marks, airy yellow-green canopy. Trunk base at bottom centre |
-| Rowan | 32x48 | Brown trunk, rounder and darker green canopy, a few red berry clusters. Trunk base at bottom centre |
+| Birch | 40x72 | Thin cream trunk with dark bark marks, airy yellow-green canopy. Trunk base at bottom centre |
+| Rowan | 40x72 | Brown trunk, rounder and darker green canopy, a few red berry clusters. Trunk base at bottom centre |
 | Willow bush | 32x32 | Low rounded bush, soft grey-green, a short brown stem at the base |
 | Pickup rock | 12x10 | A small rock on the ground with a highlight on top and a dark underside. Three versions: basalt (dark grey, dull), obsidian (black, glassy), pumice (pale grey, holes) |
 | Sparkle | 7x7 | A 4-point star: a cross of pale yellow rays with a white 3x3 core. No outline. The game fades and pulses it |
 | Rock sketch | 48x40 | A notebook drawing of a rock: an angular blob with an off-white outline. Patterns: speckle (small grey dots), shine (pale streaks with a white glint), holes (many small pits), plain. Shown at 2x in the lab |
+
+Town and landmark props added with the Iceland map (all in `makeIcelandProps` and `makePlants`; sizes fixed, base at the bottom centre):
+
+| Prop | Size | Description |
+| --- | --- | --- |
+| House (red, blue, yellow, green) | 48x40 | Corrugated-iron house: bright wall with vertical corrugation lines, white trim, navy roof, grey chimney, two lit windows, dark door |
+| Church | 40x56 | White walls, red roof, small tower with a cross, two pale blue windows |
+| Boat | 24x16 | Blue hull with a white rim and cabin, sits in the water |
+| Fish racks | 32x24 | Brown wooden frame with cream fish hanging in two rows |
+| Hot-water pipe | 64x10 | Grey pipe on brackets with a faint warm glow along the ground |
+| Sheep pen | 48x40 | Ring of grey stone wall split like a pie, one white sheep inside |
+| Basalt columns | 64x32 | Eight six-sided pillars of alternating dark and mid stone, pale tops |
+| Glacier face | 96x28 | Wall of ice with a dusty grey top, pale blue foot and blue crevasses |
+| Geyser | 16x10 mouth, 10x48 column, 10x8 steam | Pale stone mouth, translucent white column, soft steam puffs |
+| Waterfall | 32x36, 2 frames | Falling water with light streaks and white foam at the foot |
+| Fences | 16x12 (h), 8x20 (v) | Wooden rails and posts, one tile wide |
+| Yard clutter | planter 16x14, barrel 12x14, lantern 8x20, woodpile 16x12, bench 20x10, well 20x24, mailbox 8x16, pier 16x16 | Small outlined props in the wood and stone families; lantern and mailbox carry the warm accents |
+| Plants | lupine 14x16, cotton grass 12x14, shrub 16x12, tuft 10x8, flowers 12x10, stones 10x6 | Ground decoration without collision. Lupine is the one violet note in the landscape |
 
 Tree rules from section 8b:
 
@@ -313,21 +242,21 @@ Check every finished sprite against this list.
 
 - [ ] Canvas is exactly the size in this spec.
 - [ ] Drawn at 1:1, hard pixels, transparent background.
-- [ ] Tileset is 224x16 with tiles in the order in section 5.
+- [ ] Tileset is 272x16 with tiles in the order in section 5.
 - [ ] Character sheets are 128x24 in the order down, up, left, right, each idle then step.
 - [ ] Feet are at the bottom centre in every character frame.
 - [ ] Tree trunks meet the ground at the bottom centre.
 
 **Outline and shadow**
 
-- [ ] Outline is one pixel, `#1a1c20`, on every sprite and prop.
+- [ ] Outline is one pixel, `OUTLINE`, on every sprite and prop.
 - [ ] No outline on ground tiles or the sparkle.
 - [ ] Shadows are flat, the right opacity, and at the base.
 - [ ] No anti-aliasing and no stray semi-transparent pixels.
 
 **Colour and light**
 
-- [ ] Every colour is in the palette in section 3, or has been added to it.
+- [ ] Every colour is a name from `src/art/palette.ts`, or the palette has been changed first.
 - [ ] At most three tones per material.
 - [ ] Light comes from the upper left on every sprite, including mirrored ones.
 - [ ] Iceland still reads as Iceland: moss green, black lava, glacial blue, black sand, ochre tundra, white ice.
