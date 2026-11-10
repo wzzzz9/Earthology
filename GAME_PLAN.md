@@ -292,6 +292,8 @@ Reference style, in words so nothing is copied: **chibi 16-bit**. Characters abo
 
 Nov 11 additions: cinematic backgrounds get proper set dressing (bedroom, university hall, Icelandic night with aurora, ship cabin). Trees are small, about two character heights, varied (birch, rowan, willow bush) and sparse, because Iceland has few trees. Moss on lava is drawn as fine tufts so it never reads as tree tops. Earth is drawn with continents, ice caps, clouds, a night side and an atmosphere rim wherever it appears.
 
+**Palette (decided Nov 11, PR #4).** The Iceland palette is the bright, cheerful pastel set in `src/art/palette.ts` (about forty named colours, one outline colour). Every sprite and tile draws from it by name; colours arriving from content JSON are snapped to the nearest palette colour. New buildings, props and UI draw from the palette, and additions to it go through the Art session.
+
 Build order for the look, each step cheap and reversible:
 
 1. Characters in chibi proportions with outlines and a shadow (code-drawn, done first so the direction can be judged).
