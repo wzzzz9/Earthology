@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="564" height="780" viewBox="0 0 564 780">
+<rect width="100%" height="100%" fill="#ebe2cd"/>
+<text x="12" y="24" font-family="monospace" font-size="12" fill="#2a2630">Darks</text>
+<rect x="12" y="32" width="72" height="56" rx="4" fill="#2a2630" stroke="#2a2630" stroke-width="1"/>
+<text x="16" y="46" font-family="monospace" font-size="8" fill="#f7f3ea">OUTLINE</text>
+<text x="16" y="82" font-family="monospace" font-size="8" fill="#f7f3ea">#2a2630</text>
+<rect x="90" y="32" width="72" height="56" rx="4" fill="#15131c" stroke="#2a2630" stroke-width="1"/>
+<text x="94" y="46" font-family="monospace" font-size="8" fill="#f7f3ea">VOID</text>
+<text x="94" y="82" font-family="monospace" font-size="8" fill="#f7f3ea">#15131c</text>
+<text x="12" y="116" font-family="monospace" font-size="12" fill="#2a2630">Stone</text>
+<rect x="12" y="124" width="72" height="56" rx="4" fill="#3b3944" stroke="#2a2630" stroke-width="1"/>
+<text x="16" y="138" font-family="monospace" font-size="8" fill="#f7f3ea">ROCK_DARK</text>
+<text x="16" y="174" font-family="monospace" font-size="8" fill="#f7f3ea">#3b3944</text>
+<rect x="90" y="124" width="72" height="56" rx="4" fill="#5a5866" stroke="#2a2630" stroke-width="1"/>
+<text x="94" y="138" font-family="monospace" font-size="8" fill="#f7f3ea">ROCK</text>
+<text x="94" y="174" font-family="monospace" font-size="8" fill="#f7f3ea">#5a5866</text>
+<rect x="168" y="124" width="72" height="56" rx="4" fill="#7f7d8a" stroke="#2a2630" stroke-width="1"/>
+<text x="172" y="138" font-family="monospace" font-size="8" fill="#f7f3ea">ROCK_LIGHT</text>
+<text x="172" y="174" font-family="monospace" font-size="8" fill="#f7f3ea">#7f7d8a</text>
+<rect x="246" y="124" width="72" height="56" rx="4" fill="#aaa7ae" stroke="#2a2630" stroke-width="1"/>
+<text x="250" y="138" font-family="monospace" font-size="8" fill="#2a2630">STONE_PALE</text>
+<text x="250" y="174" font-family="monospace" font-size="8" fill="#2a2630">#aaa7ae</text>
+<rect x="324" y="124" width="72" height="56" rx="4" fill="#a89a84" stroke="#2a2630" stroke-width="1"/>
+<text x="328" y="138" font-family="monospace" font-size="8" fill="#2a2630">GRAVEL</text>
+<text x="328" y="174" font-family="monospace" font-size="8" fill="#2a2630">#a89a84</text>
+<text x="12" y="208" font-family="monospace" font-size="12" fill="#2a2630">Greens</text>
+<rect x="12" y="216" width="72" height="56" rx="4" fill="#5e9a46" stroke="#2a2630" stroke-width="1"/>
+<text x="16" y="230" font-family="monospace" font-size="8" fill="#f7f3ea">GRASS_DARK</text>
+<text x="16" y="266" font-family="monospace" font-size="8" fill="#f7f3ea">#5e9a46</text>
+<rect x="90" y="216" width="72" height="56" rx="4" fill="#7fc25a" stroke="#2a2630" stroke-width="1"/>
+<text x="94" y="230" font-family="monospace" font-size="8" fill="#2a2630">GRASS</text>
+<text x="94" y="266" font-family="monospace" font-size="8" fill="#2a2630">#7fc25a</text>
+<rect x="168" y="216" width="72" height="56" rx="4" fill="#9fd96e" stroke="#2a2630" stroke-width="1"/>
+<text x="172" y="230" font-family="monospace" font-size="8" fill="#2a2630">GRASS_LIGHT</text>
+<text x="172" y="266" font-family="monospace" font-size="8" fill="#2a2630">#9fd96e</text>
+<rect x="246" y="216" width="72" height="56" rx="4" fill="#3f8a4e" stroke="#2a2630" stroke-width="1"/>
+<text x="250" y="230" font-family="monospace" font-size="8" fill="#f7f3ea">MOSS_DARK</text>
+<text x="250" y="266" font-family="monospace" font-size="8" fill="#f7f3ea">#3f8a4e</text>
+<rect x="324" y="216" width="72" height="56" rx="4" fill="#5aae63" stroke="#2a2630" stroke-width="1"/>
+<text x="328" y="230" font-family="monospace" font-size="8" fill="#2a2630">MOSS</text>
+<text x="328" y="266" font-family="monospace" font-size="8" fill="#2a2630">#5aae63</text>
+<rect x="402" y="216" width="72" height="56" rx="4" fill="#82cc7a" stroke="#2a2630" stroke-width="1"/>
+<text x="406" y="230" font-family="monospace" font-size="8" fill="#2a2630">MOSS_LIGHT</text>
+<text x="406" y="266" font-family="monospace" font-size="8" fill="#2a2630">#82cc7a</text>
+<rect x="480" y="216" width="72" height="56" rx="4" fill="#c9ec86" stroke="#2a2630" stroke-width="1"/>
+<text x="484" y="230" font-family="monospace" font-size="8" fill="#2a2630">LEAF_LIGHT</text>
+<text x="484" y="266" font-family="monospace" font-size="8" fill="#2a2630">#c9ec86</text>
+<text x="12" y="300" font-family="monospace" font-size="12" fill="#2a2630">Water and ice</text>
+<rect x="12" y="308" width="72" height="56" rx="4" fill="#3b86b4" stroke="#2a2630" stroke-width="1"/>
+<text x="16" y="322" font-family="monospace" font-size="8" fill="#f7f3ea">WATER_DEEP</text>
+<text x="16" y="358" font-family="monospace" font-size="8" fill="#f7f3ea">#3b86b4</text>
+<rect x="90" y="308" width="72" height="56" rx="4" fill="#52aad4" stroke="#2a2630" stroke-width="1"/>
+<text x="94" y="322" font-family="monospace" font-size="8" fill="#2a2630">WATER</text>
+<text x="94" y="358" font-family="monospace" font-size="8" fill="#2a2630">#52aad4</text>
+<rect x="168" y="308" width="72" height="56" rx="4" fill="#86d6ea" stroke="#2a2630" stroke-width="1"/>
+<text x="172" y="322" font-family="monospace" font-size="8" fill="#2a2630">WATER_LIGHT</text>
+<text x="172" y="358" font-family="monospace" font-size="8" fill="#2a2630">#86d6ea</text>
+<rect x="246" y="308" width="72" height="56" rx="4" fill="#dff1f5" stroke="#2a2630" stroke-width="1"/>
+<text x="250" y="322" font-family="monospace" font-size="8" fill="#2a2630">ICE</text>
+<text x="250" y="358" font-family="monospace" font-size="8" fill="#2a2630">#dff1f5</text>
+<rect x="324" y="308" width="72" height="56" rx="4" fill="#f7f3ea" stroke="#2a2630" stroke-width="1"/>
+<text x="328" y="322" font-family="monospace" font-size="8" fill="#2a2630">WHITE</text>
+<text x="328" y="358" font-family="monospace" font-size="8" fill="#2a2630">#f7f3ea</text>
+<rect x="402" y="308" width="72" height="56" rx="4" fill="#ebe2cd" stroke="#2a2630" stroke-width="1"/>
+<text x="406" y="322" font-family="monospace" font-size="8" fill="#2a2630">CREAM</text>
+<text x="406" y="358" font-family="monospace" font-size="8" fill="#2a2630">#ebe2cd</text>
+<text x="12" y="392" font-family="monospace" font-size="12" fill="#2a2630">Wood and earth</text>
+<rect x="12" y="400" width="72" height="56" rx="4" fill="#5f4432" stroke="#2a2630" stroke-width="1"/>
+<text x="16" y="414" font-family="monospace" font-size="8" fill="#f7f3ea">WOOD_DARK</text>
+<text x="16" y="450" font-family="monospace" font-size="8" fill="#f7f3ea">#5f4432</text>
+<rect x="90" y="400" width="72" height="56" rx="4" fill="#966a40" stroke="#2a2630" stroke-width="1"/>
+<text x="94" y="414" font-family="monospace" font-size="8" fill="#f7f3ea">WOOD</text>
+<text x="94" y="450" font-family="monospace" font-size="8" fill="#f7f3ea">#966a40</text>
+<rect x="168" y="400" width="72" height="56" rx="4" fill="#c69a6a" stroke="#2a2630" stroke-width="1"/>
+<text x="172" y="414" font-family="monospace" font-size="8" fill="#2a2630">WOOD_LIGHT</text>
+<text x="172" y="450" font-family="monospace" font-size="8" fill="#2a2630">#c69a6a</text>
+<text x="12" y="484" font-family="monospace" font-size="12" fill="#2a2630">Skin</text>
+<rect x="12" y="492" width="72" height="56" rx="4" fill="#f6d3b4" stroke="#2a2630" stroke-width="1"/>
+<text x="16" y="506" font-family="monospace" font-size="8" fill="#2a2630">SKIN</text>
+<text x="16" y="542" font-family="monospace" font-size="8" fill="#2a2630">#f6d3b4</text>
+<rect x="90" y="492" width="72" height="56" rx="4" fill="#f2a08e" stroke="#2a2630" stroke-width="1"/>
+<text x="94" y="506" font-family="monospace" font-size="8" fill="#2a2630">BLUSH</text>
+<text x="94" y="542" font-family="monospace" font-size="8" fill="#2a2630">#f2a08e</text>
+<text x="12" y="576" font-family="monospace" font-size="12" fill="#2a2630">Accents</text>
+<rect x="12" y="584" width="72" height="56" rx="4" fill="#e05a4e" stroke="#2a2630" stroke-width="1"/>
+<text x="16" y="598" font-family="monospace" font-size="8" fill="#2a2630">RED</text>
+<text x="16" y="634" font-family="monospace" font-size="8" fill="#2a2630">#e05a4e</text>
+<rect x="90" y="584" width="72" height="56" rx="4" fill="#ad3f3a" stroke="#2a2630" stroke-width="1"/>
+<text x="94" y="598" font-family="monospace" font-size="8" fill="#f7f3ea">RED_DARK</text>
+<text x="94" y="634" font-family="monospace" font-size="8" fill="#f7f3ea">#ad3f3a</text>
+<rect x="168" y="584" width="72" height="56" rx="4" fill="#f08350" stroke="#2a2630" stroke-width="1"/>
+<text x="172" y="598" font-family="monospace" font-size="8" fill="#2a2630">ORANGE</text>
+<text x="172" y="634" font-family="monospace" font-size="8" fill="#2a2630">#f08350</text>
+<rect x="246" y="584" width="72" height="56" rx="4" fill="#f5cf5e" stroke="#2a2630" stroke-width="1"/>
+<text x="250" y="598" font-family="monospace" font-size="8" fill="#2a2630">YELLOW</text>
+<text x="250" y="634" font-family="monospace" font-size="8" fill="#2a2630">#f5cf5e</text>
+<rect x="324" y="584" width="72" height="56" rx="4" fill="#cfa63e" stroke="#2a2630" stroke-width="1"/>
+<text x="328" y="598" font-family="monospace" font-size="8" fill="#2a2630">YELLOW_DARK</text>
+<text x="328" y="634" font-family="monospace" font-size="8" fill="#2a2630">#cfa63e</text>
+<rect x="402" y="584" width="72" height="56" rx="4" fill="#ffe68a" stroke="#2a2630" stroke-width="1"/>
+<text x="406" y="598" font-family="monospace" font-size="8" fill="#2a2630">LIGHT</text>
+<text x="406" y="634" font-family="monospace" font-size="8" fill="#2a2630">#ffe68a</text>
+<rect x="480" y="584" width="72" height="56" rx="4" fill="#5b93d6" stroke="#2a2630" stroke-width="1"/>
+<text x="484" y="598" font-family="monospace" font-size="8" fill="#2a2630">BLUE</text>
+<text x="484" y="634" font-family="monospace" font-size="8" fill="#2a2630">#5b93d6</text>
+<rect x="12" y="646" width="72" height="56" rx="4" fill="#3f6fae" stroke="#2a2630" stroke-width="1"/>
+<text x="16" y="660" font-family="monospace" font-size="8" fill="#f7f3ea">BLUE_DARK</text>
+<text x="16" y="696" font-family="monospace" font-size="8" fill="#f7f3ea">#3f6fae</text>
+<rect x="90" y="646" width="72" height="56" rx="4" fill="#3a4068" stroke="#2a2630" stroke-width="1"/>
+<text x="94" y="660" font-family="monospace" font-size="8" fill="#f7f3ea">NAVY</text>
+<text x="94" y="696" font-family="monospace" font-size="8" fill="#f7f3ea">#3a4068</text>
+<rect x="168" y="646" width="72" height="56" rx="4" fill="#5fd3bb" stroke="#2a2630" stroke-width="1"/>
+<text x="172" y="660" font-family="monospace" font-size="8" fill="#2a2630">TEAL</text>
+<text x="172" y="696" font-family="monospace" font-size="8" fill="#2a2630">#5fd3bb</text>
+<rect x="246" y="646" width="72" height="56" rx="4" fill="#3fa896" stroke="#2a2630" stroke-width="1"/>
+<text x="250" y="660" font-family="monospace" font-size="8" fill="#2a2630">TEAL_DARK</text>
+<text x="250" y="696" font-family="monospace" font-size="8" fill="#2a2630">#3fa896</text>
+<rect x="324" y="646" width="72" height="56" rx="4" fill="#a98ae0" stroke="#2a2630" stroke-width="1"/>
+<text x="328" y="660" font-family="monospace" font-size="8" fill="#2a2630">VIOLET</text>
+<text x="328" y="696" font-family="monospace" font-size="8" fill="#2a2630">#a98ae0</text>
+<rect x="402" y="646" width="72" height="56" rx="4" fill="#7a5fb5" stroke="#2a2630" stroke-width="1"/>
+<text x="406" y="660" font-family="monospace" font-size="8" fill="#f7f3ea">VIOLET_DARK</text>
+<text x="406" y="696" font-family="monospace" font-size="8" fill="#f7f3ea">#7a5fb5</text>
+<rect x="480" y="646" width="72" height="56" rx="4" fill="#dcc5f5" stroke="#2a2630" stroke-width="1"/>
+<text x="484" y="660" font-family="monospace" font-size="8" fill="#2a2630">LILAC</text>
+<text x="484" y="696" font-family="monospace" font-size="8" fill="#2a2630">#dcc5f5</text>
+<rect x="12" y="708" width="72" height="56" rx="4" fill="#f7a3c0" stroke="#2a2630" stroke-width="1"/>
+<text x="16" y="722" font-family="monospace" font-size="8" fill="#2a2630">PINK</text>
+<text x="16" y="758" font-family="monospace" font-size="8" fill="#2a2630">#f7a3c0</text>
+</svg>
