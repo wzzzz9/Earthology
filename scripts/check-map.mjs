@@ -40,5 +40,10 @@ for (const o of objs) {
   for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const x = tx + dx, y = ty + dy; if (x >= 0 && y >= 0 && x < W && y < H && seen[y * W + x]) ok = true; }
   if (!ok) { bad++; console.log(`  ✗ ${o.type} ${o.name} at tile ${tx},${ty} is not reachable`); }
 }
-console.log(bad ? `${bad} unreachable target(s).` : 'All targets reachable.');
+// Every scannable in the content must exist on the map, or the homework can never be completed.
+const scannables = JSON.parse(readFileSync(new URL('../content/countries/iceland/scannables.json', import.meta.url)));
+const placed = new Set(objs.filter((o) => o.type === 'scan' || o.type === 'scanwater').map((o) => o.name));
+for (const id of Object.keys(scannables)) if (!placed.has(id)) { bad++; console.log(`  ✗ scannable "${id}" has no scan point on the map`); }
+for (const n of placed) if (!scannables[n]) { bad++; console.log(`  ✗ scan point "${n}" has no entry in scannables.json`); }
+console.log(bad ? `${bad} problem(s).` : 'All targets reachable and every scannable is placed.');
 process.exit(bad ? 1 : 0);
