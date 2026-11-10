@@ -298,42 +298,49 @@ export class IntroScene extends Phaser.Scene {
     for (let y = CY - 104; y < CY + 92; y += 3) { scan.fillStyle(0xffffff, 0.035); scan.fillRect(CX - 206, y, 412, 1); }
     const header = this.add.text(CX - 196, CY - 98, 'NEBULA HOLLOW UNIVERSITY  ·  ADMISSIONS OFFICE', { fontFamily: 'monospace', fontSize: '8px', color: '#8e6bbf' });
     const rule = this.add.rectangle(CX, CY - 85, 396, 1, 0x4b4470);
-    const body = this.add.text(CX - 196, CY - 76, '', { fontFamily: 'monospace', fontSize: '11px', color: '#d9b8ff', lineSpacing: 6, wordWrap: { width: 392 } });
+    const body = this.add.text(CX - 196, CY - 76, '', { fontFamily: 'monospace', fontSize: '11px', color: '#d9b8ff', lineSpacing: 6 });
     const cursor = this.add.rectangle(CX - 196, CY - 70, 6, 11, 0xd9b8ff).setOrigin(0, 0);
     const foot = this.add.text(CX, CY + 104, 'Enter: continue', { fontFamily: 'monospace', fontSize: '7px', color: '#9aa3b2' }).setOrigin(0.5).setAlpha(0);
     const light = this.add.rectangle(CX + 206, CY + 110, 6, 6, 0x5fc4b0); // power light
     layer.add([bezel, screen, scan, header, rule, body, cursor, foot, light]);
-    // Hard clip: nothing of the letter can draw outside the screen glass, however long it gets.
-    const clip = this.make.graphics({ x: 0, y: 0 }, false);
-    clip.fillStyle(0xffffff, 1);
-    clip.fillRect(CX - 206, CY - 82, 412, 166);
-    const mask = clip.createGeometryMask();
-    body.setMask(mask);
-    cursor.setMask(mask);
     this.tweens.add({ targets: cursor, alpha: 0, duration: 400, yoyo: true, repeat: -1 });
     this.caption?.setVisible(false);
     await this.tween({ targets: layer, alpha: 1, duration: 350 });
 
-    const full = lines.join('\n');
+    // Wrap by character count (monospace, ~6.6 px per character at 11 px), then type character
+    // by character. Only the last MAX_ROWS rows are ever drawn, so the letter stays inside the
+    // glass; when it grows past the bottom, the top rows roll away.
+    const COLS = 58;
+    const ROW_H = 17;
+    const MAX_ROWS = Math.floor(160 / ROW_H);
+    const wrapped: string[] = [];
+    for (const line of lines) {
+      const words = line.split(' ');
+      let cur = '';
+      for (const w of words) {
+        if ((cur + ' ' + w).trim().length > COLS) { wrapped.push(cur); cur = w; } else cur = (cur + ' ' + w).trim();
+      }
+      wrapped.push(cur);
+    }
+    const full = wrapped.join('\n');
+    const render = (shown: string) => {
+      const rows = shown.split('\n');
+      const visible = rows.slice(Math.max(0, rows.length - MAX_ROWS));
+      body.setText(visible);
+      const last = visible[visible.length - 1] ?? '';
+      cursor.setPosition(body.x + last.length * 6.6 + 1, body.y + (visible.length - 1) * ROW_H + 1);
+    };
     let shown = '';
     for (let i = 0; i < full.length; i++) {
       shown += full[i];
-      body.setText(shown);
-      // keep the last line on screen: scroll the body up if it runs past the bottom
-      const overflow = body.y + body.height - (CY + 84);
-      if (overflow > 0) body.setY(body.y - overflow);
-      // cursor after the last character
-      const lastLine = shown.split('\n').pop() ?? '';
-      cursor.setPosition(body.x + lastLine.length * 6.6 + 1, body.y + body.height - 12);
-      if (this.skip) { this.skip = false; body.setText(full); break; }
+      render(shown);
+      if (this.skip) { this.skip = false; shown = full; render(shown); break; }
       await this.wait(full[i] === '\n' ? 260 : 24);
     }
-    cursor.setPosition(body.x, body.y + body.height + 4);
     this.tweens.add({ targets: foot, alpha: 1, duration: 300 });
     await this.wait(2600);
     await this.tween({ targets: layer, alpha: 0, duration: 350 });
     layer.destroy(true);
-    clip.destroy();
     this.caption?.setVisible(true);
   }
 
