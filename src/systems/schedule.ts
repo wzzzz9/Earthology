@@ -108,8 +108,8 @@ export function onNewDay(): Notice[] {
     }
     const tpl = passed ? L.finalPass : L.finalFail;
     out.push({ lines: tpl.map((l) => fmt(l, { score })), note: passed ? 'Class passed.' : 'Class failed. Retake: discovery only.' });
-  } else if (!state.retake && !state.finalResult && state.day === deadline) {
-    out.push({ lines: [fmt(L.deadlineSoon, { due: deadline })] });
+  } else if (!state.retake && !state.finalResult && [30, 7, 1, 0].includes(deadline - state.day)) {
+    out.push({ lines: [fmt(L.deadlineSoon, { due: deadline, left: deadline - state.day })] });
   }
 
   const today = classToday();

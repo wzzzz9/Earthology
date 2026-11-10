@@ -1,5 +1,5 @@
 {
-  "deadlineDay": 14,
+  "deadlineDay": 90,
   "classes": [
     {
       "id": "rocks",
@@ -32,8 +32,8 @@
       "task": {
         "id": "two-rocks",
         "text": "Identify two different rocks in the lab.",
-        "due": 5,
-        "graceDays": 2,
+        "due": 9,
+        "graceDays": 3,
         "satisfiedBy": {
           "identifiedCount": 2
         }
@@ -41,7 +41,7 @@
     },
     {
       "id": "land",
-      "day": 4,
+      "day": 8,
       "title": "Reading the land",
       "teaches": [
         "map.grid-references"
@@ -70,8 +70,8 @@
       "task": {
         "id": "three-things",
         "text": "Look closely at three things and write them in the notebook.",
-        "due": 7,
-        "graceDays": 2,
+        "due": 16,
+        "graceDays": 3,
         "satisfiedBy": {
           "scannedCount": 3
         }
@@ -79,7 +79,7 @@
     },
     {
       "id": "people",
-      "day": 7,
+      "day": 15,
       "title": "People",
       "teaches": [],
       "lesson": [
@@ -106,8 +106,8 @@
       "task": {
         "id": "one-person",
         "text": "Learn one thing from a person in town.",
-        "due": 10,
-        "graceDays": 2,
+        "due": 25,
+        "graceDays": 4,
         "satisfiedBy": {
           "talkEntries": 1
         }
@@ -115,7 +115,7 @@
     },
     {
       "id": "maps",
-      "day": 10,
+      "day": 25,
       "title": "The edges of the map",
       "teaches": [
         "map.compass-north"
@@ -137,15 +137,15 @@
         {
           "lines": [
             "A third of the map, at least, before your final report.",
-            "And the final report is due at the end of day 14."
+            "And the final report is due at the end of day 90."
           ]
         }
       ],
       "task": {
         "id": "half-map",
         "text": "Explore at least a third of the map.",
-        "due": 13,
-        "graceDays": 1,
+        "due": 40,
+        "graceDays": 5,
         "satisfiedBy": {
           "exploredPct": 35
         }
@@ -159,7 +159,7 @@
     "taskDone": "Task done: {task}",
     "taskGrace": "Day {day}. Your task was due. Are you all right? One more chance: day {due}.",
     "taskMissed": "Day {day}. Task not done: {task} It goes on your record.",
-    "deadlineSoon": "Reminder: final report at the end of day {due}. Submit from the ship.",
+    "deadlineSoon": "Reminder: final report at the end of day {due}. {left} day(s) left.",
     "finalPass": [
       "Final mark for this class: {score}.",
       "That is a pass. You may stay as long as you like.",
