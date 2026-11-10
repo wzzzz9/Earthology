@@ -122,7 +122,8 @@ pt('rift', 'scan', 11, 20);
 pt('geyser', 'fx', 36, 13); pt('geysir', 'scan', 36, 15);
 for (const [x, y] of [[33, 12], [41, 14], [38, 10]]) pt('steam', 'fx', x, y);
 pt('hot-pool', 'scan', 34, 13);
-pt('waterfall', 'fx', 70, 21); // drawn 32 wide, centred between the two river tiles pt('waterfall', 'scan', 67, 23);
+pt('waterfall', 'fx', 70, 21); // drawn 32 wide, centred between the two river tiles
+pt('waterfall', 'scan', 67, 23);
 pt('columns-wall', 'prop', 60, 49); pt('columns', 'scan', 60, 50);
 pt('glacier-face', 'prop', 60, 10); pt('glacier', 'scan', 60, 12);
 pt('lake', 'scan', 53, 35); pt('cairn', 'scan', 48, 30);
