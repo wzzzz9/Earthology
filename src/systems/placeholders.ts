@@ -8,14 +8,14 @@ import Phaser from 'phaser';
 export const TILE = 16;
 
 /**
- * Tileset, 16 tiles in a row (gid 1..16). Palette aims at Iceland: yellow-green
+ * Tileset, 17 tiles in a row (gid 1..17). Palette aims at Iceland: yellow-green
  * tundra grass, moss-covered black lava, grey gravel, glacial blue water, black sand,
  * basalt boulders, ice patches.
  *  1 tundra   2 tundra (tufts)   3 gravel path   4 water   5 basalt boulder (solid)
  *  6 mossy boulder (solid)   7 black sand   8 void   9 moss lava   10 moss lava (dense)
  *  11 ice   12 water edge (light)
  */
-export const TILE_COUNT = 16;
+export const TILE_COUNT = 17;
 
 export function makePlaceholderTileset(scene: Phaser.Scene, key = 'placeholder'): void {
   if (scene.textures.exists(key)) return;
@@ -86,6 +86,9 @@ export function makePlaceholderTileset(scene: Phaser.Scene, key = 'placeholder')
   fill(14, '#0c0e14'); px(14, '#182434', [[6, 2, 1, 5], [9, 9, 1, 6], [4, 12, 1, 3]]);
   px(14, '#454a54', [[0, 0, 2, 16], [14, 0, 2, 16]]); px(14, '#6b6f78', [[0, 0, 1, 16], [15, 0, 1, 16]]); px(14, '#2b2e34', [[2, 0, 1, 16], [13, 0, 1, 16]]);
   fill(15, '#7fd1e8'); px(15, '#a9e3f1', [[2, 3, 5, 2], [8, 9, 6, 2], [5, 12, 3, 1], [11, 2, 3, 1]]); px(15, '#e9f6fa', [[4, 4, 2, 1], [10, 10, 2, 1]]);
+  // 17 stepping stones: grass with two or three flat grey stones, for side paths.
+  fill(16, '#7d9150'); px(16, '#8ea35c', [[2, 13, 2], [12, 2, 2]]);
+  for (const [x, y, w, h] of [[2, 3, 6, 5], [9, 9, 6, 5], [3, 11, 3, 2]]) { px(16, '#6b6f78', [[x, y, w, h]]); px(16, '#8a8f99', [[x + 1, y + 1, w - 2, h - 2]]); px(16, '#5c626d', [[x, y + h - 1, w, 1]]); }
   // 11 ice / old snow: white-blue
   fill(10, '#dfe9ee'); px(10, '#f6fafc', [[2, 2, 5, 3], [9, 9, 5, 4]]); px(10, '#b9ccd6', [[8, 3, 4, 2], [2, 10, 4, 2], [12, 6, 2, 2]]);
   // 12 water edge: lighter shallow water
@@ -385,16 +388,20 @@ export function makeTrees(scene: Phaser.Scene): void {
     for (let i = 0; i < 9; i++) r(cx - rad + 2 + ((i * 7) % (rad * 2 - 4)), cy - rad + 2 + ((i * 5) % (rad - 1)), 2, 1, light);
   };
   mk('tree.birch', (_c, r) => {
-    r(14, 26, 4, 22, OUT); r(15, 26, 2, 21, '#e9e4d8'); r(15, 30, 2, 1, '#555'); r(15, 37, 2, 1, '#555'); r(15, 43, 1, 1, '#555');
-    canopy(r, 16, 16, 12, '#7d9a3a', '#9ab54a', '#c9d96a');
-    r(8, 42, 16, 3, 'rgba(0,0,0,0.25)');
-  });
+    r(17, 36, 6, 36, OUT); r(18, 36, 4, 35, '#e9e4d8'); for (const y of [42, 50, 58, 65]) r(18 + (y % 3), y, 2, 1, '#555');
+    canopy(r, 20, 22, 18, '#7d9a3a', '#9ab54a', '#c9d96a');
+    canopy(r, 12, 30, 9, '#7d9a3a', '#9ab54a', '#c9d96a');
+    canopy(r, 29, 31, 8, '#7d9a3a', '#9ab54a', '#c9d96a');
+    r(10, 69, 20, 3, 'rgba(0,0,0,0.25)');
+  }, 40, 72);
   mk('tree.rowan', (_c, r) => {
-    r(14, 24, 4, 24, OUT); r(15, 24, 2, 23, '#6e4b2a'); r(15, 30, 1, 10, '#8a6238');
-    canopy(r, 16, 15, 13, '#4f7a3a', '#6a9a46', '#8fb85c');
-    for (const [x, y] of [[9, 12], [19, 8], [23, 17], [12, 20], [16, 13]]) r(x, y, 2, 2, '#d9442f');
-    r(7, 43, 18, 3, 'rgba(0,0,0,0.25)');
-  });
+    r(17, 34, 6, 38, OUT); r(18, 34, 4, 37, '#6e4b2a'); r(18, 40, 1, 24, '#8a6238');
+    canopy(r, 20, 20, 19, '#4f7a3a', '#6a9a46', '#8fb85c');
+    canopy(r, 10, 30, 8, '#4f7a3a', '#6a9a46', '#8fb85c');
+    canopy(r, 31, 29, 8, '#4f7a3a', '#6a9a46', '#8fb85c');
+    for (const [x, y] of [[9, 16], [23, 8], [31, 20], [14, 26], [20, 16], [27, 30], [8, 30]]) r(x, y, 2, 2, '#d9442f');
+    r(9, 69, 22, 3, 'rgba(0,0,0,0.25)');
+  }, 40, 72);
   mk('tree.willow', (_c, r) => {
     canopy(r, 16, 20, 9, '#5f7f3f', '#7f9a50', '#a9b86a');
     r(13, 27, 6, 3, OUT); r(14, 27, 4, 2, '#6e4b2a');
@@ -493,6 +500,16 @@ export function makeIcelandProps(scene: Phaser.Scene): void {
     for (let y = f ? 2 : 6; y < 30; y += 8) { r(4 + (f ? 4 : 0), y, 2, 3, '#ffffff'); r(20 - (f ? 4 : 0), y + 3, 2, 3, '#ffffff'); }
     r(0, 29, 32, 7, '#e9f6fa'); r(2, 31, 28, 3, '#ffffff'); r(0, 0, 32, 2, '#6fb3cf');
   });
+  // Fences and yard clutter, all with outlines. Fence pieces are one tile wide.
+  mk('prop.fence-h', 16, 12, (r) => { r(0, 4, 16, 2, OUT); r(0, 8, 16, 2, OUT); r(1, 5, 14, 1, '#b08a5a'); r(1, 9, 14, 1, '#b08a5a'); for (const x of [2, 12]) { r(x, 0, 3, 12, OUT); r(x + 1, 1, 1, 10, '#c9a470'); } });
+  mk('prop.fence-v', 8, 20, (r) => { r(2, 0, 3, 20, OUT); r(3, 1, 1, 18, '#c9a470'); r(1, 6, 6, 2, OUT); r(1, 13, 6, 2, OUT); r(2, 7, 4, 1, '#b08a5a'); r(2, 14, 4, 1, '#b08a5a'); });
+  mk('prop.planter', 16, 14, (r) => { r(1, 7, 14, 6, OUT); r(2, 8, 12, 4, '#8a6238'); r(2, 8, 12, 1, '#b08a5a'); r(3, 3, 10, 5, '#4f7a3a'); for (const [x, c] of [[4, '#f28cb1'], [8, '#ffd37a'], [12, '#f4f1e8']] as [number, string][]) r(x, 2, 2, 2, c); });
+  mk('prop.barrel', 12, 14, (r) => { r(1, 1, 10, 12, OUT); r(2, 2, 8, 10, '#8a6238'); r(2, 4, 8, 1, '#454851'); r(2, 9, 8, 1, '#454851'); r(3, 2, 1, 10, '#b08a5a'); });
+  mk('prop.lantern', 8, 20, (r) => { r(3, 6, 2, 14, OUT); r(1, 0, 6, 7, OUT); r(2, 1, 4, 5, '#ffd37a'); r(3, 2, 2, 3, '#fff6c8'); r(1, 18, 6, 2, OUT); });
+  mk('prop.woodpile', 16, 12, (r) => { r(0, 2, 16, 10, OUT); for (const [x, y] of [[1, 7], [6, 7], [11, 7], [3, 3], [8, 3]]) { r(x, y, 4, 4, '#8a6238'); r(x + 1, y + 1, 2, 2, '#d9c7a8'); } });
+  mk('prop.bench', 20, 10, (r) => { r(0, 3, 20, 3, OUT); r(1, 4, 18, 1, '#b08a5a'); r(2, 6, 2, 4, OUT); r(16, 6, 2, 4, OUT); r(0, 0, 20, 2, OUT); r(1, 1, 18, 1, '#b08a5a'); });
+  mk('prop.well', 20, 24, (r) => { r(2, 14, 16, 9, OUT); r(3, 15, 14, 7, '#6b6f78'); r(3, 15, 14, 1, '#8a8f99'); r(4, 2, 2, 13, OUT); r(14, 2, 2, 13, OUT); r(2, 0, 16, 4, OUT); r(3, 1, 14, 2, '#c94a3a'); r(9, 6, 2, 8, OUT); });
+  mk('prop.mailbox', 8, 16, (r) => { r(3, 6, 2, 10, OUT); r(0, 0, 8, 7, OUT); r(1, 1, 6, 5, '#c94a3a'); r(5, 2, 1, 2, '#ffd37a'); });
   // Pier planks: a short wooden walkway over water, 16x16 tile-sized prop.
   mk('prop.pier', 16, 16, (r) => { r(0, 0, 16, 16, '#6e4b2a'); for (let y = 0; y < 16; y += 4) r(0, y, 16, 1, '#5a3a24'); r(0, 0, 1, 16, OUT); r(15, 0, 1, 16, OUT); });
 }
@@ -527,6 +544,8 @@ export function makePlants(scene: Phaser.Scene): void {
     for (const [x, top] of [[1, 3], [3, 1], [5, 0], [7, 2]]) r(x, top, 1, 8 - top, '#98a85d');
     r(2, 5, 6, 1, '#86964f'); r(8, 4, 1, 4, '#86964f');
   });
+  // Wildflowers: pink and white blossoms on short stems.
+  mk('plant.flowers', 12, 10, (r) => { for (const [x, c] of [[1, '#f28cb1'], [5, '#f4f1e8'], [9, '#f28cb1']] as [number, string][]) { r(x + 1, 4, 1, 6, '#6f9a4a'); r(x, 1, 3, 3, c); r(x + 1, 2, 1, 1, '#ffd37a'); } });
   // Small stones: a couple of pebbles.
   mk('plant.stones', 10, 6, (r) => { r(1, 2, 4, 3, '#6b6f78'); r(6, 3, 3, 2, '#6b6f78'); r(1, 2, 2, 1, '#8a8f99'); r(1, 5, 8, 1, 'rgba(0,0,0,0.2)'); });
 }

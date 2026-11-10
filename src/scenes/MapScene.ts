@@ -18,7 +18,7 @@ export interface MapInfo {
 /** Colours for the paper map, by ground gid. Unknown gids fall back to parchment. */
 const GID_COLOR: Record<number, number> = {
   1: 0x9db37a, 2: 0xa6b97e, 3: 0xb7a98f, 4: 0x6fa8c9, 5: 0x6b6f78, 6: 0x6b6f78, 7: 0x4d4e55,
-  9: 0x6f8f55, 10: 0x7fa05d, 11: 0xe6edf0, 12: 0x9cc6da, 13: 0x6f8f55, 14: 0x7fa05d, 15: 0x1c2a3a, 16: 0x9fd0e3,
+  9: 0x6f8f55, 10: 0x7fa05d, 11: 0xe6edf0, 12: 0x9cc6da, 13: 0x6f8f55, 14: 0x7fa05d, 15: 0x1c2a3a, 16: 0x9fd0e3, 17: 0xa7b08a,
 };
 
 /**

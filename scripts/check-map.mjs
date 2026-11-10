@@ -13,7 +13,7 @@ const tile = (o) => [Math.floor(o.x / 16), Math.floor(o.y / 16)];
 for (const o of objs) {
   const [tx, ty] = tile(o);
   if (o.type === 'building') { const h = o.name === 'church' ? 3 : 2; for (let dy = 0; dy < h; dy++) for (let dx = -1; dx < 2; dx++) blocked[(ty - dy) * W + tx + dx] = true; }
-  if (o.type === 'prop' || o.type === 'fx' && o.name === 'geyser') blocked[ty * W + tx] = true;
+  if (o.type === 'prop' || o.type === 'deco' || (o.type === 'fx' && o.name === 'geyser')) blocked[ty * W + tx] = true;
   if (o.type === 'tree') blocked[ty * W + tx] = true;
 }
 const spawn = objs.find((o) => o.name === 'spawn');

@@ -114,6 +114,11 @@ export class WorldScene extends Phaser.Scene {
         if (!this.textures.exists(key)) continue;
         const img = this.add.image(x, y + 8, key).setOrigin(0.5, 1).setDepth(y + 8);
         solids.add(this.add.rectangle(x, y + 2, Math.max(8, img.width - 6), Math.min(12, img.height / 2)).setVisible(false));
+      } else if (o.type === 'deco') {
+        const key = `prop.${o.name}`;
+        if (!this.textures.exists(key)) continue;
+        const img = this.add.image(x, y + 8, key).setOrigin(0.5, 1).setDepth(y + 8);
+        solids.add(this.add.rectangle(x, y + 4, Math.max(6, img.width - 4), 6).setVisible(false));
       } else if (o.type === 'plant') {
         const key = `plant.${o.name}`;
         if (this.textures.exists(key)) this.add.image(x + Phaser.Math.Between(-3, 3), y + 6, key).setOrigin(0.5, 1).setDepth(y + 2);

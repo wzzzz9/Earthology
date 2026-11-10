@@ -3,10 +3,10 @@
 import { writeFileSync } from 'node:fs';
 
 const W = 80, H = 60, T = 16;
-const GRASS = 1, GRASS2 = 2, PATH = 3, WATER = 4, ROCK = 5, MOSSROCK = 6, BLACKSAND = 7, MOSSLAVA = 9, MOSSLAVA2 = 10, ICE = 11, SHALLOW = 12, MOSSLAVA3 = 13, MOSSLAVA4 = 14, CHASM = 15, HOTPOOL = 16;
+const GRASS = 1, GRASS2 = 2, PATH = 3, WATER = 4, ROCK = 5, MOSSROCK = 6, BLACKSAND = 7, MOSSLAVA = 9, MOSSLAVA2 = 10, ICE = 11, SHALLOW = 12, MOSSLAVA3 = 13, MOSSLAVA4 = 14, CHASM = 15, HOTPOOL = 16, STONES = 17;
 const MOSS = [MOSSLAVA, MOSSLAVA2, MOSSLAVA3, MOSSLAVA4];
 const SOLID = [WATER, ROCK, MOSSROCK, CHASM, HOTPOOL];
-const TILECOUNT = 16;
+const TILECOUNT = 17;
 
 let seed = 20934;
 const rnd = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
@@ -73,13 +73,13 @@ for (let y = 10; y < 54; y += 1) for (const x of [69, 72]) if (ground[at(x, y)] 
 // ---- gravel tracks: ship -> town -> places ----
 // The main street is two tiles wide (about two people side by side); every other track is one.
 line(18, 44, 46, 44, PATH, 2);                 // main street through town
-line(12, 45, 18, 45, PATH, 1);                 // from the ship to the street
-line(32, 18, 32, 44, PATH, 1);                 // north to the geysers
-line(47, 45, 50, 45, PATH, 1); line(50, 36, 50, 45, PATH, 1); line(50, 36, 53, 36, PATH, 1); // to the lake shore
-line(50, 45, 66, 45, PATH, 1); line(66, 24, 66, 45, PATH, 1); // east, then north along the river to the fall
-line(47, 46, 56, 50, PATH, 1);                 // south-east down to the beach
-line(12, 31, 12, 45, PATH, 1);                 // north from the ship to the rift
-line(60, 12, 60, 26, PATH, 1); line(53, 26, 60, 26, PATH, 1); // from the lake north to the glacier
+line(12, 45, 18, 45, STONES, 1);               // from the ship to the street
+line(32, 18, 32, 44, STONES, 1);               // north to the geysers
+line(47, 45, 50, 45, STONES, 1); line(50, 36, 50, 45, STONES, 1); line(50, 36, 53, 36, STONES, 1); // to the lake shore
+line(50, 45, 66, 45, STONES, 1); line(66, 24, 66, 45, STONES, 1); // east, then north along the river to the fall
+line(47, 46, 56, 50, STONES, 1);               // south-east down to the beach
+line(12, 31, 12, 45, STONES, 1);               // north from the ship to the rift
+line(60, 12, 60, 26, STONES, 1); line(53, 26, 60, 26, STONES, 1); // from the lake north to the glacier
 line(32, 46, 32, 50, PATH, 1);                 // down to the pier
 
 // ---- objects ----
@@ -95,6 +95,19 @@ pt('house-red', 'building', 21, 42); pt('house-yellow', 'building', 25, 42); pt(
 pt('house-blue', 'building', 23, 48); pt('house-green', 'building', 27, 48); pt('house-yellow', 'building', 37, 48);
 pt('church', 'building', 44, 41);
 pt('church', 'scan', 44, 42);
+// fenced back yards behind the north-side houses, each with something in it
+const yard = (hx, hy, inside) => {
+  const top = hy - 4; // fence line two rows behind the roof
+  for (let dx = -1; dx <= 1; dx++) pt('fence-h', 'deco', hx + dx, top);
+  pt('fence-v', 'deco', hx - 1.4, top + 1); pt('fence-v', 'deco', hx + 1.4, top + 1);
+  pt(inside, 'deco', hx, top + 1);
+};
+yard(21, 42, 'woodpile'); yard(25, 42, 'planter'); yard(29, 42, 'barrel'); yard(35, 42, 'planter'); yard(39, 42, 'woodpile');
+// front-of-house clutter along the street
+for (const [n, x, y] of [['planter', 22.6, 43], ['lantern', 19.5, 43], ['mailbox', 26.6, 43], ['barrel', 30.6, 43], ['bench', 33, 43], ['planter', 36.6, 43], ['lantern', 41, 43],
+  ['planter', 21.5, 46], ['barrel', 25.4, 46.2], ['bench', 29, 46], ['woodpile', 35.5, 46], ['planter', 38.6, 46], ['lantern', 42, 46.4], ['well', 44, 46], ['bench', 47, 42.5]]) pt(n, 'deco', x, y);
+// a low fence along the harbour front, with gaps at the pier and the slipway
+for (let x = 24; x < 40; x++) if (x !== 32 && x !== 33) pt('fence-h', 'deco', x, 49.4);
 pt('racks', 'prop', 18, 48); pt('fish-racks', 'scan', 18, 49);
 pt('pipe', 'prop', 48, 42); pt('hot-pipe', 'scan', 48, 43);
 pt('pen', 'prop', 15, 36); pt('sheep-pen', 'scan', 15, 38);
@@ -117,7 +130,7 @@ pt('lake', 'scan', 53, 35); pt('cairn', 'scan', 48, 30);
 pt('basalt', 'sample', 10, 32); pt('obsidian', 'sample', 24, 18); pt('pumice', 'sample', 56, 52);
 // trees in small clusters: behind the houses, along the river and lake, by the ship
 for (const [n, x, y] of [
-  ['birch', 20, 39], ['rowan', 23, 38], ['birch', 33, 39], ['rowan', 36, 38], ['birch', 42, 37], ['willow', 46, 38],
+  ['birch', 19, 36], ['rowan', 23, 35], ['birch', 31, 36], ['rowan', 36, 35], ['birch', 42, 36], ['willow', 46, 38],
   ['willow', 54, 29], ['birch', 58, 28], ['willow', 62, 34], ['rowan', 60, 40], ['birch', 63, 41],
   ['birch', 64, 30], ['rowan', 64, 36], ['willow', 68, 40], ['birch', 64, 48],
   ['rowan', 16, 50], ['birch', 14, 48], ['willow', 10, 46], ['birch', 9, 40],
@@ -125,16 +138,22 @@ for (const [n, x, y] of [
   ['birch', 28, 24], ['willow', 36, 24], ['birch', 44, 20], ['rowan', 14, 34],
 ]) pt(n, 'tree', x, y);
 // low plants everywhere the ground is plain grass: lupine near water and the town, cotton grass on wet ground, shrubs and tufts elsewhere
+// clusters: pick seeds, then sprinkle around each so plants gather in drifts
+const seeds = [];
+for (let i = 0; i < 140; i++) seeds.push([2 + rnd() * (W - 4), 2 + rnd() * (H - 4)]);
 let planted = 0;
-for (let i = 0; i < 2600 && planted < 420; i++) {
-  const x = 2 + Math.floor(rnd() * (W - 4)), y = 2 + Math.floor(rnd() * (H - 4));
+const taken = new Set(objs.filter((o) => o.type !== 'deco').map((o) => at(Math.floor(o.x / T), Math.floor(o.y / T))));
+for (let i = 0; i < 9000 && planted < 950; i++) {
+  const [sx, sy] = seeds[Math.floor(rnd() * seeds.length)];
+  const x = Math.round(sx + (rnd() - 0.5) * 7), y = Math.round(sy + (rnd() - 0.5) * 7);
+  if (!inMap(x, y)) continue;
   const g = ground[at(x, y)];
-  if (![GRASS, GRASS2].includes(g) || walls[at(x, y)]) continue;
-  if (objs.some((o) => Math.abs(o.x / T - x) < 1.5 && Math.abs(o.y / T - y) < 1.5)) continue;
+  if (![GRASS, GRASS2].includes(g) || walls[at(x, y)] || taken.has(at(x, y))) continue;
+  taken.add(at(x, y));
   const nearWater = [[1, 0], [-1, 0], [0, 1], [0, -1], [2, 0], [-2, 0], [0, 2], [0, -2]].some(([dx, dy]) => inMap(x + dx, y + dy) && [WATER, SHALLOW].includes(ground[at(x + dx, y + dy)]));
   const nearTown = x > 16 && x < 50 && y > 36 && y < 52;
   const roll = rnd();
-  const name = nearWater ? (roll < 0.5 ? 'cotton' : 'lupine') : nearTown ? (roll < 0.4 ? 'lupine' : roll < 0.7 ? 'tuft' : 'shrub') : roll < 0.35 ? 'shrub' : roll < 0.75 ? 'tuft' : roll < 0.9 ? 'stones' : 'lupine';
+  const name = nearWater ? (roll < 0.5 ? 'cotton' : 'lupine') : nearTown ? (roll < 0.3 ? 'lupine' : roll < 0.55 ? 'flowers' : roll < 0.8 ? 'tuft' : 'shrub') : roll < 0.3 ? 'shrub' : roll < 0.65 ? 'tuft' : roll < 0.8 ? 'stones' : roll < 0.9 ? 'flowers' : 'lupine';
   pt(name, 'plant', x, y);
   planted++;
 }
