@@ -21,3 +21,4 @@
 - Stack: Vite + TypeScript + Phaser 4. Internal resolution 480x270, pixelArt on.
 - `npm run dev` for the dev server, `npm run build` for a production build into dist/.
 - Visual check: with the dev server running (`npm run dev`), `node scripts/shot.mjs out.png Enter:200 ArrowRight:1500` loads the game headless, presses keys, saves a screenshot and prints console errors. Use it before calling a step done.
+- Map check: `npm run check:map` walks the generated Iceland map from the spawn and fails if any scannable, person, rock or the ship cannot be reached on foot. Run it after changing the map generator.
