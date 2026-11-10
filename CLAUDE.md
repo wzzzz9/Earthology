@@ -1,5 +1,6 @@
 # Working rules
 
+- Four sessions share this repo; see docs/TEAM.md for who owns which files. Do not edit files owned by another session.
 - GAME_PLAN.md (v2) is the source of truth. Read it at the start of each session and update it when a decision changes. docs/field-notes-v1.md is background; where they disagree, GAME_PLAN.md wins.
 - Work one milestone at a time. Keep each change small and playable. Commit after each working step with a clear message.
 - Explain what you changed in plain words. I'm learning as we go.
