@@ -163,7 +163,7 @@
     {
       "id": "earth.rift",
       "section": "earth",
-      "weight": 8,
+      "weight": 6,
       "satisfiedBy": {
         "scanned": "rift"
       },
@@ -176,7 +176,7 @@
     {
       "id": "earth.geysir",
       "section": "earth",
-      "weight": 8,
+      "weight": 4,
       "satisfiedBy": {
         "scanned": "geysir"
       },
@@ -189,7 +189,7 @@
     {
       "id": "land.waterfall",
       "section": "land",
-      "weight": 7,
+      "weight": 4,
       "satisfiedBy": {
         "scanned": "waterfall"
       },
@@ -202,7 +202,7 @@
     {
       "id": "rocks.columns",
       "section": "rocks",
-      "weight": 7,
+      "weight": 6,
       "satisfiedBy": {
         "scanned": "columns"
       },
@@ -228,7 +228,7 @@
     {
       "id": "people.gunnar",
       "section": "people",
-      "weight": 6,
+      "weight": 4,
       "satisfiedBy": {
         "relationshipAtLeast": {
           "npc": "gunnar",
@@ -239,6 +239,32 @@
         "A harbour town, and you know nobody who works the sea.",
         "There is a fisherman on the pier most days. Say hello. Keep saying it.",
         "Greet Gunnar on the pier on three different days."
+      ]
+    },
+    {
+      "id": "earth.geysir-why",
+      "section": "earth",
+      "weight": 6,
+      "satisfiedBy": {
+        "puzzle": "geyser"
+      },
+      "hints": [
+        "Your Earth page says the geyser spouts. It does not say why.",
+        "One pool in the geyser field is blocked. Think about when its throat is empty.",
+        "Right after the big geyser spouts, run to the blocked pool and pull the stone. Press E."
+      ]
+    },
+    {
+      "id": "land.flood",
+      "section": "land",
+      "weight": 6,
+      "satisfiedBy": {
+        "puzzle": "flood"
+      },
+      "hints": [
+        "A flood is coming and the plan is not made.",
+        "The planning table by the waterfall. Water goes to the lowest neighbour, never uphill.",
+        "Two banks across the side channel where it leaves the river, at the lip. Then run the melt."
       ]
     }
   ]

@@ -28,6 +28,7 @@ export function taskSatisfied(t: TaskDef): boolean {
   if ('talkEntries' in s) return state.talkEntries >= s.talkEntries;
   if ('exploredPct' in s) return exploredPct() >= s.exploredPct;
   if ('factLearned' in s) return state.factsLearned.includes(s.factLearned);
+  if ('puzzleSolved' in s) return state.puzzlesSolved.includes(s.puzzleSolved);
   return false;
 }
 

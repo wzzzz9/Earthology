@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import { hiRes } from '../ui/hires';
 import { FONT, SIZE, TEXT_RES } from '../ui/font';
 import { sfx } from '../systems/sfx';
+import { puzzleFor, puzzleStatus, geyserPull, geyserClock } from '../systems/puzzles';
+import type { ClassDef, PuzzleObject } from '../content/types';
 import {
   makePlaceholderTileset, makePlaceholderPlayer, makePlaceholderShip, makeSparkle, makePlaceholderProps, makePickupRock, makeTrees, makeIcelandProps, makePlants,
   PLAYER_W, PLAYER_H, DISGUISES, PLAYER_LOOK,
@@ -19,7 +21,7 @@ import { onNewDay, classToday, attendClass, checkTasks, type Notice } from '../s
 const SPEED = 70; // px per second, a relaxed walking pace for 16px tiles
 const REACH = 22; // px from the point in front of the player to an interactable
 
-type Kind = 'scan' | 'npc' | 'ship' | 'sample';
+type Kind = 'scan' | 'npc' | 'ship' | 'sample' | 'puzzle';
 interface Interactable {
   kind: Kind;
   id: string;
@@ -150,6 +152,17 @@ export class WorldScene extends Phaser.Scene {
         this.interactables.push({ kind: 'sample', id: o.name, x, y, sparkle: this.addSparkle(x, y - 10), image: img });
         // Store the pickup id on the interactable via the image name.
         img.setName(pickupId);
+      } else if (o.type === 'puzzle') {
+        // <puzzle>.<object>: a thing at a field-trip site. Drawn simply here; the rules live in puzzles.ts.
+        const [pid, oid] = o.name.split('.');
+        if (!puzzleFor(pid)?.trip.puzzle.objects[oid]) continue;
+        if (oid === 'blocked') this.add.circle(x, y - 14, 3, 0x3a3f55).setStrokeStyle(1, 0x2a2630).setDepth(y - 14);
+        if (oid === 'table') {
+          this.add.rectangle(x, y - 4, 16, 9, 0x7a5a3a).setStrokeStyle(1, 0x2a2630).setDepth(y);
+          this.add.rectangle(x, y - 5, 11, 6, 0xf1e9d2).setDepth(y + 1);
+          solids.add(this.add.rectangle(x, y - 2, 14, 6).setVisible(false));
+        }
+        this.interactables.push({ kind: 'puzzle', id: o.name, x, y, sparkle: this.addSparkle(x, y - 12) });
       } else if (o.type === 'npc') {
         const def = content.npcs[o.name];
         makePlaceholderPlayer(this, `npc.${o.name}`, { coat: def.coat, coatDark: '#2f5238', hair: '#cfd2d8', skin: '#f3cfae', hat: null, legs: '#3a3f55' });
@@ -160,6 +173,7 @@ export class WorldScene extends Phaser.Scene {
     }
     // Hide sparkles for things already in the notebook (relevant once saving exists).
     for (const it of this.interactables) if (it.kind === 'scan' && state.hasScanned(it.id)) it.sparkle?.setVisible(false);
+    this.refreshPuzzleSparkles();
 
     this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     this.physics.add.collider(this.player, ground);
@@ -186,7 +200,7 @@ export class WorldScene extends Phaser.Scene {
       height: map.height,
       ground: groundData,
       walls: wallData,
-      markers: this.interactables.filter((it) => it.kind !== 'sample').map((it) => ({ x: it.x, y: it.y, kind: it.kind as 'ship' | 'scan' | 'npc', id: it.id })),
+      markers: this.interactables.filter((it) => it.kind !== 'sample' && it.kind !== 'puzzle').map((it) => ({ x: it.x, y: it.y, kind: it.kind as 'ship' | 'scan' | 'npc', id: it.id })),
     };
 
     const cam = this.cameras.main;
@@ -252,7 +266,10 @@ export class WorldScene extends Phaser.Scene {
       const erupt = () => {
         this.tweens.add({
           targets: column, scaleY: 1, duration: 500, ease: 'Quad.easeOut', yoyo: true, hold: 900,
-          onStart: () => { if (Phaser.Math.Distance.Between(this.player.x, this.player.y, x, y) < 160) this.cameras.main.shake(300, 0.002); },
+          onStart: () => {
+            geyserClock.lastEruptAt = this.time.now;
+            if (Phaser.Math.Distance.Between(this.player.x, this.player.y, x, y) < 160) { this.cameras.main.shake(300, 0.002); sfx.geyser(); }
+          },
           onComplete: () => this.time.delayedCall(Phaser.Math.Between(6000, 11000), erupt),
         });
       };
@@ -300,6 +317,7 @@ export class WorldScene extends Phaser.Scene {
     if (it.kind === 'scan') return `E: Look at ${content.scannables[it.id]?.name.toLowerCase() ?? it.id}`;
     if (it.kind === 'npc') return `E: Talk to ${content.npcs[it.id]?.name ?? it.id}`;
     if (it.kind === 'sample') return 'E: Pick up rock';
+    if (it.kind === 'puzzle') return `E: ${this.puzzleObject(it)?.prompt ?? 'Look'}`;
     return 'E: Your ship';
   }
 
@@ -307,6 +325,7 @@ export class WorldScene extends Phaser.Scene {
     if (it.kind === 'scan') return this.scan(it);
     if (it.kind === 'npc') return this.openDialogue(new Conversation(it.id));
     if (it.kind === 'sample') return this.pickUp(it);
+    if (it.kind === 'puzzle') return this.openDialogue(this.puzzleTalk(it));
     return this.openDialogue(this.shipMenu());
   }
 
@@ -353,6 +372,12 @@ export class WorldScene extends Phaser.Scene {
         if (step === 1) {
           const picked = options[choice ?? options.length - 1];
           if (picked === 'Attend class' && cls) {
+            if (cls.trip) {
+              // A field trip: the professor takes you to the place first.
+              this.pendingClass = cls;
+              this.pendingOverlay = 'trip';
+              return null;
+            }
             // The lesson is the professor talking; it replaces this menu.
             this.pendingNotices = attendClass(cls);
             this.pendingOverlay = 'notices';
@@ -373,6 +398,100 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private pendingNotices: Notice[] = [];
+  private pendingClass: ClassDef | null = null;
+  private pendingOverlayData: object | undefined;
+  private tripTeacher: Phaser.GameObjects.Image | null = null;
+
+  /**
+   * Field trip: fade out, stand the player at the place with the professor beside them,
+   * then the lesson plays there and she leaves. The puzzle at the site is open from then on.
+   */
+  private startTrip(cls: ClassDef): void {
+    const trip = cls.trip!;
+    const spot = this.interactables.find((i) => i.kind === 'scan' && i.id === trip.place);
+    // The scan point is a walkable tile by the landmark; stand there, the professor one tile east.
+    const tx = spot ? spot.x : this.player.x;
+    const ty = spot ? spot.y + 4 : this.player.y;
+    this.busy = true;
+    this.cameras.main.fadeOut(400, 0, 0, 0);
+    this.cameras.main.once('camerafadeoutcomplete', () => {
+      (this.player.body as Phaser.Physics.Arcade.Body).reset(tx, ty);
+      this.player.setFrame('up0');
+      if (!this.textures.exists('npc.teacher')) {
+        makePlaceholderPlayer(this, 'npc.teacher', { coat: content.teacher.color, coatDark: '#2f5238', hair: '#3a2a1a', skin: '#f3cfae', hat: null, legs: '#3a3f55' });
+      }
+      this.tripTeacher = this.add.image(tx + 18, ty - 4, 'npc.teacher', 'up0').setDepth(ty);
+      this.cameras.main.fadeIn(400, 0, 0, 0);
+      this.time.delayedCall(700, () => {
+        this.pendingNotices = [...attendClass(cls), { lines: trip.leave, note: `Puzzle: ${cls.task.text}` }];
+        this.refreshPuzzleSparkles();
+        this.scene.launch('Dialogue', { source: this.noticesSource(this.pendingNotices) });
+        this.pendingNotices = [];
+      });
+    });
+  }
+
+  private puzzleObject(it: Interactable): PuzzleObject | undefined {
+    const [pid, oid] = it.id.split('.');
+    return puzzleFor(pid)?.trip.puzzle.objects[oid];
+  }
+
+  /** Sparkles mark puzzle objects only while their puzzle is open. */
+  private refreshPuzzleSparkles(): void {
+    for (const it of this.interactables) {
+      if (it.kind !== 'puzzle') continue;
+      it.sparkle?.setVisible(puzzleStatus(it.id.split('.')[0]) === 'open');
+    }
+  }
+
+  /** Looking at a puzzle object: its description, then a choice of things to do with it. */
+  private puzzleTalk(it: Interactable): DialogueSource {
+    const [pid] = it.id.split('.');
+    const ref = puzzleFor(pid)!;
+    const obj = this.puzzleObject(it)!;
+    const page = (lines: string[], choices?: string[]) => ({ speaker: obj.name, color: '#5fc4b0', lines, choices });
+    let step = 0;
+    return {
+      next: (choice?: number) => {
+        if (step === 0) {
+          step = 1;
+          if (puzzleStatus(pid) === 'locked') { step = 2; return page([...obj.look, content.classes.lines.puzzleLocked]); }
+          return page(obj.look, [...obj.choices.map((c) => c.text), 'Leave it']);
+        }
+        if (step === 1) {
+          step = 2;
+          const c = obj.choices[choice ?? obj.choices.length];
+          if (!c) return null;
+          if (c.action === 'watch') return page(c.reply ?? []);
+          if (c.action === 'plan') {
+            this.pendingOverlay = 'Flood';
+            this.pendingOverlayData = { puzzleId: pid };
+            return null;
+          }
+          if (c.action === 'pull' && ref.trip.puzzle.type === 'geyser') {
+            const L = ref.trip.puzzle.lines;
+            const r = geyserPull(pid, ref.trip.puzzle, this.time.now);
+            if (r === 'solved') { this.eruptAt(it.x, it.y - 16); this.refreshPuzzleSparkles(); return page(L.pullSolved); }
+            if (r === 'done') return page(L.pullDone);
+            this.cameras.main.shake(250, 0.004);
+            sfx.close();
+            return page(L.pullEarly);
+          }
+        }
+        return null;
+      },
+    };
+  }
+
+  /** A one-off eruption where a blocked pool used to be. */
+  private eruptAt(x: number, y: number): void {
+    const column = this.add.image(x, y, 'fx.geyser-column').setOrigin(0.5, 1).setDepth(y + 1).setScale(1, 0);
+    this.time.delayedCall(900, () => {
+      sfx.geyser();
+      this.cameras.main.shake(400, 0.003);
+      this.tweens.add({ targets: column, scaleY: 1.2, duration: 500, ease: 'Quad.easeOut', yoyo: true, hold: 1400, onComplete: () => column.destroy() });
+    });
+  }
 
   private sleep(): void {
     state.nextDay();
@@ -425,11 +544,24 @@ export class WorldScene extends Phaser.Scene {
           this.time.delayedCall(80, () => this.scene.launch('Dialogue', { source: this.noticesSource(notices) }));
           return; // stay busy
         }
+      } else if (key === 'trip') {
+        const cls = this.pendingClass;
+        this.pendingClass = null;
+        if (cls) { this.startTrip(cls); return; }
       } else {
-        this.scene.launch(key);
+        const data = this.pendingOverlayData;
+        this.pendingOverlayData = undefined;
+        this.scene.launch(key, data);
         return; // stay busy
       }
     }
+    if (this.tripTeacher) {
+      // The lesson is over: the professor heads back to the ship.
+      const t = this.tripTeacher;
+      this.tripTeacher = null;
+      this.tweens.add({ targets: t, alpha: 0, x: t.x + 30, duration: 900, onComplete: () => t.destroy() });
+    }
+    this.refreshPuzzleSparkles();
     // Whatever key closed the overlay must be released before it counts again.
     this.heldE = this.actKey.isDown;
     this.heldN = this.bookKey.isDown;
@@ -496,6 +628,7 @@ export class WorldScene extends Phaser.Scene {
           finalResult: state.finalResult,
           retake: state.retake,
           attempt: state.attempt,
+          puzzlesSolved: state.puzzlesSolved,
         }),
         enumerable: true,
         configurable: true,
@@ -503,6 +636,7 @@ export class WorldScene extends Phaser.Scene {
       teleport: { value: (x: number, y: number) => (player.body as Phaser.Physics.Arcade.Body).reset(x, y), enumerable: true, configurable: true },
       skipDays: { value: (n: number) => this.skipDays(n), enumerable: true, configurable: true },
       notices: { get: () => this.pendingNotices, enumerable: true, configurable: true },
+      sinceErupt: { get: () => this.time.now - geyserClock.lastEruptAt, enumerable: true, configurable: true },
     });
   }
 }

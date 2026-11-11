@@ -98,6 +98,11 @@ export const sfx = {
     tone({ type: 'triangle', from: 523, dur: 0.35, vol: 0.22 });
     tone({ type: 'triangle', from: 392, dur: 0.5, vol: 0.22, delay: 0.4 });
   },
+  /** A geyser spouts: a low rumble and a hiss. */
+  geyser(): void {
+    tone({ type: 'sine', from: 110, to: 45, dur: 0.9, vol: 0.5 });
+    tone({ type: 'sawtooth', from: 2400, to: 900, dur: 0.7, vol: 0.05, delay: 0.1 });
+  },
   /** Menu cursor moved. */
   tick(): void {
     tone({ type: 'triangle', from: 880, dur: 0.04, vol: 0.3 });

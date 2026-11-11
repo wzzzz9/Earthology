@@ -55,7 +55,7 @@ await page.screenshot({ path: out, clip });
 const state = await page.evaluate(() => {
   const d = window.__debug;
   if (!d) return null;
-  return { player: d.player, state: d.state, dialogue: d.dialogue, submit: d.submit ?? undefined, notebook: d.notebook ?? undefined, lab: d.lab ?? undefined, map: d.map ?? undefined, nameEntry: d.nameEntry ?? undefined, introTitle: d.introTitle ?? undefined, playerName: d.playerName ?? undefined };
+  return { player: d.player, state: d.state, dialogue: d.dialogue, submit: d.submit ?? undefined, notebook: d.notebook ?? undefined, lab: d.lab ?? undefined, map: d.map ?? undefined, nameEntry: d.nameEntry ?? undefined, introTitle: d.introTitle ?? undefined, playerName: d.playerName ?? undefined, out: d.out ?? undefined };
 }).catch(() => null);
 await browser.close();
 

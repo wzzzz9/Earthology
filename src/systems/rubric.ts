@@ -24,6 +24,7 @@ export function isSatisfied(item: RubricItem): boolean {
   if ('identified' in s) return state.hasIdentified(s.identified);
   if ('factLearned' in s) return state.factsLearned.includes(s.factLearned);
   if ('entry' in s) return state.hasEntry(s.entry);
+  if ('puzzle' in s) return state.puzzlesSolved.includes(s.puzzle);
   if ('testsRun' in s) return state.testsRun >= s.testsRun;
   if ('relationshipAtLeast' in s) return levelOf(s.relationshipAtLeast.npc) >= s.relationshipAtLeast.level;
   return false;

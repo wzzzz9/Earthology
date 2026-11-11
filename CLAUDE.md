@@ -29,3 +29,8 @@
 - Pixel fonts only, always with `resolution: TEXT_RES`: `FONT.body` (Jersey 15) at `SIZE.body`/`SIZE.big`, `FONT.retro` (Press Start 2P) at `SIZE.retro`/`SIZE.retroBig`, from `src/ui/font.ts`. Any other family or size blurs. Fonts load in Boot before any scene starts.
 - Zoom is whole device pixels per canvas pixel (`bestZoom()` in main.ts accounts for display scaling). Headless shots: use SHOT_SCALE=4 for 1920x1080.
 - Sounds are synthesised in `src/systems/sfx.ts` (no audio files). Key `0` toggles sound. Dialogue types out; the headless harness sets `__debug.fastText` so tests see whole pages (`SHOT_SLOWTEXT=1` to keep the typewriter).
+
+## Field trips and puzzles
+- A class with `trip` in classes.json is a field trip: "Attend class" teleports the player to the place's scan point, the professor stands beside them, the lesson plays there. Rules in `src/systems/puzzles.ts`; world hooks in `WorldScene.ts` (`startTrip`, `puzzleTalk`); the flood map is `src/scenes/FloodScene.ts`.
+- Puzzle objects are map points of type `puzzle` named `<puzzle>.<object>`; check-map verifies they are reachable. Headless tests: `__debug.sinceErupt` (ms since the big geyser spouted), `__debug.flood.place(x,y)` / `.run()`, `__debug.floodResult`, `__debug.state.puzzlesSolved`; stash test output in `__debug.out` and shot.mjs prints it.
+- Changing the flood grid: re-run the brute-force check (see GAME_PLAN 4b) so two banks at the lip still solve it and banks beside the pens still fail.

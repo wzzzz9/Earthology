@@ -34,7 +34,7 @@ let reachable = 0; for (const s of seen) if (s) reachable++;
 console.log(`walkable+reachable tiles: ${reachable} of ${W * H} (${Math.round((reachable / (W * H)) * 100)}%)`);
 let bad = 0;
 for (const o of objs) {
-  if (!['scan', 'scanwater', 'npc', 'sample', 'ship'].includes(o.type)) continue;
+  if (!['scan', 'scanwater', 'npc', 'sample', 'ship', 'puzzle'].includes(o.type)) continue;
   const [tx, ty] = tile(o);
   let ok = false;
   for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const x = tx + dx, y = ty + dy; if (x >= 0 && y >= 0 && x < W && y < H && seen[y * W + x]) ok = true; }

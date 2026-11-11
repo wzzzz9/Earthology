@@ -40,6 +40,128 @@
       }
     },
     {
+      "id": "geyser",
+      "day": 5,
+      "title": "Field trip: the geyser field",
+      "teaches": [
+        "geyser.how"
+      ],
+      "lesson": [
+        {
+          "lines": [
+            "Field trip. Mind the ground, it is thin here.",
+            "Hot rock below. Water above. That is a geyser."
+          ]
+        },
+        {
+          "lines": [
+            "The water heats in a narrow throat, deep down.",
+            "It flashes to steam and up it all goes.",
+            "Then the throat is empty, and it fills again."
+          ],
+          "note": "A geyser: narrow throat, heat, steam, then empty, then refill."
+        },
+        {
+          "lines": [
+            "Three pools. One spouts. One is only warm water.",
+            "One has a stone jammed in its throat.",
+            "When would you dare reach in? Think. Then do it."
+          ]
+        }
+      ],
+      "task": {
+        "id": "unblock-geyser",
+        "text": "Free the blocked geyser.",
+        "due": 12,
+        "graceDays": 3,
+        "satisfiedBy": {
+          "puzzleSolved": "geyser"
+        }
+      },
+      "trip": {
+        "place": "geysir",
+        "leave": [
+          "I will be at the ship. Do not get scalded."
+        ],
+        "entry": {
+          "section": "earth",
+          "name": "Why the geyser spouts",
+          "line": "Pulled the stone right after the big one blew: the throat was empty. It spouts again."
+        },
+        "puzzle": {
+          "type": "geyser",
+          "window": 4500,
+          "objects": {
+            "blocked": {
+              "name": "Blocked pool",
+              "prompt": "Look at the blocked pool",
+              "look": [
+                "A round pool with a white crust round its rim.",
+                "A stone sits jammed in the throat.",
+                "The water trembles, but never spouts."
+              ],
+              "choices": [
+                {
+                  "text": "Pull the stone out",
+                  "action": "pull"
+                },
+                {
+                  "text": "Watch the water",
+                  "action": "watch",
+                  "reply": [
+                    "Each time the big geyser spouts,",
+                    "this pool drops a hand's width.",
+                    "Then it creeps back up. Same plumbing."
+                  ]
+                }
+              ]
+            },
+            "still": {
+              "name": "Warm pool",
+              "prompt": "Look at the warm pool",
+              "look": [
+                "Flat, steaming, no crust on the rim.",
+                "Nothing in it moves."
+              ],
+              "choices": [
+                {
+                  "text": "Reach in",
+                  "action": "watch",
+                  "reply": [
+                    "Warm. Just warm.",
+                    "No stone, no throat. This one is only a pool."
+                  ]
+                },
+                {
+                  "text": "Watch the water",
+                  "action": "watch",
+                  "reply": [
+                    "The big geyser spouts. This pool does nothing.",
+                    "It is not connected."
+                  ]
+                }
+              ]
+            }
+          },
+          "lines": {
+            "pullSolved": [
+              "The throat is empty. The stone comes out easily.",
+              "A rumble. The water drops, then it SPOUTS.",
+              "Two geysers. The whole field is steaming."
+            ],
+            "pullEarly": [
+              "You reach in. The water surges up, scalding.",
+              "You jump back. Not now.",
+              "When is the throat empty?"
+            ],
+            "pullDone": [
+              "It spouts on its own now. Leave it be."
+            ]
+          }
+        }
+      }
+    },
+    {
       "id": "land",
       "day": 8,
       "title": "Reading the land",
@@ -74,6 +196,111 @@
         "graceDays": 3,
         "satisfiedBy": {
           "scannedCount": 3
+        }
+      }
+    },
+    {
+      "id": "flood",
+      "day": 11,
+      "title": "Field trip: where water goes",
+      "teaches": [
+        "glacier.meltwater-rivers"
+      ],
+      "lesson": [
+        {
+          "lines": [
+            "Field trip. Speak up, the water is loud.",
+            "Water is lazy. It only ever goes downhill."
+          ]
+        },
+        {
+          "lines": [
+            "A map draws height as lines. Cross one, you climb.",
+            "Lines close together: steep. Far apart: flat.",
+            "Where the ground dips, water will follow it."
+          ],
+          "note": "Contour lines show height. Water never climbs."
+        },
+        {
+          "lines": [
+            "In spring the melt comes down this river.",
+            "Gunnar's pens sit in a hollow off to one side.",
+            "Three banks of earth. Put them where it counts."
+          ]
+        }
+      ],
+      "task": {
+        "id": "flood-plan",
+        "text": "Plan the banks so the melt misses the pens.",
+        "due": 20,
+        "graceDays": 4,
+        "satisfiedBy": {
+          "puzzleSolved": "flood"
+        }
+      },
+      "trip": {
+        "place": "waterfall",
+        "leave": [
+          "The planning table is by the bank. I will be at the ship."
+        ],
+        "entry": {
+          "section": "land",
+          "name": "Where the melt goes",
+          "line": "Banked the side channel at its lip. Water never climbs, so the pens stay dry."
+        },
+        "puzzle": {
+          "type": "flood",
+          "heights": [
+            "9999999988999999",
+            "9999999977999999",
+            "9888899966899999",
+            "9222345555799999",
+            "9222334444689999",
+            "9222988533579999",
+            "9211986422468999",
+            "9222985311357999",
+            "9888885311357999",
+            "0000000000000000"
+          ],
+          "source": [
+            8,
+            0
+          ],
+          "pens": [
+            [
+              2,
+              6
+            ],
+            [
+              3,
+              6
+            ]
+          ],
+          "banks": 3,
+          "objects": {
+            "table": {
+              "name": "Planning table",
+              "prompt": "Use the planning table",
+              "look": [
+                "A map of the valley, weighted down with stones.",
+                "Lines mark the height of the land."
+              ],
+              "choices": [
+                {
+                  "text": "Plan the banks",
+                  "action": "plan"
+                }
+              ]
+            }
+          },
+          "lines": {
+            "intro": "Place up to three banks. Then run the melt and watch where it goes.",
+            "running": "The melt comes down...",
+            "success": "The melt goes round. The pens stay dry. Gunnar owes you a coffee.",
+            "pensFlooded": "The pens are under water. The sheep are on the roof. Move the banks and try again.",
+            "blocked": "You dammed the river itself. The melt has to reach the sea somewhere. Try again.",
+            "noBanks": "No banks left. Pick one up (Enter on it) to move it."
+          }
         }
       }
     },
@@ -173,6 +400,7 @@
     "retakePass": [
       "Retake mark: {score}.",
       "Passed. Took you a while. It took me longer, once."
-    ]
+    ],
+    "puzzleLocked": "You do not know what you are looking at. Yet. Class first."
   }
 }

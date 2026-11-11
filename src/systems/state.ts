@@ -4,7 +4,7 @@ import { levelOfTrust } from './relationships';
 
 export interface NotebookEntry {
   id: string;
-  kind: 'scan' | 'talk';
+  kind: 'scan' | 'talk' | 'puzzle';
   section: Section;
   name: string;
   line: string;
@@ -76,6 +76,8 @@ export interface SaveData {
   classesAttended: string[];
   classesMissed: string[];
   tasks: Record<string, TaskState>;
+  /** Field-trip puzzles solved. */
+  puzzlesSolved: string[];
   finalResult: FinalResult | null;
   /** True while retaking the class: no more scheduled classes, no deadline. */
   retake: boolean;
@@ -104,6 +106,7 @@ export class GameState {
   classesAttended: string[] = [];
   classesMissed: string[] = [];
   tasks: Record<string, TaskState> = {};
+  puzzlesSolved: string[] = [];
   finalResult: FinalResult | null = null;
   retake = false;
   attempt = 1;
@@ -140,6 +143,7 @@ export class GameState {
       classesAttended: this.classesAttended,
       classesMissed: this.classesMissed,
       tasks: this.tasks,
+      puzzlesSolved: this.puzzlesSolved,
       finalResult: this.finalResult,
       retake: this.retake,
       attempt: this.attempt,

@@ -91,7 +91,8 @@ export type SatisfiedBy =
   | { factLearned: string }
   | { entry: string }
   | { testsRun: number }
-  | { relationshipAtLeast: { npc: string; level: number } };
+  | { relationshipAtLeast: { npc: string; level: number } }
+  | { puzzle: string };
 
 export interface RubricItem {
   id: string;
@@ -156,7 +157,8 @@ export type TaskSatisfiedBy =
   | { scannedCount: number }
   | { talkEntries: number }
   | { exploredPct: number }
-  | { factLearned: string };
+  | { factLearned: string }
+  | { puzzleSolved: string };
 
 export interface TaskDef {
   id: string;
@@ -166,6 +168,44 @@ export interface TaskDef {
   satisfiedBy: TaskSatisfiedBy;
 }
 
+/** Something at the puzzle site the player can look at and act on. */
+export interface PuzzleObject {
+  name: string;
+  /** Shown as "E: <prompt>" when the player stands next to it. */
+  prompt: string;
+  look: string[];
+  choices: { text: string; action: 'pull' | 'watch' | 'plan'; reply?: string[] }[];
+}
+
+export interface GeyserPuzzle {
+  type: 'geyser';
+  /** ms after the big geyser starts spouting during which the throat counts as empty. */
+  window: number;
+  objects: Record<string, PuzzleObject>;
+  lines: { pullSolved: string[]; pullEarly: string[]; pullDone: string[] };
+}
+
+export interface FloodPuzzle {
+  type: 'flood';
+  /** Rows of digits 0-9, top to bottom. The last row is the sea. */
+  heights: string[];
+  source: [number, number];
+  pens: [number, number][];
+  banks: number;
+  objects: Record<string, PuzzleObject>;
+  lines: { intro: string; running: string; success: string; pensFlooded: string; blocked: string; noBanks: string };
+}
+
+export interface TripDef {
+  /** Scannable id of the place; the lesson happens there. */
+  place: string;
+  /** What the professor says as she leaves the player to it. */
+  leave: string[];
+  /** The notebook entry written when the puzzle is solved. */
+  entry: { section: Section; name: string; line: string };
+  puzzle: GeyserPuzzle | FloodPuzzle;
+}
+
 export interface ClassDef {
   id: string;
   day: number;
@@ -173,6 +213,8 @@ export interface ClassDef {
   teaches: string[];
   lesson: { lines: string[]; note?: string }[];
   task: TaskDef;
+  /** A field trip: the class happens at a place and leaves a puzzle there. */
+  trip?: TripDef;
 }
 
 export interface ClassesDef {
@@ -189,5 +231,6 @@ export interface ClassesDef {
     finalPass: string[];
     finalFail: string[];
     retakePass: string[];
+    puzzleLocked: string;
   };
 }

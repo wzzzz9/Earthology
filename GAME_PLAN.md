@@ -103,6 +103,48 @@ submit homework  →  teacher marks it, points at the weakest part  →  back ou
 
 ---
 
+## 4b. Field trips and puzzles (decided Nov 11)
+
+The homework was a checklist: look at things, pick up rocks, submit. The playable heart is now
+**the lecture gives you an idea, the place gives you a puzzle that only that idea solves, and
+solving it is what goes in the homework.**
+
+**The loop per famous place**
+
+1. Class day is a field trip. "Attend class" at the ship takes you to the place; the professor
+   (in her town disguise) stands beside you and gives the three-page lesson there.
+2. The lesson contains the key: one idea, stated plainly, that is also the hint.
+3. She sets the puzzle and leaves. The puzzle is something you do in the world or on a screen,
+   with no time limit beyond the task deadline (one grace extension, as for every task).
+4. Solving it writes the "understood" entry for that place. Looking at the place still gives
+   the sketch entry. The rubric has both: sketched (small) and understood (large).
+
+**The five Iceland trips** (geyser and flood are built; the other three are specified for Design)
+
+| Place | Lesson key | Puzzle | Type |
+| --- | --- | --- | --- |
+| Geyser field (day 5) | Narrow throat, heat, steam, then empty, then refill | Three pools: one spouts, one is warm water, one is blocked by a stone. Pull the stone right after the big one spouts, when the throat is empty. Too early: scalded, try again. | world, timed |
+| Waterfall and river (day 11) | Water only goes downhill; contour lines show height | Contour map of the valley; the pens sit in a hollow off a side channel. Place up to three earth banks, run the melt, watch it flow. Pens dry and water at the sea = solved. Minimum two banks at the channel's lip; banks next to the pens fail. | map placement |
+| The rift | Plates pull apart ~2 cm a year | An old footbridge falls short of the far bank. Measure the gap, work out when it was built, and that date opens the right page of the church record book. | tool + number entry |
+| Black beach / columns | Thick lava cools slowly and cracks into six sides | The harbour wall is missing a stone; five candidates on the beach. Only one is a true column piece: six sides, basalt streak, right hardness. The lab tests become the puzzle. | pick an object + lab |
+| Glacier | Glaciers move, retreat, and drop what they carry | A 1920 painting in the church shows the ice reaching much further and a farm at its foot. Compare it to today, work out where the farm stood, find the ruin and what was left in it. | compare + find |
+
+**Engine** (`src/systems/puzzles.ts`, `src/scenes/FloodScene.ts`, world hooks in `WorldScene.ts`)
+
+- A class may carry a `trip` (`ClassDef.trip`): the place, the professor's leaving line, the
+  understood entry, and the puzzle definition. Puzzle objects sit on the map as `<puzzle>.<object>`
+  points of type `puzzle`; each has look lines and choices with an action (`pull`, `watch`, `plan`).
+- Puzzle status: locked until the class happened (attended or missed), open until solved. Sparkles
+  show on puzzle objects only while open.
+- Tasks can be satisfied by `{ puzzleSolved }`; rubric items by `{ puzzle }`.
+- Flood rule: water spreads from the source to any neighbour that is not higher and not a bank.
+  Breadth-first, animated. The grid is checked by brute force (scripts in the design notes) so the
+  intended solutions exist and the naive ones fail.
+- Next puzzle types to add for the other three trips: pick-an-object, tool-on-thing with a number
+  entry, compare-two-pictures.
+
+**Schedule now**: rocks 2, geyser 5, land 8, flood 11, people 15, maps 25; final report day 90.
+
 ## 5. People: strangers first
 
 This is the biggest change from v1 and the main source of fun that is not science.
