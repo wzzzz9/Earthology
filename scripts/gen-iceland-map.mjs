@@ -182,7 +182,14 @@ for (let i = 0; i < 9000 && planted < 950; i++) {
   const nearWater = [[1, 0], [-1, 0], [0, 1], [0, -1], [2, 0], [-2, 0], [0, 2], [0, -2]].some(([dx, dy]) => inMap(x + dx, y + dy) && [WATER, SHALLOW].includes(ground[at(x + dx, y + dy)]));
   const nearTown = x > 16 && x < 50 && y > 36 && y < 52;
   const roll = rnd();
-  const name = nearWater ? (roll < 0.5 ? 'cotton' : 'lupine') : nearTown ? (roll < 0.3 ? 'lupine' : roll < 0.55 ? 'flowers' : roll < 0.8 ? 'tuft' : 'shrub') : roll < 0.3 ? 'shrub' : roll < 0.65 ? 'tuft' : roll < 0.8 ? 'stones' : roll < 0.9 ? 'flowers' : 'lupine';
+  // each zone has its own mix so the colour changes as you walk: wet ground is white and
+  // purple, the town is flowery, the open moor is heather, mushrooms and angelica
+  const pick = (table) => { let acc = 0; for (const [n, w] of table) { acc += w; if (roll < acc) return n; } return table[table.length - 1][0]; };
+  const name = nearWater
+    ? pick([['cotton', 0.4], ['lupine', 0.25], ['angelica', 0.2], ['dandelion', 0.15]])
+    : nearTown
+      ? pick([['lupine', 0.22], ['flowers', 0.2], ['buttercup', 0.15], ['dandelion', 0.1], ['tuft', 0.18], ['shrub', 0.15]])
+      : pick([['shrub', 0.2], ['tuft', 0.25], ['heather', 0.15], ['stones', 0.1], ['campion', 0.1], ['mushroom', 0.06], ['angelica', 0.06], ['flowers', 0.04], ['lupine', 0.04]]);
   pt(name, 'plant', x, y);
   planted++;
 }

@@ -6,7 +6,7 @@ import { puzzleFor, puzzleStatus, geyserPull, geyserClock } from '../systems/puz
 import { levelOf } from '../systems/relationships';
 import type { ClassDef, PuzzleObject } from '../content/types';
 import {
-  makePlaceholderTileset, makePlaceholderPlayer, makePlaceholderShip, makeSparkle, makePlaceholderProps, makePickupRock, makeTrees, makeIcelandProps, makePlants,
+  makePlaceholderTileset, makePlaceholderPlayer, makePlaceholderShip, makeSparkle, makePlaceholderProps, makePickupRock, makeTrees, makeIcelandProps, makePlants, makePortraits,
   PLAYER_W, PLAYER_H, DISGUISES, PLAYER_LOOK,
 } from '../systems/placeholders';
 import { MoveInput } from '../systems/input';
@@ -77,6 +77,7 @@ export class WorldScene extends Phaser.Scene {
     makeTrees(this);
     makeIcelandProps(this);
     makePlants(this);
+    makePortraits(this);
 
     const map = this.make.tilemap({ key: 'map.iceland' });
     state.mapTiles = map.width * map.height;
@@ -551,7 +552,7 @@ export class WorldScene extends Phaser.Scene {
     return {
       next: () => {
         const n = notices[i++];
-        return n ? { speaker: t.name, color: t.color, lines: n.lines, note: n.note } : null;
+        return n ? { speaker: t.name, color: t.color, lines: n.lines, note: n.note, portrait: 'portrait.teacher' } : null;
       },
     };
   }

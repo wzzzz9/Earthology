@@ -29,6 +29,7 @@ export class DialogueScene extends Phaser.Scene {
   private bodyText!: Phaser.GameObjects.Text;
   private portrait!: Phaser.GameObjects.Rectangle;
   private portraitLetter!: Phaser.GameObjects.Text;
+  private portraitImg!: Phaser.GameObjects.Image;
   private choiceTexts: Phaser.GameObjects.Text[] = [];
   private hint!: Phaser.GameObjects.Text;
   private box!: Phaser.GameObjects.Rectangle;
@@ -48,9 +49,10 @@ export class DialogueScene extends Phaser.Scene {
   create(): void {
     hiRes(this);
     this.box = this.add.rectangle(GAME_WIDTH / 2, 0, GAME_WIDTH - 12, MIN_BOX_H, 0x11141c, 0.94).setStrokeStyle(1, 0xf4f1e8);
-    this.portrait = this.add.rectangle(6 + PAD + 20, 0, 40, 48, 0x5b7fbf);
+    this.portrait = this.add.rectangle(6 + PAD + 24, 0, 48, 48, 0x5b7fbf);
+    this.portraitImg = this.add.image(0, 0, '__DEFAULT').setVisible(false);
     this.portraitLetter = this.add.text(0, 0, '?', { fontFamily: FONT.body, resolution: TEXT_RES, fontSize: SIZE.big, color: '#f4f1e8' }).setOrigin(0.5);
-    const textX = 6 + PAD + 48;
+    const textX = 6 + PAD + 56;
     this.nameText = this.add.text(textX, 0, '', { fontFamily: FONT.body, resolution: TEXT_RES, fontSize: SIZE.body, color: '#ffd37a' });
     this.bodyText = this.add.text(textX, 0, '', {
       fontFamily: FONT.body, resolution: TEXT_RES,
@@ -95,14 +97,18 @@ export class DialogueScene extends Phaser.Scene {
     const h = Math.max(MIN_BOX_H, needed);
     const top = GAME_HEIGHT - h - 6;
     this.box.setSize(GAME_WIDTH - 12, h).setPosition(GAME_WIDTH / 2, top + h / 2);
-    this.portrait.setPosition(6 + PAD + 20, top + h / 2);
+    this.portrait.setPosition(6 + PAD + 24, top + h / 2);
     this.portraitLetter.setPosition(this.portrait.x, this.portrait.y);
+    this.portraitImg.setPosition(this.portrait.x, this.portrait.y);
     this.nameText.setPosition(this.nameText.x, top + 5);
     this.bodyText.setPosition(this.bodyText.x, top + 17);
 
     this.nameText.setText(page.speaker);
     this.portrait.setFillStyle(Phaser.Display.Color.HexStringToColor(page.color).color);
-    this.portraitLetter.setText(page.speaker.charAt(0));
+    const hasPortrait = !!page.portrait && this.textures.exists(page.portrait);
+    if (hasPortrait) this.portraitImg.setTexture(page.portrait!);
+    this.portraitImg.setVisible(hasPortrait);
+    this.portraitLetter.setVisible(!hasPortrait).setText(page.speaker.charAt(0));
     this.startReveal();
     for (const t of this.choiceTexts) t.destroy();
     this.choiceTexts = [];

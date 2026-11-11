@@ -95,8 +95,8 @@ export class IntroScene extends Phaser.Scene {
 
   private speakerOf(line: IntroLine) {
     return line.speaker === 'teacher'
-      ? { speaker: content.teacher.name, color: content.teacher.color }
-      : { speaker: state.playerName, color: ALIEN_COLOR };
+      ? { speaker: content.teacher.name, color: content.teacher.color, portrait: 'portrait.teacher' }
+      : { speaker: state.playerName, color: ALIEN_COLOR, portrait: 'portrait.alien' };
   }
 
   /** Runs a list of intro lines through the Dialogue scene; handles name entry and the disguise choice. */

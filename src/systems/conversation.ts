@@ -12,6 +12,8 @@ export interface Page {
   /** Field note shown if the player skips this page. */
   note?: string;
   choices?: string[];
+  /** Texture key of a portrait (portrait.<id>); falls back to a lettered box. */
+  portrait?: string;
 }
 
 /**
@@ -32,7 +34,7 @@ export class Conversation {
   }
 
   private page(lines: string[], note?: string, choices?: string[]): Page {
-    return { speaker: this.npc.name, color: this.npc.color, lines, note, choices };
+    return { speaker: this.npc.name, color: this.npc.color, lines, note, choices, portrait: `portrait.${this.npcId}` };
   }
 
   /** Returns the next page, or null when the conversation is over. */

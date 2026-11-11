@@ -3,13 +3,14 @@ import { hiRes } from '../ui/hires';
 import { FONT, SIZE, TEXT_RES } from '../ui/font';
 import { GAME_WIDTH } from '../config';
 import { content } from '../content';
-import type { HouseDef, HouseFurniture, HouseThing } from '../content/types';
+import type { HouseDef, HouseThing } from '../content/types';
 import { state } from '../systems/state';
 import { bus, EV } from '../systems/events';
 import { sfx } from '../systems/sfx';
 import { MoveInput } from '../systems/input';
 import { addTrust } from '../systems/relationships';
 import * as P from '../art/palette';
+import { FURNITURE_FOOT, FURNITURE_HEADROOM, makeFurniture } from '../systems/placeholders';
 
 const T = 16;
 const COLS = 18;
@@ -19,18 +20,7 @@ const OY = 52;
 const SPEED = 70;
 const DOOR_COLS = [8, 9];
 
-/** Tiles each piece covers. Wall pieces (window, picture) and rugs block nothing. */
-const FOOT: Record<string, { w: number; h: number; solid: boolean }> = {
-  bed: { w: 2, h: 3, solid: true }, table: { w: 2, h: 2, solid: true }, chair: { w: 1, h: 1, solid: true },
-  stove: { w: 1, h: 2, solid: true }, shelf: { w: 2, h: 1, solid: false }, bookshelf: { w: 2, h: 2, solid: true },
-  wardrobe: { w: 1, h: 2, solid: true }, chest: { w: 1, h: 1, solid: true }, barrel: { w: 1, h: 1, solid: true },
-  plant: { w: 1, h: 1, solid: true }, rug: { w: 3, h: 2, solid: false }, window: { w: 1, h: 1, solid: false },
-  picture: { w: 1, h: 1, solid: false }, lamp: { w: 1, h: 1, solid: true }, counter: { w: 3, h: 1, solid: true },
-  oven: { w: 2, h: 2, solid: true }, nets: { w: 1, h: 2, solid: true }, radio: { w: 1, h: 1, solid: true },
-  loom: { w: 2, h: 2, solid: true }, cabinet: { w: 2, h: 1, solid: true }, sink: { w: 1, h: 1, solid: true },
-  toybox: { w: 1, h: 1, solid: true }, desk: { w: 2, h: 1, solid: true }, crates: { w: 1, h: 1, solid: true },
-  sacks: { w: 1, h: 1, solid: true },
-};
+const FOOT = FURNITURE_FOOT;
 
 /**
  * Inside someone's house: one room, 18x9 tiles, furniture that says who lives here, and a
@@ -90,7 +80,10 @@ export class HouseScene extends Phaser.Scene {
       if (!foot) continue;
       const px = OX + f.x * T;
       const py = OY + f.y * T;
-      drawFurniture(this, f, px, py);
+      const key = makeFurniture(this, f.type, f.color);
+      const img = this.add.image(px, py + foot.h * T, key).setOrigin(0, 1);
+      img.setDepth(f.type === 'rug' ? 2 : foot.solid ? py + foot.h * T : 3);
+      void FURNITURE_HEADROOM;
       if (foot.solid) solids.add(this.add.rectangle(px + (foot.w * T) / 2, py + (foot.h * T) / 2 + 2, foot.w * T - 2, foot.h * T - 6).setVisible(false));
     }
     for (const t of d.things) {
@@ -205,71 +198,5 @@ export class HouseScene extends Phaser.Scene {
       this.scene.stop();
       this.scene.wake('World', { from: 'house', x: this.returnTo.x, y: this.returnTo.y });
     });
-  }
-}
-
-/** Code-drawn furniture, 16px grid, pastel palette. The Art session may replace these with sprites. */
-function drawFurniture(scene: Phaser.Scene, f: HouseFurniture, px: number, py: number): void {
-  const foot = FOOT[f.type];
-  const depth = py + foot.h * T;
-  const col = (c: string) => Phaser.Display.Color.HexStringToColor(c).color;
-  const r = (x: number, y: number, w: number, h: number, c: string, a = 1) => scene.add.rectangle(px + x, py + y, w, h, col(c), a).setOrigin(0).setDepth(foot.solid || f.type === 'rug' ? (f.type === 'rug' ? 2 : depth) : 3);
-  const accent = f.color ?? P.BLUE;
-  switch (f.type) {
-    case 'bed':
-      r(1, 2, 30, 46, P.OUTLINE); r(2, 3, 28, 44, P.WOOD); r(4, 5, 24, 40, P.WHITE); r(6, 7, 20, 9, P.CREAM);
-      r(4, 19, 24, 26, accent); r(4, 19, 24, 3, P.WHITE, 0.5); r(4, 43, 24, 2, P.OUTLINE, 0.25); break;
-    case 'table':
-      r(2, 6, 28, 16, P.OUTLINE); r(3, 7, 26, 14, P.WOOD_LIGHT); r(3, 7, 26, 2, P.CREAM, 0.5);
-      r(4, 22, 3, 8, P.WOOD_DARK); r(25, 22, 3, 8, P.WOOD_DARK); r(12, 9, 8, 6, P.CREAM); r(14, 10, 4, 3, P.YELLOW); break;
-    case 'chair':
-      r(3, 1, 10, 4, P.WOOD_DARK); r(4, 5, 8, 7, P.WOOD); r(4, 12, 2, 4, P.WOOD_DARK); r(10, 12, 2, 4, P.WOOD_DARK); break;
-    case 'stove':
-      r(6, 0, 4, 10, P.ROCK); r(2, 8, 12, 22, P.OUTLINE); r(3, 9, 10, 20, P.ROCK_DARK); r(4, 18, 8, 8, P.ROCK); r(5, 20, 6, 4, P.ORANGE); r(6, 21, 4, 2, P.YELLOW);
-      r(3, 9, 10, 2, P.ROCK_LIGHT); r(4, 4, 6, 4, P.STONE_PALE); break;
-    case 'shelf':
-      r(0, 9, 32, 3, P.WOOD_DARK);
-      [P.RED, P.BLUE, P.YELLOW, P.VIOLET, P.TEAL, P.ORANGE].forEach((c, i) => r(2 + i * 5, 1, 4, 8, c)); break;
-    case 'bookshelf':
-      r(0, 0, 32, 32, P.OUTLINE); r(1, 1, 30, 30, P.WOOD_DARK); r(2, 2, 28, 12, P.WOOD); r(2, 17, 28, 12, P.WOOD);
-      [P.RED, P.BLUE, P.YELLOW, P.VIOLET, P.TEAL, P.CREAM].forEach((c, i) => { r(3 + i * 4.5, 4, 4, 10, c); r(3 + i * 4.5, 19, 4, 10, [P.TEAL, P.RED, P.CREAM, P.BLUE, P.YELLOW, P.VIOLET][i]); }); break;
-    case 'wardrobe':
-      r(1, 0, 14, 32, P.OUTLINE); r(2, 1, 12, 30, P.WOOD_DARK); r(3, 2, 5, 27, P.WOOD); r(8, 2, 5, 27, P.WOOD); r(7, 14, 1, 2, P.YELLOW); r(9, 14, 1, 2, P.YELLOW); break;
-    case 'chest':
-      r(1, 4, 14, 11, P.OUTLINE); r(2, 5, 12, 9, P.WOOD); r(2, 5, 12, 3, P.WOOD_DARK); r(7, 9, 2, 2, P.YELLOW); break;
-    case 'barrel':
-      r(2, 1, 12, 14, P.OUTLINE); r(3, 2, 10, 12, P.WOOD); r(3, 4, 10, 2, P.ROCK); r(3, 10, 10, 2, P.ROCK); break;
-    case 'plant':
-      r(4, 9, 8, 6, P.RED_DARK); r(5, 10, 6, 1, P.ORANGE); r(2, 3, 12, 7, P.MOSS); r(5, 0, 6, 5, P.MOSS_LIGHT); r(1, 6, 4, 3, P.MOSS_DARK); break;
-    case 'rug':
-      r(0, 0, 48, 32, accent); r(0, 0, 48, 2, P.CREAM); r(0, 30, 48, 2, P.CREAM); r(0, 2, 2, 28, P.CREAM); r(46, 2, 2, 28, P.CREAM); r(16, 10, 16, 12, P.CREAM, 0.35); break;
-    case 'window':
-      r(1, -2, 14, 16, P.WHITE); r(3, 0, 10, 12, P.WATER_LIGHT); r(7, 0, 1, 12, P.WHITE); r(3, 5, 10, 1, P.WHITE); r(0, 14, 16, 2, P.WHITE); r(4, 1, 3, 3, P.ICE, 0.7); break;
-    case 'picture':
-      r(2, 0, 12, 11, P.WOOD_DARK); r(3, 1, 10, 9, P.CREAM); r(4, 5, 8, 4, P.BLUE); r(6, 3, 3, 3, P.WHITE); break;
-    case 'lamp':
-      r(5, 15, 6, 1, P.ROCK_DARK); r(7, 4, 2, 12, P.ROCK); r(3, 0, 10, 5, P.LIGHT); r(4, 5, 8, 1, P.YELLOW_DARK); break;
-    case 'counter':
-      r(0, 4, 48, 16, P.OUTLINE); r(1, 5, 46, 5, P.CREAM); r(1, 10, 46, 9, P.WOOD); r(6, 0, 10, 5, P.YELLOW_DARK); r(7, -1, 8, 2, P.CREAM); r(30, 1, 8, 4, P.ORANGE); r(20, 2, 6, 3, P.PINK); break;
-    case 'oven':
-      r(1, 2, 30, 28, P.OUTLINE); r(2, 3, 28, 26, P.ROCK_DARK); r(2, 3, 28, 4, P.ROCK_LIGHT); r(6, 10, 20, 12, P.ROCK); r(9, 13, 14, 6, P.ORANGE); r(12, 14, 8, 3, P.YELLOW); r(12, -4, 8, 7, P.ROCK); break;
-    case 'nets':
-      r(2, 0, 12, 28, P.TEAL_DARK); for (let i = 0; i < 4; i++) r(2 + i * 4, 0, 1, 28, P.WATER_LIGHT, 0.6); for (let j = 0; j < 7; j++) r(2, j * 4, 12, 1, P.WATER_LIGHT, 0.6); r(4, 26, 8, 3, P.ORANGE); break;
-    case 'radio':
-      r(2, 5, 12, 9, P.OUTLINE); r(3, 6, 10, 7, P.WOOD_DARK); r(4, 7, 3, 3, P.YELLOW); r(9, 7, 3, 5, P.ROCK); r(6, 2, 1, 4, P.ROCK_LIGHT); break;
-    case 'loom':
-      r(1, 0, 30, 30, P.OUTLINE); r(2, 1, 28, 28, P.WOOD); r(4, 3, 24, 24, P.WOOD_LIGHT); for (let i = 0; i < 8; i++) r(5 + i * 3, 3, 1, 24, P.CREAM); r(4, 16, 24, 10, P.RED); r(4, 16, 24, 2, P.WHITE, 0.5); break;
-    case 'cabinet':
-      r(0, 0, 32, 16, P.OUTLINE); r(1, 1, 30, 14, P.WOOD_DARK); for (const [x, y] of [[2, 2], [16, 2], [2, 8], [16, 8]] as const) { r(x, y, 13, 5, P.WOOD); r(x + 6, y + 2, 2, 1, P.YELLOW); } break;
-    case 'sink':
-      r(2, 4, 12, 9, P.OUTLINE); r(3, 5, 10, 7, P.STONE_PALE); r(4, 6, 8, 5, P.WATER_LIGHT); r(7, 0, 2, 6, P.ROCK_LIGHT); r(7, 0, 4, 1, P.ROCK_LIGHT); break;
-    case 'toybox':
-      r(1, 4, 14, 11, P.OUTLINE); r(2, 5, 12, 9, P.BLUE); r(2, 5, 12, 3, P.YELLOW); r(5, 0, 5, 5, P.RED); r(6, 1, 2, 2, P.WHITE); break;
-    case 'desk':
-      r(0, 2, 32, 8, P.OUTLINE); r(1, 3, 30, 6, P.WOOD_LIGHT); r(1, 10, 3, 6, P.WOOD_DARK); r(28, 10, 3, 6, P.WOOD_DARK); r(6, 3, 8, 5, P.WHITE); r(18, 4, 6, 3, P.ROCK); break;
-    case 'crates':
-      r(1, 3, 14, 12, P.OUTLINE); r(2, 4, 12, 10, P.WOOD); r(2, 8, 12, 1, P.WOOD_DARK); r(8, 4, 1, 10, P.WOOD_DARK); break;
-    case 'sacks':
-      r(2, 4, 12, 11, P.OUTLINE); r(3, 5, 10, 9, P.CREAM); r(6, 2, 4, 3, P.WOOD); r(4, 9, 8, 1, P.GRAVEL); break;
   }
 }

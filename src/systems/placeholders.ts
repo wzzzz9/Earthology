@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import * as P from '../art/palette';
 import { alpha, num, snap, SHADOW, SHADOW_SOFT } from '../art/palette';
+import { content } from '../content';
 
 /**
  * Placeholder art drawn at runtime, so M2 needs no image files.
@@ -597,6 +598,18 @@ export function makePlants(scene: Phaser.Scene): void {
     for (const [x, top] of [[1, 3], [3, 1], [5, 0], [7, 2]]) r(x, top, 1, 8 - top, P.LEAF_LIGHT);
     r(2, 5, 6, 1, P.GRASS_LIGHT); r(8, 4, 1, 4, P.GRASS_LIGHT);
   });
+  // Buttercups: a spray of small yellow flowers.
+  mk('plant.buttercup', 12, 10, (r) => { for (const [x, top] of [[1, 2], [4, 0], [7, 3], [9, 1]]) { r(x + 1, top + 2, 1, 8 - top, P.GRASS); r(x, top, 3, 2, P.YELLOW); r(x + 1, top, 1, 1, P.LIGHT); } r(2, 8, 8, 2, P.GRASS_LIGHT); });
+  // Moss campion: a low pink cushion.
+  mk('plant.campion', 14, 8, (r) => { r(1, 2, 12, 5, OUT); r(2, 3, 10, 3, P.MOSS); r(3, 1, 8, 2, OUT); r(4, 2, 6, 1, P.MOSS_LIGHT); for (const [x, y] of [[3, 3], [6, 2], [9, 3], [5, 5], [8, 5]]) r(x, y, 2, 2, P.PINK); r(6, 2, 1, 1, P.WHITE); });
+  // Angelica: tall stems with white umbels.
+  mk('plant.angelica', 14, 20, (r) => { for (const [x, top] of [[2, 4], [6, 0], [10, 3]]) { r(x + 1, top + 3, 1, 16 - top, P.MOSS_DARK); r(x - 1, top, 5, 3, P.WHITE); r(x, top - 1 < 0 ? 0 : top - 1, 3, 1, P.CREAM); r(x, top + 1, 1, 1, P.LIGHT); } r(1, 16, 12, 2, P.MOSS); r(0, 18, 14, 2, P.MOSS_DARK); });
+  // Heather: a purple-brown tuft.
+  mk('plant.heather', 12, 10, (r) => { r(1, 4, 10, 5, OUT); r(2, 5, 8, 3, P.WOOD_DARK); for (const [x, top] of [[2, 1], [5, 0], [8, 2]]) { r(x, top, 2, 6, P.VIOLET_DARK); r(x, top, 1, 3, P.VIOLET); r(x, top, 1, 1, P.LILAC); } });
+  // Mushrooms: two little caps on the moss.
+  mk('plant.mushroom', 12, 9, (r) => { r(2, 5, 3, 4, P.CREAM); r(1, 2, 5, 4, OUT); r(2, 3, 3, 2, P.ORANGE); r(3, 3, 1, 1, P.WHITE); r(7, 4, 3, 5, P.CREAM); r(6, 1, 5, 4, OUT); r(7, 2, 3, 2, P.RED); r(8, 2, 1, 1, P.WHITE); });
+  // Dandelion clocks: pale puffs on thin stems.
+  mk('plant.dandelion', 10, 12, (r) => { for (const [x, top] of [[1, 1], [5, 0]]) { r(x + 1, top + 3, 1, 9 - top, P.GRASS); r(x, top, 4, 4, alpha(P.WHITE, 0.85)); r(x + 1, top + 1, 2, 2, P.WHITE); } r(2, 10, 6, 2, P.GRASS_LIGHT); });
   // Wildflowers: pink and white blossoms on short stems.
   mk('plant.flowers', 12, 10, (r) => { for (const [x, c] of [[1, P.PINK], [5, P.WHITE], [9, P.PINK]] as [number, string][]) { r(x + 1, 4, 1, 6, P.MOSS); r(x, 1, 3, 3, c); r(x + 1, 2, 1, 1, P.YELLOW); } });
   // Small stones: a couple of pebbles.
@@ -616,4 +629,204 @@ export function makeAlienSleeping(scene: Phaser.Scene, key = 'alien.sleep'): voi
   r(4, 5, 8, 3, P.WHITE); r(5, 6, 2, 1, P.OUTLINE); r(9, 6, 2, 1, P.OUTLINE); // closed eyes
   r(18, 6, 3, 1, P.OUTLINE); r(19, 8, 3, 1, P.OUTLINE); r(20, 5, 2, 1, P.LIGHT); r(21, 7, 1, 1, P.LIGHT); // drooping antennae
   tex.refresh();
+}
+
+// ---------------------------------------------------------------------------
+// Furniture for house interiors: one sprite per piece, on the 16px grid, same chibi pastel
+// style as the buildings. Each texture is footprint-sized plus 6px of headroom on top so
+// tall things (a lamp, a bottle on a table) can poke up; HouseScene draws them bottom-left.
+// ---------------------------------------------------------------------------
+export const FURNITURE_FOOT: Record<string, { w: number; h: number; solid: boolean }> = {
+  bed: { w: 2, h: 3, solid: true }, table: { w: 2, h: 2, solid: true }, chair: { w: 1, h: 1, solid: true },
+  stove: { w: 1, h: 2, solid: true }, shelf: { w: 2, h: 1, solid: false }, bookshelf: { w: 2, h: 2, solid: true },
+  wardrobe: { w: 1, h: 2, solid: true }, chest: { w: 1, h: 1, solid: true }, barrel: { w: 1, h: 1, solid: true },
+  plant: { w: 1, h: 1, solid: true }, rug: { w: 3, h: 2, solid: false }, window: { w: 1, h: 1, solid: false },
+  picture: { w: 1, h: 1, solid: false }, lamp: { w: 1, h: 1, solid: true }, counter: { w: 3, h: 1, solid: true },
+  oven: { w: 2, h: 2, solid: true }, nets: { w: 1, h: 2, solid: true }, radio: { w: 1, h: 1, solid: true },
+  loom: { w: 2, h: 2, solid: true }, cabinet: { w: 2, h: 1, solid: true }, sink: { w: 1, h: 1, solid: true },
+  toybox: { w: 1, h: 1, solid: true }, desk: { w: 2, h: 1, solid: true }, crates: { w: 1, h: 1, solid: true },
+  sacks: { w: 1, h: 1, solid: true },
+};
+export const FURNITURE_HEADROOM = 6;
+
+/** Makes (once) and returns the texture key for a piece of furniture, in an optional accent colour. */
+export function makeFurniture(scene: Phaser.Scene, type: string, accent?: string): string {
+  const foot = FURNITURE_FOOT[type];
+  const acc = snap(accent ?? P.BLUE);
+  const key = `furn.${type}.${acc}`;
+  if (!foot || scene.textures.exists(key)) return key;
+  const W = foot.w * 16;
+  const H = foot.h * 16 + FURNITURE_HEADROOM;
+  const tex = scene.textures.createCanvas(key, W, H);
+  if (!tex) return key;
+  const ctx = tex.getContext();
+  const OUT = P.OUTLINE;
+  const r = (x: number, y: number, w: number, h: number, c: string) => { ctx.fillStyle = c; ctx.fillRect(x, y + FURNITURE_HEADROOM, w, h); };
+  const hi = alpha(P.WHITE, 0.35);
+  const lo = alpha(P.OUTLINE, 0.25);
+  const accDark = alpha(P.OUTLINE, 0.3);
+  switch (type) {
+    case 'bed':
+      r(1, 1, 30, 47, OUT); r(2, 2, 28, 45, P.WOOD); r(2, 2, 28, 1, P.WOOD_LIGHT); r(2, 2, 1, 45, P.WOOD_LIGHT);
+      r(4, 4, 24, 42, P.WHITE); r(4, 44, 24, 2, lo);
+      r(6, 6, 20, 9, OUT); r(7, 7, 18, 7, P.CREAM); r(8, 8, 16, 1, P.WHITE);
+      r(4, 18, 24, 27, OUT); r(5, 19, 22, 25, acc); r(5, 19, 22, 3, hi); r(5, 19, 22, 1, P.WHITE); r(5, 42, 22, 2, accDark);
+      for (let y = 25; y < 42; y += 6) r(7, y, 18, 1, hi); break;
+    case 'table':
+      r(1, 5, 30, 17, OUT); r(2, 6, 28, 15, P.WOOD_LIGHT); r(2, 6, 28, 2, P.CREAM); r(2, 19, 28, 2, lo);
+      r(3, 22, 4, 9, OUT); r(4, 22, 2, 8, P.WOOD_DARK); r(25, 22, 4, 9, OUT); r(26, 22, 2, 8, P.WOOD_DARK);
+      r(11, 7, 10, 7, OUT); r(12, 8, 8, 5, P.CREAM); r(14, 3, 4, 5, OUT); r(15, 4, 2, 4, P.YELLOW); r(15, 1, 2, 3, OUT); r(15, 2, 2, 1, P.WHITE); break;
+    case 'chair':
+      r(2, 0, 12, 5, OUT); r(3, 1, 10, 3, P.WOOD_DARK); r(3, 1, 10, 1, P.WOOD);
+      r(2, 5, 12, 7, OUT); r(3, 6, 10, 5, P.WOOD); r(3, 6, 10, 1, P.WOOD_LIGHT);
+      r(3, 12, 3, 4, OUT); r(10, 12, 3, 4, OUT); r(4, 12, 1, 3, P.WOOD_DARK); r(11, 12, 1, 3, P.WOOD_DARK); break;
+    case 'stove':
+      r(5, 0, 6, 10, OUT); r(6, 1, 4, 9, P.ROCK); r(6, 1, 1, 9, P.ROCK_LIGHT);
+      r(1, 8, 14, 24, OUT); r(2, 9, 12, 22, P.ROCK_DARK); r(2, 9, 12, 2, P.ROCK_LIGHT); r(2, 11, 12, 1, P.ROCK);
+      r(3, 16, 10, 9, OUT); r(4, 17, 8, 7, P.ROCK); r(5, 19, 6, 4, P.ORANGE); r(6, 20, 4, 2, P.YELLOW); r(7, 21, 2, 1, P.LIGHT);
+      r(3, 27, 10, 2, P.ROCK); r(4, 4, 7, 5, OUT); r(5, 5, 5, 3, P.STONE_PALE); r(9, 3, 2, 2, OUT); break;
+    case 'shelf':
+      r(0, 10, 32, 4, OUT); r(1, 11, 30, 2, P.WOOD); r(1, 11, 30, 1, P.WOOD_LIGHT); r(2, 14, 2, 2, OUT); r(28, 14, 2, 2, OUT);
+      [P.RED, P.BLUE, P.YELLOW, P.VIOLET, P.TEAL, P.ORANGE].forEach((c, i) => { r(2 + i * 5, 1 + (i % 2), 5, 9 - (i % 2), OUT); r(3 + i * 5, 2 + (i % 2), 3, 7 - (i % 2), c); r(3 + i * 5, 4 + (i % 2), 3, 1, hi); }); break;
+    case 'bookshelf':
+      r(0, 0, 32, 32, OUT); r(1, 1, 30, 30, P.WOOD_DARK); r(2, 2, 28, 12, P.WOOD); r(2, 17, 28, 12, P.WOOD); r(2, 14, 28, 1, P.WOOD_LIGHT); r(2, 29, 28, 1, P.WOOD_LIGHT);
+      [P.RED, P.BLUE, P.YELLOW, P.VIOLET, P.TEAL, P.CREAM].forEach((c, i) => { r(3 + i * 4.5, 3, 4, 11, OUT); r(4 + i * 4.5, 4, 2, 10, c); r(4 + i * 4.5, 6, 2, 1, hi); });
+      [P.TEAL, P.RED, P.CREAM, P.BLUE, P.YELLOW, P.VIOLET].forEach((c, i) => { r(3 + i * 4.5, 18, 4, 11, OUT); r(4 + i * 4.5, 19, 2, 10, c); r(4 + i * 4.5, 21, 2, 1, hi); }); break;
+    case 'wardrobe':
+      r(0, 0, 16, 32, OUT); r(1, 1, 14, 30, P.WOOD_DARK); r(2, 2, 5, 27, P.WOOD); r(9, 2, 5, 27, P.WOOD); r(2, 2, 5, 1, P.WOOD_LIGHT); r(9, 2, 5, 1, P.WOOD_LIGHT);
+      r(6, 14, 1, 2, P.YELLOW); r(9, 14, 1, 2, P.YELLOW); r(1, 29, 14, 2, lo); break;
+    case 'chest':
+      r(1, 3, 14, 13, OUT); r(2, 4, 12, 11, P.WOOD); r(2, 4, 12, 4, P.WOOD_DARK); r(2, 4, 12, 1, P.WOOD_LIGHT); r(2, 8, 12, 1, OUT);
+      r(6, 7, 4, 4, OUT); r(7, 8, 2, 2, P.YELLOW); r(2, 13, 12, 2, lo); break;
+    case 'barrel':
+      r(2, 0, 12, 16, OUT); r(3, 1, 10, 14, P.WOOD); r(3, 1, 10, 1, P.WOOD_LIGHT); r(3, 4, 10, 2, P.ROCK); r(3, 10, 10, 2, P.ROCK); r(4, 1, 1, 14, hi); r(11, 1, 1, 14, lo); break;
+    case 'plant':
+      r(3, 8, 10, 8, OUT); r(4, 9, 8, 6, P.RED_DARK); r(4, 9, 8, 2, P.ORANGE); r(1, 1, 14, 8, OUT); r(2, 2, 12, 6, P.MOSS); r(5, 0, 6, 3, OUT); r(6, 1, 4, 2, P.MOSS_LIGHT); r(3, 3, 3, 2, P.MOSS_LIGHT); r(9, 5, 4, 2, P.MOSS_DARK); break;
+    case 'rug':
+      r(0, 0, 48, 32, accDark); r(1, 1, 46, 30, acc); r(3, 3, 42, 26, hi); r(5, 5, 38, 22, acc); r(16, 10, 16, 12, hi); r(20, 13, 8, 6, acc);
+      for (let x = 2; x < 46; x += 4) { r(x, 1, 2, 1, P.CREAM); r(x, 30, 2, 1, P.CREAM); } break;
+    case 'window':
+      r(0, -4, 16, 20, OUT); r(1, -3, 14, 18, P.WHITE); r(3, -1, 10, 13, P.WATER_LIGHT); r(7, -1, 2, 13, P.WHITE); r(3, 5, 10, 2, P.WHITE); r(4, 0, 2, 3, P.ICE); r(0, 13, 16, 3, P.CREAM); r(0, 15, 16, 1, lo); break;
+    case 'picture':
+      r(1, 0, 14, 12, OUT); r(2, 1, 12, 10, P.WOOD_DARK); r(3, 2, 10, 8, P.CREAM); r(3, 6, 10, 4, P.BLUE); r(5, 4, 4, 3, P.WHITE); r(10, 3, 2, 2, P.YELLOW); r(7, 8, 3, 1, P.NAVY); break;
+    case 'lamp':
+      r(2, -2, 12, 7, OUT); r(3, -1, 10, 5, P.LIGHT); r(3, -1, 10, 1, P.WHITE); r(4, 4, 8, 1, P.YELLOW_DARK); r(6, 5, 4, 10, OUT); r(7, 6, 2, 9, P.ROCK); r(4, 14, 8, 2, OUT); r(5, 15, 6, 1, P.ROCK_DARK); break;
+    case 'counter':
+      r(0, 3, 48, 13, OUT); r(1, 4, 46, 5, P.CREAM); r(1, 4, 46, 1, P.WHITE); r(1, 9, 46, 6, P.WOOD); r(1, 9, 46, 1, P.WOOD_DARK); for (let x = 12; x < 48; x += 12) r(x, 9, 1, 6, lo);
+      r(5, -2, 12, 6, OUT); r(6, -1, 10, 4, P.YELLOW_DARK); r(7, -1, 8, 1, P.CREAM); r(28, 0, 10, 4, OUT); r(29, 1, 8, 2, P.ORANGE); r(19, 0, 8, 4, OUT); r(20, 1, 6, 2, P.PINK); r(21, 1, 1, 1, P.WHITE); break;
+    case 'oven':
+      r(11, -5, 10, 8, OUT); r(12, -4, 8, 6, P.ROCK); r(1, 1, 30, 30, OUT); r(2, 2, 28, 28, P.ROCK_DARK); r(2, 2, 28, 4, P.ROCK_LIGHT); r(2, 6, 28, 1, P.ROCK);
+      r(5, 9, 22, 14, OUT); r(6, 10, 20, 12, P.ROCK); r(8, 12, 16, 8, OUT); r(9, 13, 14, 6, P.ORANGE); r(11, 14, 10, 3, P.YELLOW); r(13, 15, 4, 1, P.LIGHT); r(6, 25, 20, 2, P.ROCK); r(2, 28, 28, 2, lo); break;
+    case 'nets':
+      r(2, 0, 12, 29, OUT); r(3, 1, 10, 27, P.TEAL_DARK); for (let i = 1; i < 4; i++) r(2 + i * 3, 1, 1, 27, P.WATER_LIGHT); for (let j = 1; j < 9; j++) r(3, j * 3, 10, 1, P.WATER_LIGHT);
+      r(1, -1, 14, 3, OUT); r(2, 0, 12, 1, P.WOOD); r(3, 25, 10, 5, OUT); r(4, 26, 8, 3, P.ORANGE); r(5, 26, 2, 1, P.LIGHT); break;
+    case 'radio':
+      r(1, 4, 14, 11, OUT); r(2, 5, 12, 9, P.WOOD_DARK); r(2, 5, 12, 1, P.WOOD); r(3, 7, 4, 4, OUT); r(4, 8, 2, 2, P.YELLOW); r(8, 7, 5, 6, OUT); r(9, 8, 3, 4, P.ROCK); r(9, 9, 3, 1, P.ROCK_LIGHT); r(5, 0, 2, 5, OUT); r(6, 1, 1, 3, P.ROCK_LIGHT); break;
+    case 'loom':
+      r(0, 0, 32, 32, OUT); r(1, 1, 30, 30, P.WOOD); r(1, 1, 30, 1, P.WOOD_LIGHT); r(3, 3, 26, 26, P.WOOD_LIGHT); r(3, 3, 26, 2, P.WOOD_DARK); r(3, 27, 26, 2, P.WOOD_DARK);
+      for (let i = 0; i < 9; i++) r(4 + i * 3, 5, 1, 22, P.CREAM); r(3, 15, 26, 11, OUT); r(4, 16, 24, 9, P.RED); r(4, 16, 24, 1, P.WHITE); for (let y = 19; y < 25; y += 3) r(4, y, 24, 1, hi); break;
+    case 'cabinet':
+      r(0, 0, 32, 16, OUT); r(1, 1, 30, 14, P.WOOD_DARK); r(1, 1, 30, 1, P.WOOD_LIGHT);
+      for (const [x, y] of [[2, 2], [16, 2], [2, 8], [16, 8]] as const) { r(x, y, 14, 6, OUT); r(x + 1, y + 1, 12, 4, P.WOOD); r(x + 1, y + 1, 12, 1, P.WOOD_LIGHT); r(x + 6, y + 2, 2, 2, P.YELLOW); } break;
+    case 'sink':
+      r(6, -3, 4, 8, OUT); r(7, -2, 2, 6, P.ROCK_LIGHT); r(6, -3, 6, 2, OUT); r(7, -3, 4, 1, P.ROCK_LIGHT);
+      r(1, 4, 14, 11, OUT); r(2, 5, 12, 9, P.STONE_PALE); r(3, 6, 10, 6, P.WATER_LIGHT); r(4, 7, 3, 1, P.WHITE); r(2, 12, 12, 2, P.ROCK_LIGHT); break;
+    case 'toybox':
+      r(1, 3, 14, 13, OUT); r(2, 4, 12, 11, P.BLUE); r(2, 4, 12, 4, P.YELLOW); r(2, 4, 12, 1, P.LIGHT); r(2, 8, 12, 1, OUT); r(4, -1, 7, 7, OUT); r(5, 0, 5, 5, P.RED); r(6, 1, 2, 2, P.WHITE); r(3, 13, 10, 2, lo); break;
+    case 'desk':
+      r(0, 2, 32, 9, OUT); r(1, 3, 30, 7, P.WOOD_LIGHT); r(1, 3, 30, 1, P.CREAM); r(1, 9, 30, 1, lo); r(1, 11, 4, 5, OUT); r(2, 11, 2, 4, P.WOOD_DARK); r(27, 11, 4, 5, OUT); r(28, 11, 2, 4, P.WOOD_DARK);
+      r(5, 3, 10, 6, OUT); r(6, 4, 8, 4, P.WHITE); r(7, 5, 6, 1, P.ROCK); r(7, 7, 4, 1, P.ROCK); r(18, 2, 8, 5, OUT); r(19, 3, 6, 3, P.ROCK); r(20, 4, 2, 1, P.ROCK_LIGHT); break;
+    case 'crates':
+      r(1, 2, 14, 14, OUT); r(2, 3, 12, 12, P.WOOD); r(2, 3, 12, 1, P.WOOD_LIGHT); r(2, 8, 12, 1, P.WOOD_DARK); r(8, 3, 1, 12, P.WOOD_DARK); r(2, 14, 12, 1, lo); r(4, 5, 3, 2, hi); break;
+    case 'sacks':
+      r(1, 3, 14, 13, OUT); r(2, 4, 12, 11, P.CREAM); r(2, 4, 12, 1, P.WHITE); r(5, 1, 6, 4, OUT); r(6, 2, 4, 2, P.WOOD); r(3, 9, 10, 1, P.GRAVEL); r(4, 11, 8, 1, P.GRAVEL); r(2, 14, 12, 1, lo); break;
+  }
+  tex.refresh();
+  return key;
+}
+
+// ---------------------------------------------------------------------------
+// Portraits for the dialogue box: 48x48 head-and-shoulders in the chibi style. Transparent
+// background; the box behind supplies the speaker colour.
+// ---------------------------------------------------------------------------
+export interface PortraitLook {
+  skin: string;
+  hair: string;
+  /** short, long, bun, braid, cap (wool cap), bald, hat (brimmed), scarf (headscarf) */
+  style: 'short' | 'long' | 'bun' | 'braid' | 'cap' | 'bald' | 'hat' | 'scarf';
+  coat: string;
+  glasses?: boolean;
+  beard?: boolean;
+  blush?: boolean;
+  /** Colour for a cap, hat or scarf. */
+  headwear?: string;
+  /** Alien: no hair, antennae, big dark eyes. */
+  alien?: boolean;
+}
+
+export function makePortrait(scene: Phaser.Scene, key: string, look: PortraitLook): void {
+  if (scene.textures.exists(key)) return;
+  const tex = scene.textures.createCanvas(key, 48, 48);
+  if (!tex) return;
+  const ctx = tex.getContext();
+  const OUT = P.OUTLINE;
+  const r = (x: number, y: number, w: number, h: number, c: string) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
+  const skin = snap(look.skin);
+  const hair = snap(look.hair);
+  const coat = snap(look.coat);
+  const hi = alpha(P.WHITE, 0.3);
+  const lo = alpha(P.OUTLINE, 0.25);
+  // shoulders and coat
+  r(6, 36, 36, 12, OUT); r(7, 37, 34, 11, coat); r(7, 37, 34, 2, hi); r(22, 37, 4, 11, lo); r(20, 37, 1, 11, hi); r(27, 37, 1, 11, hi);
+  // neck
+  r(19, 30, 10, 8, OUT); r(20, 31, 8, 7, skin); r(20, 31, 8, 2, lo);
+  // head: a rounded block
+  r(11, 8, 26, 26, OUT); r(12, 9, 24, 24, skin); r(10, 11, 1, 20, OUT); r(37, 11, 1, 20, OUT); r(11, 10, 1, 22, skin); r(36, 10, 1, 22, skin);
+  r(12, 9, 24, 2, hi); r(13, 31, 22, 2, lo);
+  if (look.alien) {
+    r(11, 8, 26, 26, OUT); r(12, 9, 24, 24, P.TEAL); r(12, 9, 24, 3, hi); r(13, 30, 22, 3, P.TEAL_DARK);
+    r(16, 0, 2, 9, OUT); r(30, 0, 2, 9, OUT); r(15, -1, 4, 4, P.LIGHT); r(29, -1, 4, 4, P.LIGHT);
+    r(15, 15, 7, 8, OUT); r(26, 15, 7, 8, OUT); r(17, 17, 2, 2, P.WHITE); r(28, 17, 2, 2, P.WHITE); r(20, 26, 8, 2, OUT); r(22, 27, 4, 1, P.WHITE);
+    r(19, 30, 10, 8, OUT); r(20, 31, 8, 7, P.TEAL);
+  } else {
+    // eyes, brows, mouth
+    r(16, 18, 4, 5, OUT); r(28, 18, 4, 5, OUT); r(17, 19, 1, 1, P.WHITE); r(29, 19, 1, 1, P.WHITE);
+    r(15, 15, 6, 1, alpha(OUT, 0.5)); r(27, 15, 6, 1, alpha(OUT, 0.5));
+    r(22, 27, 4, 1, OUT);
+    if (look.blush) { r(13, 23, 4, 2, alpha(P.BLUSH, 0.6)); r(31, 23, 4, 2, alpha(P.BLUSH, 0.6)); }
+    if (look.glasses) { r(14, 16, 8, 8, OUT); r(15, 17, 6, 6, alpha(P.WATER_LIGHT, 0.5)); r(26, 16, 8, 8, OUT); r(27, 17, 6, 6, alpha(P.WATER_LIGHT, 0.5)); r(22, 19, 4, 1, OUT); r(16, 18, 1, 1, P.WHITE); r(28, 18, 1, 1, P.WHITE); }
+    if (look.beard) { r(12, 26, 24, 8, OUT); r(13, 27, 22, 6, hair); r(21, 27, 6, 2, skin); r(13, 24, 2, 3, hair); r(33, 24, 2, 3, hair); }
+    // hair
+    const hw = look.headwear ? snap(look.headwear) : hair;
+    switch (look.style) {
+      case 'bald': r(12, 9, 24, 3, hi); break;
+      case 'short': r(10, 5, 28, 8, OUT); r(11, 6, 26, 6, hair); r(11, 12, 3, 6, hair); r(34, 12, 3, 6, hair); r(13, 6, 22, 1, hi); break;
+      case 'long': r(9, 5, 30, 10, OUT); r(10, 6, 28, 8, hair); r(9, 13, 5, 22, OUT); r(34, 13, 5, 22, OUT); r(10, 14, 3, 20, hair); r(35, 14, 3, 20, hair); r(13, 6, 22, 1, hi); break;
+      case 'bun': r(10, 5, 28, 8, OUT); r(11, 6, 26, 6, hair); r(19, 0, 10, 7, OUT); r(20, 1, 8, 5, hair); r(21, 1, 6, 1, hi); r(11, 12, 2, 5, hair); r(35, 12, 2, 5, hair); break;
+      case 'braid': r(10, 5, 28, 8, OUT); r(11, 6, 26, 6, hair); r(33, 12, 6, 24, OUT); r(34, 13, 4, 22, hair); for (let y = 15; y < 34; y += 4) r(34, y, 4, 1, lo); r(11, 12, 2, 6, hair); break;
+      case 'cap': r(9, 3, 30, 11, OUT); r(10, 4, 28, 9, hw); r(10, 11, 28, 2, alpha(OUT, 0.3)); r(12, 4, 24, 1, hi); r(20, 0, 8, 4, OUT); r(21, 1, 6, 2, hw); r(10, 13, 3, 4, hair); r(35, 13, 3, 4, hair); break;
+      case 'hat': r(10, 5, 28, 6, OUT); r(11, 6, 26, 4, hair); r(6, 9, 36, 4, OUT); r(7, 10, 34, 2, hw); r(12, 0, 24, 10, OUT); r(13, 1, 22, 9, hw); r(13, 7, 22, 2, lo); r(14, 1, 20, 1, hi); break;
+      case 'scarf': r(9, 4, 30, 10, OUT); r(10, 5, 28, 8, hw); r(12, 5, 24, 1, hi); r(9, 13, 4, 20, OUT); r(10, 14, 2, 18, hw); r(35, 13, 4, 20, OUT); r(36, 14, 2, 18, hw); r(13, 12, 22, 2, hair); break;
+    }
+  }
+  tex.refresh();
+}
+
+/** Every portrait the dialogue box can show: the townspeople, the professor, the alien, the disguises. */
+export function makePortraits(scene: Phaser.Scene): void {
+  const coat = (id: string) => content.npcs[id]?.coat ?? P.NAVY;
+  const looks: Record<string, PortraitLook> = {
+    sigrun: { skin: P.SKIN, hair: P.STONE_PALE, style: 'bun', coat: coat('sigrun'), glasses: true },
+    gunnar: { skin: P.SKIN, hair: P.WOOD_DARK, style: 'cap', headwear: P.NAVY, coat: coat('gunnar'), beard: true },
+    halldora: { skin: P.SKIN, hair: P.ROCK_DARK, style: 'bun', coat: coat('halldora'), glasses: true },
+    asta: { skin: P.SKIN, hair: P.WOOD, style: 'scarf', headwear: P.YELLOW, coat: coat('asta'), blush: true },
+    kari: { skin: P.SKIN, hair: P.YELLOW_DARK, style: 'short', coat: coat('kari'), blush: true },
+    einar: { skin: P.SKIN, hair: P.WOOD_DARK, style: 'cap', headwear: P.ORANGE, coat: coat('einar') },
+    hrafnhildur: { skin: P.SKIN, hair: P.WOOD, style: 'braid', coat: coat('hrafnhildur'), blush: true },
+    teacher: { skin: P.SKIN, hair: P.ROCK_DARK, style: 'long', coat: content.teacher.color, glasses: true },
+    alien: { skin: P.TEAL, hair: P.TEAL, style: 'bald', coat: P.TEAL, alien: true },
+    'player.a': { skin: PLAYER_LOOK.skin, hair: PLAYER_LOOK.hair, style: 'hat', headwear: PLAYER_LOOK.hat ?? P.NAVY, coat: PLAYER_LOOK.coat },
+    'player.b': { skin: DISGUISES.b.skin, hair: DISGUISES.b.hair, style: 'long', coat: DISGUISES.b.coat, blush: true },
+  };
+  for (const [id, look] of Object.entries(looks)) makePortrait(scene, `portrait.${id}`, look);
 }
