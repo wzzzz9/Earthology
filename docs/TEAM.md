@@ -1,8 +1,9 @@
-# How we work: four sessions, one repo
+# How we work: one session, four roles
 
-The owner (wzzzz9) directs. Four Claude sessions do the work. Each owns certain files;
-nobody edits files owned by someone else. Work goes to `main` only through pull requests,
-which the **Main** session reviews and merges.
+As of Nov 11 the owner (wzzzz9) works with one Claude session (the VS Code session). That session
+plays all four roles below and, for big parallel jobs, splits work into background subagents and
+merges their results. The separate Art, Design and Research cloud sessions are retired; their file
+ownership still describes which role a change belongs to, and PRs they left open are merged by Main.
 
 | Session | Owns | Delivers |
 | --- | --- | --- |
@@ -15,7 +16,7 @@ Shared rules for everyone: read `CLAUDE.md` and `GAME_PLAN.md` first. Run `npm c
 before opening a PR (content) and `npm run build` if you touched `src/`. Never add a fact without
 `"verified": false` and a source. No quests from townspeople. Lines under 60 characters, 3 per page.
 
-## Asking each other for things
+## Asking each other for things (historical, for cloud sessions)
 
 Cloud sessions cannot talk to each other directly. Use GitHub Issues as the channel:
 

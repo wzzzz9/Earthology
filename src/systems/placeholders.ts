@@ -530,6 +530,39 @@ export function makeIcelandProps(scene: Phaser.Scene): void {
   mk('prop.bench', 20, 10, (r) => { r(0, 3, 20, 3, OUT); r(1, 4, 18, 1, P.WOOD_LIGHT); r(2, 6, 2, 4, OUT); r(16, 6, 2, 4, OUT); r(0, 0, 20, 2, OUT); r(1, 1, 18, 1, P.WOOD_LIGHT); });
   mk('prop.well', 20, 24, (r) => { r(2, 14, 16, 9, OUT); r(3, 15, 14, 7, P.ROCK_LIGHT); r(3, 15, 14, 1, P.STONE_PALE); r(4, 2, 2, 13, OUT); r(14, 2, 2, 13, OUT); r(2, 0, 16, 4, OUT); r(3, 1, 14, 2, P.RED); r(9, 6, 2, 8, OUT); });
   mk('prop.mailbox', 8, 16, (r) => { r(3, 6, 2, 10, OUT); r(0, 0, 8, 7, OUT); r(1, 1, 6, 5, P.RED); r(5, 2, 1, 2, P.YELLOW); });
+  // Washing line between two posts, three bits of laundry. 32x20.
+  mk('prop.washing', 32, 20, (r) => {
+    r(1, 2, 2, 18, OUT); r(29, 2, 2, 18, OUT); r(2, 4, 28, 1, OUT);
+    for (const [x, w, c] of [[5, 6, P.WHITE], [13, 7, P.BLUE], [22, 6, P.PINK]] as [number, number, string][]) { r(x - 1, 4, w + 2, 10, OUT); r(x, 5, w, 8, c); r(x, 5, w, 1, alpha(P.WHITE, 0.4)); }
+    r(14, 13, 5, 3, P.BLUE_DARK);
+  });
+  // Chicken coop: a little hut with a ramp and two hens pecking. 28x20.
+  mk('prop.coop', 28, 20, (r) => {
+    r(2, 18, 24, 2, SHADOW_SOFT);
+    r(1, 6, 18, 13, OUT); r(2, 7, 16, 11, P.WOOD); r(2, 7, 16, 1, P.WOOD_LIGHT);
+    r(0, 2, 20, 5, OUT); r(1, 3, 18, 3, P.RED_DARK); r(7, 11, 5, 7, OUT); r(8, 12, 3, 6, P.OUTLINE);
+    r(12, 14, 8, 2, P.WOOD_LIGHT); r(13, 15, 8, 2, P.WOOD_LIGHT);
+    for (const x of [20, 24]) { r(x, 12, 5, 5, OUT); r(x + 1, 13, 3, 3, P.WHITE); r(x + 3, 12, 1, 1, P.RED); r(x + 4, 14, 1, 1, P.YELLOW); r(x + 1, 17, 1, 2, P.YELLOW); }
+  });
+  // One hen, for scattering about a yard. 8x8.
+  mk('prop.hen', 8, 8, (r) => { r(1, 2, 6, 5, OUT); r(2, 3, 4, 3, P.WHITE); r(5, 1, 2, 2, OUT); r(6, 2, 1, 1, P.YELLOW); r(5, 0, 1, 1, P.RED); r(2, 6, 1, 2, P.YELLOW); r(4, 6, 1, 2, P.YELLOW); });
+  // Flower bed: dark soil edged with stones, bright flowers. 24x12.
+  mk('prop.flowerbed', 24, 12, (r) => {
+    r(0, 4, 24, 8, OUT); r(1, 5, 22, 6, P.WOOD_DARK); for (let x = 1; x < 23; x += 3) r(x, 10, 2, 1, P.STONE_PALE);
+    for (const [x, c] of [[2, P.PINK], [6, P.YELLOW], [10, P.WHITE], [14, P.VIOLET], [18, P.ORANGE]] as [number, string][]) { r(x + 1, 3, 1, 4, P.MOSS_DARK); r(x, 1, 3, 3, c); r(x + 1, 2, 1, 1, P.LIGHT); }
+  });
+  // Notice board: two posts, a roof, papers pinned up. 20x22.
+  mk('prop.board', 20, 22, (r) => {
+    r(2, 10, 2, 12, OUT); r(16, 10, 2, 12, OUT); r(0, 2, 20, 16, OUT); r(1, 3, 18, 14, P.WOOD); r(0, 1, 20, 2, P.WOOD_DARK);
+    r(3, 5, 5, 6, P.WHITE); r(9, 5, 7, 4, P.CREAM); r(4, 12, 6, 4, P.CREAM); r(11, 11, 5, 5, P.WHITE);
+    r(4, 6, 3, 1, P.ROCK); r(10, 6, 5, 1, P.ROCK); r(5, 13, 4, 1, P.ROCK); r(12, 12, 3, 1, P.ROCK); r(5, 5, 1, 1, P.RED); r(12, 11, 1, 1, P.BLUE);
+  });
+  // Rowing boat pulled up on the sand, oars inside. 28x14.
+  mk('prop.rowboat', 28, 14, (r) => {
+    r(2, 12, 24, 2, SHADOW_SOFT);
+    r(1, 4, 26, 8, OUT); r(2, 5, 24, 6, P.RED); r(2, 5, 24, 1, P.WHITE); r(4, 9, 20, 2, P.RED_DARK);
+    r(6, 7, 1, 3, OUT); r(13, 7, 1, 3, OUT); r(20, 7, 1, 3, OUT); r(3, 2, 22, 2, P.WOOD_LIGHT); r(3, 2, 22, 1, OUT);
+  });
   // Pier planks: a short wooden walkway over water, 16x16 tile-sized prop.
   mk('prop.pier', 16, 16, (r) => { r(0, 0, 16, 16, P.WOOD); for (let y = 0; y < 16; y += 4) r(0, y, 16, 1, P.WOOD_DARK); r(0, 0, 1, 16, OUT); r(15, 0, 1, 16, OUT); });
 }

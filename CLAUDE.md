@@ -35,5 +35,8 @@
 - Puzzle objects are map points of type `puzzle` named `<puzzle>.<object>`; check-map verifies they are reachable. Headless tests: `__debug.sinceErupt` (ms since the big geyser spouted), `__debug.flood.place(x,y)` / `.run()`, `__debug.floodResult`, `__debug.state.puzzlesSolved`; stash test output in `__debug.out` and shot.mjs prints it.
 - Changing the flood grid: re-run the brute-force check (see GAME_PLAN 4b) so two banks at the lip still solve it and banks beside the pens still fail.
 
+## One session
+- Since Nov 11 the VS Code session plays Main, Art, Design and Research itself (subagents for parallel work). The ownership table in docs/TEAM.md still says which role a file belongs to.
+
 ## Houses
 - Buildings carry a `house` property in the map (gen script); `WorldScene` makes a `door` interactable under each. Friends (level >= 2) enter `HouseScene` (the world sleeps, then wakes at the doorstep). Rooms come from `houses.json`: an 18x9 grid, furniture types from the catalogue in `HouseScene.ts`, things at tile positions. Headless: `__debug.house` has `p`, `seen`, `busy` while inside.

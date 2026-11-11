@@ -103,7 +103,8 @@ const yard = (hx, hy, inside) => {
   pt('fence-v', 'deco', hx - 1.4, top + 1); pt('fence-v', 'deco', hx + 1.4, top + 1);
   pt(inside, 'deco', hx, top + 1);
 };
-yard(21, 42, 'woodpile'); yard(25, 42, 'planter'); yard(29, 42, 'barrel'); yard(35, 42, 'planter'); yard(39, 42, 'woodpile');
+yard(21, 42, 'woodpile'); yard(25, 42, 'washing'); yard(29, 42, 'barrel'); yard(35, 42, 'washing'); yard(39, 42, 'coop');
+pt('hen', 'deco', 38.2, 38.6); pt('hen', 'deco', 40.1, 39.3);
 // every door gets a stepping-stone path to the street, a window box on one side and a lantern
 // or mailbox on the other; the gaps between houses get a barrel or a woodpile
 const NORTH = [21, 25, 29, 35, 39];
@@ -127,8 +128,11 @@ pt('planter', 'deco', 43, 47.6); pt('planter', 'deco', 45, 47.6); pt('lantern', 
 ground[at(44, 43)] = STONES; pt('lantern', 'deco', 42.7, 43.1); pt('lantern', 'deco', 45.3, 43.1);
 // a low fence along the harbour front, with gaps at the pier, the slipway and the south doors
 for (let x = 24; x < 40; x++) if (![32, 33, ...SOUTH].includes(x)) pt('fence-h', 'deco', x, 49.4);
-// harbour clutter on the black sand west of the basin
-pt('barrel', 'deco', 20.6, 49.3); pt('barrel', 'deco', 21.5, 49.6); pt('woodpile', 'deco', 22.6, 50.4);
+// harbour clutter on the black sand west of the basin, and the notice board by the pier
+pt('barrel', 'deco', 20.6, 49.3); pt('barrel', 'deco', 21.5, 49.6); pt('rowboat', 'deco', 21.8, 51.6); pt('board', 'deco', 30.6, 48.9);
+// flower beds: outside the church and on the square; the farm has its hens
+pt('flowerbed', 'deco', 42.5, 42.4); pt('flowerbed', 'deco', 45.5, 42.4); pt('flowerbed', 'deco', 44, 45.1);
+pt('coop', 'deco', 17.3, 35.2); pt('hen', 'deco', 16.2, 37.4); pt('hen', 'deco', 18.6, 36.8);
 pt('racks', 'prop', 18, 48); pt('fish-racks', 'scan', 18, 49);
 pt('pipe', 'prop', 48, 42); pt('hot-pipe', 'scan', 48, 43);
 pt('pen', 'prop', 15, 36); pt('sheep-pen', 'scan', 15, 38);
