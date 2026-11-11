@@ -85,14 +85,15 @@ line(32, 46, 32, 50, PATH, 1);                 // down to the pier
 // ---- objects ----
 const objs = [];
 let oid = 1;
-const pt = (name, type, tx, ty) => objs.push({ id: oid++, name, type, x: tx * T + T / 2, y: ty * T + T / 2, width: 0, height: 0, point: true, visible: true, rotation: 0 });
+const pt = (name, type, tx, ty, props) => objs.push({ id: oid++, name, type, x: tx * T + T / 2, y: ty * T + T / 2, width: 0, height: 0, point: true, visible: true, rotation: 0, ...(props ? { properties: Object.entries(props).map(([name, value]) => ({ name, type: 'string', value })) } : {}) });
 pt('spawn', 'spawn', 14, 45);
 pt('ship', 'ship', 11, 42);
 pt('signpost', 'scan', 16, 43);
 // town buildings (footprint 3x2 tiles above the point) and the church
 // packed along the street: one tile between houses
-pt('house-red', 'building', 21, 42); pt('house-yellow', 'building', 25, 42); pt('house-blue', 'building', 29, 42); pt('house-green', 'building', 35, 42); pt('house-red', 'building', 39, 42);
-pt('house-blue', 'building', 23, 48); pt('house-green', 'building', 27, 48); pt('house-yellow', 'building', 37, 48);
+// each house belongs to someone (houses.json); you may enter once they count you as a friend
+pt('house-red', 'building', 21, 42, { house: 'asta' }); pt('house-yellow', 'building', 25, 42, { house: 'kari' }); pt('house-blue', 'building', 29, 42, { house: 'halldora' }); pt('house-green', 'building', 35, 42, { house: 'einar' }); pt('house-red', 'building', 39, 42, { house: 'sigrun' });
+pt('house-blue', 'building', 23, 48, { house: 'gunnar' }); pt('house-green', 'building', 27, 48, { house: 'hrafnhildur' }); pt('house-yellow', 'building', 37, 48, { house: 'summer' });
 pt('church', 'building', 44, 41);
 pt('church', 'scan', 44, 42);
 // fenced back yards behind the north-side houses, each with something in it
@@ -103,11 +104,31 @@ const yard = (hx, hy, inside) => {
   pt(inside, 'deco', hx, top + 1);
 };
 yard(21, 42, 'woodpile'); yard(25, 42, 'planter'); yard(29, 42, 'barrel'); yard(35, 42, 'planter'); yard(39, 42, 'woodpile');
-// front-of-house clutter along the street
-for (const [n, x, y] of [['planter', 22.6, 43], ['lantern', 19.5, 43], ['mailbox', 26.6, 43], ['barrel', 30.6, 43], ['bench', 33, 43], ['planter', 36.6, 43], ['lantern', 41, 43],
-  ['planter', 21.5, 46], ['barrel', 25.4, 46.2], ['bench', 29, 46], ['woodpile', 35.5, 46], ['planter', 38.6, 46], ['lantern', 42, 46.4], ['well', 44, 46], ['bench', 47, 42.5]]) pt(n, 'deco', x, y);
-// a low fence along the harbour front, with gaps at the pier and the slipway
-for (let x = 24; x < 40; x++) if (x !== 32 && x !== 33) pt('fence-h', 'deco', x, 49.4);
+// every door gets a stepping-stone path to the street, a window box on one side and a lantern
+// or mailbox on the other; the gaps between houses get a barrel or a woodpile
+const NORTH = [21, 25, 29, 35, 39];
+const SOUTH = [23, 27, 37];
+for (const [i, hx] of NORTH.entries()) {
+  ground[at(hx, 43)] = STONES;
+  pt('planter', 'deco', hx - 1.3, 43.1);
+  pt(i % 2 ? 'mailbox' : 'lantern', 'deco', hx + 1.3, 43.1);
+}
+for (const [i, hx] of SOUTH.entries()) {
+  ground[at(hx, 49)] = STONES;
+  pt('planter', 'deco', hx - 1.3, 49.1);
+  pt(i % 2 ? 'mailbox' : 'lantern', 'deco', hx + 1.3, 49.1);
+}
+for (const [n, x, y] of [['barrel', 32, 42.6], ['woodpile', 33, 46.2], ['barrel', 25.4, 46.3], ['bench', 31, 46.3], ['woodpile', 19.4, 46.3], ['bench', 47, 42.5], ['barrel', 41.6, 46.3]]) pt(n, 'deco', x, y);
+// the well is the village square: benches and flowers round it, a lantern for the evenings
+pt('well', 'deco', 44, 46.3);
+pt('bench', 'deco', 42.4, 46.8); pt('bench', 'deco', 45.6, 46.8);
+pt('planter', 'deco', 43, 47.6); pt('planter', 'deco', 45, 47.6); pt('lantern', 'deco', 44, 47.9);
+// the church: a path to its door and a lantern each side
+ground[at(44, 43)] = STONES; pt('lantern', 'deco', 42.7, 43.1); pt('lantern', 'deco', 45.3, 43.1);
+// a low fence along the harbour front, with gaps at the pier, the slipway and the south doors
+for (let x = 24; x < 40; x++) if (![32, 33, ...SOUTH].includes(x)) pt('fence-h', 'deco', x, 49.4);
+// harbour clutter on the black sand west of the basin
+pt('barrel', 'deco', 20.6, 49.3); pt('barrel', 'deco', 21.5, 49.6); pt('woodpile', 'deco', 22.6, 50.4);
 pt('racks', 'prop', 18, 48); pt('fish-racks', 'scan', 18, 49);
 pt('pipe', 'prop', 48, 42); pt('hot-pipe', 'scan', 48, 43);
 pt('pen', 'prop', 15, 36); pt('sheep-pen', 'scan', 15, 38);

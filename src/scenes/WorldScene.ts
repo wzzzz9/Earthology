@@ -3,6 +3,7 @@ import { hiRes } from '../ui/hires';
 import { FONT, SIZE, TEXT_RES } from '../ui/font';
 import { sfx } from '../systems/sfx';
 import { puzzleFor, puzzleStatus, geyserPull, geyserClock } from '../systems/puzzles';
+import { levelOf } from '../systems/relationships';
 import type { ClassDef, PuzzleObject } from '../content/types';
 import {
   makePlaceholderTileset, makePlaceholderPlayer, makePlaceholderShip, makeSparkle, makePlaceholderProps, makePickupRock, makeTrees, makeIcelandProps, makePlants,
@@ -21,7 +22,7 @@ import { onNewDay, classToday, attendClass, checkTasks, type Notice } from '../s
 const SPEED = 70; // px per second, a relaxed walking pace for 16px tiles
 const REACH = 22; // px from the point in front of the player to an interactable
 
-type Kind = 'scan' | 'npc' | 'ship' | 'sample' | 'puzzle';
+type Kind = 'scan' | 'npc' | 'ship' | 'sample' | 'puzzle' | 'door';
 interface Interactable {
   kind: Kind;
   id: string;
@@ -115,6 +116,10 @@ export class WorldScene extends Phaser.Scene {
         const img = this.add.image(x + 8, y + 8, key).setOrigin(0.5, 1).setDepth(y + 8);
         const fw = img.width - 4;
         solids.add(this.add.rectangle(x + 8, y + 2, fw, 22).setVisible(false));
+        // whose house: a Tiled property on the object (array or map, depending on the parser)
+        const props = (o as unknown as { properties?: { name: string; value: string }[] | Record<string, string> }).properties;
+        const houseId = Array.isArray(props) ? props.find((p) => p.name === 'house')?.value : props?.house;
+        if (houseId && content.houses[houseId]) this.interactables.push({ kind: 'door', id: houseId, x: x + 8, y: y + 12 });
       } else if (o.type === 'prop') {
         const key = `prop.${o.name}`;
         if (!this.textures.exists(key)) continue;
@@ -200,7 +205,7 @@ export class WorldScene extends Phaser.Scene {
       height: map.height,
       ground: groundData,
       walls: wallData,
-      markers: this.interactables.filter((it) => it.kind !== 'sample' && it.kind !== 'puzzle').map((it) => ({ x: it.x, y: it.y, kind: it.kind as 'ship' | 'scan' | 'npc', id: it.id })),
+      markers: this.interactables.filter((it) => it.kind !== 'sample' && it.kind !== 'puzzle' && it.kind !== 'door').map((it) => ({ x: it.x, y: it.y, kind: it.kind as 'ship' | 'scan' | 'npc', id: it.id })),
     };
 
     const cam = this.cameras.main;
@@ -228,6 +233,16 @@ export class WorldScene extends Phaser.Scene {
       bus.off(EV.stateChanged, checkTasks);
     });
 
+    this.events.on('wake', (_sys: Phaser.Scenes.Systems, data?: { from?: string; x?: number; y?: number }) => {
+      if (data?.from === 'house' && data.x !== undefined && data.y !== undefined) {
+        (this.player.body as Phaser.Physics.Arcade.Body).reset(data.x, data.y);
+        this.player.setFrame('down0');
+      }
+      this.cameras.main.resetFX();
+      this.cameras.main.fadeIn(300, 0, 0, 0);
+      this.busy = false;
+      this.heldE = this.actKey.isDown;
+    });
     this.installDebug();
     this.revealAround();
     if (this.firstWalk) {
@@ -318,6 +333,10 @@ export class WorldScene extends Phaser.Scene {
     if (it.kind === 'npc') return `E: Talk to ${content.npcs[it.id]?.name ?? it.id}`;
     if (it.kind === 'sample') return 'E: Pick up rock';
     if (it.kind === 'puzzle') return `E: ${this.puzzleObject(it)?.prompt ?? 'Look'}`;
+    if (it.kind === 'door') {
+      const h = content.houses[it.id];
+      return h.owner && levelOf(h.owner) >= 2 ? `E: Go into ${h.name}` : `E: Knock at ${h.name}`;
+    }
     return 'E: Your ship';
   }
 
@@ -326,6 +345,7 @@ export class WorldScene extends Phaser.Scene {
     if (it.kind === 'npc') return this.openDialogue(new Conversation(it.id));
     if (it.kind === 'sample') return this.pickUp(it);
     if (it.kind === 'puzzle') return this.openDialogue(this.puzzleTalk(it));
+    if (it.kind === 'door') return this.knock(it);
     return this.openDialogue(this.shipMenu());
   }
 
@@ -483,6 +503,28 @@ export class WorldScene extends Phaser.Scene {
     };
   }
 
+  /** Knocking: friends are let in, strangers get the door. Inside is its own scene; the world sleeps. */
+  private knock(it: Interactable): void {
+    const h = content.houses[it.id];
+    sfx.tick();
+    if (!h.owner) { bus.emit(EV.toast, h.locked ?? 'Nobody answers.'); return; }
+    const owner = content.npcs[h.owner];
+    if (levelOf(h.owner) < 2) {
+      bus.emit(EV.toast, `${owner.name} opens the door a crack. "Yes?" You are not close enough to be asked in. Not yet.`);
+      return;
+    }
+    this.busy = true;
+    this.player.setVelocity(0, 0);
+    this.player.anims.stop();
+    this.prompt.setVisible(false);
+    sfx.open();
+    this.cameras.main.fadeOut(300, 0, 0, 0);
+    this.cameras.main.once('camerafadeoutcomplete', () => {
+      this.scene.launch('House', { house: it.id, returnTo: { x: it.x, y: it.y + 10 }, playerKey: this.playerKey });
+      this.scene.sleep();
+    });
+  }
+
   /** A one-off eruption where a blocked pool used to be. */
   private eruptAt(x: number, y: number): void {
     const column = this.add.image(x, y, 'fx.geyser-column').setOrigin(0.5, 1).setDepth(y + 1).setScale(1, 0);
@@ -532,6 +574,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private onDialogueClosed(): void {
+    if (this.scene.isSleeping()) return; // inside a house: the house scene handles its own overlays
     if (this.pendingOverlay) {
       const key = this.pendingOverlay;
       this.pendingOverlay = null;

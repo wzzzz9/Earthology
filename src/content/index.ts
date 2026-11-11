@@ -9,7 +9,8 @@ import rubricJson from '../../content/countries/iceland/rubric.json';
 import teacherJson from '../../content/countries/iceland/teacher.json';
 import introJson from '../../content/countries/iceland/intro.json';
 import classesJson from '../../content/countries/iceland/classes.json';
-import type { Scannable, NpcDef, NpcDialogue, Fact, SampleDef, TestDef, TestId, IdKey, Rubric, TeacherDef, IntroDef, ClassesDef } from './types';
+import housesJson from '../../content/countries/iceland/houses.json';
+import type { Scannable, NpcDef, NpcDialogue, Fact, SampleDef, TestDef, TestId, IdKey, Rubric, TeacherDef, IntroDef, ClassesDef, HouseDef } from './types';
 
 /** All game content, bundled at build time. Never hard-code facts in src/. */
 export const content = {
@@ -24,6 +25,7 @@ export const content = {
   teacher: teacherJson as TeacherDef,
   intro: introJson as IntroDef,
   classes: classesJson as ClassesDef,
+  houses: housesJson as Record<string, HouseDef>,
 };
 
 export const TEST_ORDER: TestId[] = ['lens', 'water', 'magnet', 'acid', 'streak', 'scratch'];

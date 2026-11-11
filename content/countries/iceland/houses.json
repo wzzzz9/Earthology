@@ -1,0 +1,131 @@
+{
+  "asta": {
+    "owner": "asta",
+    "name": "Ásta's bakery house",
+    "wall": "#e9d9c4",
+    "floor": "#b78a5c",
+    "furniture": [
+      { "type": "window", "x": 3, "y": 0 }, { "type": "shelf", "x": 7, "y": 0 }, { "type": "picture", "x": 12, "y": 0 }, { "type": "window", "x": 14, "y": 0 },
+      { "type": "oven", "x": 1, "y": 1 }, { "type": "counter", "x": 4, "y": 1 }, { "type": "sacks", "x": 8, "y": 1 }, { "type": "sacks", "x": 9, "y": 1 },
+      { "type": "table", "x": 11, "y": 2 }, { "type": "chair", "x": 10, "y": 3 }, { "type": "chair", "x": 13, "y": 3 },
+      { "type": "rug", "x": 6, "y": 4, "color": "#f7a3c0" },
+      { "type": "bed", "x": 15, "y": 2, "color": "#f7a3c0" }, { "type": "plant", "x": 1, "y": 7 }, { "type": "chest", "x": 16, "y": 7 }
+    ],
+    "things": [
+      { "id": "oven", "x": 1, "y": 1, "name": "Ásta's oven", "line": "Rye bread goes in at night, comes out at dawn. The whole house smells of it." },
+      { "id": "recipes", "x": 7, "y": 0, "name": "Recipe cards", "line": "Her grandmother's hand. Half the words are measurements in cups and thumbs." },
+      { "id": "flour", "x": 8, "y": 1, "name": "Flour sacks", "line": "Stamped with a mill in the south. Most food here comes a long way." }
+    ]
+  },
+  "kari": {
+    "owner": "kari",
+    "name": "Kári's family house",
+    "wall": "#dfe6ee",
+    "floor": "#a9825a",
+    "furniture": [
+      { "type": "window", "x": 2, "y": 0 }, { "type": "picture", "x": 6, "y": 0 }, { "type": "bookshelf", "x": 9, "y": 0 }, { "type": "window", "x": 14, "y": 0 },
+      { "type": "bed", "x": 1, "y": 1, "color": "#5b93d6" }, { "type": "toybox", "x": 3, "y": 1 }, { "type": "desk", "x": 5, "y": 1 }, { "type": "chair", "x": 5, "y": 2 },
+      { "type": "rug", "x": 7, "y": 3, "color": "#f5cf5e" }, { "type": "stove", "x": 16, "y": 1 }, { "type": "table", "x": 12, "y": 2 },
+      { "type": "chair", "x": 11, "y": 3 }, { "type": "chair", "x": 14, "y": 3 }, { "type": "plant", "x": 16, "y": 7 }, { "type": "radio", "x": 1, "y": 5 }
+    ],
+    "things": [
+      { "id": "map", "x": 6, "y": 0, "name": "Kári's wall map", "line": "Pins in every place he has questions about. Most of the island has a pin." },
+      { "id": "rocks", "x": 5, "y": 1, "name": "Kári's rock tin", "line": "A biscuit tin of stones, each one labelled wrong with great confidence." },
+      { "id": "radio", "x": 1, "y": 5, "name": "Weather radio", "line": "Tuned to the shipping forecast. Everyone here listens to it, even children." }
+    ]
+  },
+  "halldora": {
+    "owner": "halldora",
+    "name": "Halldóra's house",
+    "wall": "#d8e2e8",
+    "floor": "#8f7560",
+    "furniture": [
+      { "type": "window", "x": 2, "y": 0 }, { "type": "picture", "x": 5, "y": 0 }, { "type": "shelf", "x": 8, "y": 0 }, { "type": "window", "x": 13, "y": 0 },
+      { "type": "desk", "x": 1, "y": 1 }, { "type": "chair", "x": 1, "y": 2 }, { "type": "cabinet", "x": 4, "y": 1 }, { "type": "stove", "x": 16, "y": 1 },
+      { "type": "table", "x": 10, "y": 2 }, { "type": "chair", "x": 9, "y": 3 }, { "type": "rug", "x": 5, "y": 5, "color": "#3f6fae" },
+      { "type": "bed", "x": 15, "y": 4, "color": "#3a4068" }, { "type": "lamp", "x": 14, "y": 7 }, { "type": "barrel", "x": 1, "y": 7 }
+    ],
+    "things": [
+      { "id": "tides", "x": 1, "y": 1, "name": "Tide tables", "line": "Every boat in and out for thirty years, in pencil. She checks them against the sea." },
+      { "id": "barometer", "x": 5, "y": 0, "name": "Brass barometer", "line": "Tapped every morning. When the needle drops, the harbour closes." },
+      { "id": "charts", "x": 8, "y": 0, "name": "Sea charts", "line": "Depths in fathoms around the harbour mouth. The sandbar moves every winter." }
+    ]
+  },
+  "einar": {
+    "owner": "einar",
+    "name": "Einar's house",
+    "wall": "#e4ded0",
+    "floor": "#9c7a55",
+    "furniture": [
+      { "type": "window", "x": 3, "y": 0 }, { "type": "shelf", "x": 6, "y": 0 }, { "type": "picture", "x": 11, "y": 0 }, { "type": "window", "x": 14, "y": 0 },
+      { "type": "stove", "x": 1, "y": 1 }, { "type": "sink", "x": 2, "y": 1 }, { "type": "counter", "x": 3, "y": 1 }, { "type": "table", "x": 8, "y": 2 },
+      { "type": "chair", "x": 7, "y": 3 }, { "type": "chair", "x": 10, "y": 3 }, { "type": "rug", "x": 12, "y": 4, "color": "#5fd3bb" },
+      { "type": "bed", "x": 15, "y": 1, "color": "#3fa896" }, { "type": "wardrobe", "x": 13, "y": 1 }, { "type": "crates", "x": 1, "y": 7 }, { "type": "plant", "x": 16, "y": 7 }
+    ],
+    "things": [
+      { "id": "gauge", "x": 11, "y": 0, "name": "Pressure gauge", "line": "Off the old plant. The needle is stuck at the pressure that cracked a pipe in 1998." },
+      { "id": "pipes", "x": 1, "y": 7, "name": "Spare pipe fittings", "line": "Hot water runs under every house here. Somebody has to keep it running." },
+      { "id": "sink", "x": 2, "y": 1, "name": "The hot tap", "line": "Smells faintly of eggs. Geothermal water does; everyone stops noticing." }
+    ]
+  },
+  "sigrun": {
+    "owner": "sigrun",
+    "name": "Sigrún's house",
+    "wall": "#e8e0cc",
+    "floor": "#8a6f52",
+    "furniture": [
+      { "type": "window", "x": 2, "y": 0 }, { "type": "bookshelf", "x": 5, "y": 0 }, { "type": "bookshelf", "x": 7, "y": 0 }, { "type": "picture", "x": 11, "y": 0 }, { "type": "window", "x": 14, "y": 0 },
+      { "type": "cabinet", "x": 1, "y": 1 }, { "type": "cabinet", "x": 3, "y": 1 }, { "type": "desk", "x": 9, "y": 1 }, { "type": "chair", "x": 9, "y": 2 }, { "type": "lamp", "x": 11, "y": 1 },
+      { "type": "rug", "x": 4, "y": 4, "color": "#a98ae0" }, { "type": "table", "x": 12, "y": 4 }, { "type": "chair", "x": 11, "y": 5 },
+      { "type": "bed", "x": 15, "y": 2, "color": "#dcc5f5" }, { "type": "stove", "x": 16, "y": 6 }, { "type": "plant", "x": 1, "y": 7 }
+    ],
+    "things": [
+      { "id": "specimens", "x": 1, "y": 1, "name": "Specimen drawers", "line": "Forty years of rocks, each with a place and a date. The labels are better than the museum's." },
+      { "id": "hammer", "x": 9, "y": 1, "name": "Geologist's hammer", "line": "Handle worn pale where her hand goes. She still takes it on walks." },
+      { "id": "map", "x": 11, "y": 0, "name": "Geological map", "line": "The island in colours by rock age. The youngest stripe runs right through the middle." }
+    ]
+  },
+  "gunnar": {
+    "owner": "gunnar",
+    "name": "Gunnar's house",
+    "wall": "#d7dde6",
+    "floor": "#8d6e4f",
+    "furniture": [
+      { "type": "window", "x": 3, "y": 0 }, { "type": "picture", "x": 7, "y": 0 }, { "type": "shelf", "x": 10, "y": 0 }, { "type": "window", "x": 14, "y": 0 },
+      { "type": "nets", "x": 1, "y": 1 }, { "type": "crates", "x": 2, "y": 1 }, { "type": "barrel", "x": 3, "y": 1 }, { "type": "stove", "x": 16, "y": 1 },
+      { "type": "table", "x": 7, "y": 2 }, { "type": "chair", "x": 6, "y": 3 }, { "type": "chair", "x": 9, "y": 3 }, { "type": "radio", "x": 12, "y": 1 },
+      { "type": "rug", "x": 11, "y": 4, "color": "#3b86b4" }, { "type": "bed", "x": 15, "y": 5, "color": "#3f6fae" }, { "type": "chest", "x": 1, "y": 7 }
+    ],
+    "things": [
+      { "id": "nets", "x": 1, "y": 1, "name": "Mended nets", "line": "Every hole knotted shut by hand. Winter is for mending; summer is for tearing." },
+      { "id": "photo", "x": 7, "y": 0, "name": "Photo of a boat", "line": "His father's boat, smaller than his. Same name painted on the bow." },
+      { "id": "radio", "x": 12, "y": 1, "name": "Ship's radio", "line": "He talks to the other boats more than to the town." }
+    ]
+  },
+  "hrafnhildur": {
+    "owner": "hrafnhildur",
+    "name": "Hrafnhildur's house",
+    "wall": "#e6dfd2",
+    "floor": "#9a7b58",
+    "furniture": [
+      { "type": "window", "x": 2, "y": 0 }, { "type": "shelf", "x": 5, "y": 0 }, { "type": "picture", "x": 9, "y": 0 }, { "type": "window", "x": 14, "y": 0 },
+      { "type": "loom", "x": 1, "y": 1 }, { "type": "sacks", "x": 4, "y": 1 }, { "type": "stove", "x": 16, "y": 1 }, { "type": "table", "x": 8, "y": 2 },
+      { "type": "chair", "x": 7, "y": 3 }, { "type": "chair", "x": 10, "y": 3 }, { "type": "rug", "x": 3, "y": 5, "color": "#ebe2cd" },
+      { "type": "bed", "x": 15, "y": 4, "color": "#ebe2cd" }, { "type": "wardrobe", "x": 13, "y": 1 }, { "type": "plant", "x": 1, "y": 7 }
+    ],
+    "things": [
+      { "id": "loom", "x": 1, "y": 1, "name": "The loom", "line": "Wool from her own sheep. A sweater takes a winter of evenings." },
+      { "id": "earmarks", "x": 5, "y": 0, "name": "Earmark book", "line": "Every farm cuts its own notch in the lambs' ears. Hers is two cuts, left ear." },
+      { "id": "weather", "x": 9, "y": 0, "name": "Old weather diary", "line": "Snow in June, 1952. Grass in February, 2010. She does not trust either." }
+    ]
+  },
+  "summer": {
+    "owner": null,
+    "name": "Summer house",
+    "locked": "Shutters closed. Nobody lives here in winter.",
+    "wall": "#e4ded0",
+    "floor": "#9c7a55",
+    "furniture": [],
+    "things": []
+  }
+}

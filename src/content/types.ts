@@ -234,3 +234,28 @@ export interface ClassesDef {
     puzzleLocked: string;
   };
 }
+
+export interface HouseFurniture {
+  type: string;
+  x: number;
+  y: number;
+  color?: string;
+}
+export interface HouseThing {
+  id: string;
+  x: number;
+  y: number;
+  name: string;
+  line: string;
+}
+/** A house you can enter once its owner counts you as a friend. Room grid is 18x9 tiles; row 0 is the back wall. */
+export interface HouseDef {
+  owner: string | null;
+  name: string;
+  /** Shown at the door when nobody lives here. */
+  locked?: string;
+  wall: string;
+  floor: string;
+  furniture: HouseFurniture[];
+  things: HouseThing[];
+}

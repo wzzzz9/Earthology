@@ -202,6 +202,13 @@ Fisherman, harbour master, bakery owner, a child who asks too many questions (ne
 
 ---
 
+**Houses (decided Nov 11).** Every town house belongs to someone (`content/countries/iceland/houses.json`).
+Knock as a stranger or acquaintance and the owner opens the door a crack: not yet. Once they count
+you as a friend (relationship level 2) you can go in. Inside is one room that says who they are
+(the fisherman's nets, the geologist's specimen drawers) with three things to look at; each is a
+People entry and the first look earns one trust. The summer house is shuttered. Houses are drawn by
+code (`HouseScene.ts`); Art may replace the furniture with sprites later.
+
 ## 6. Homework and marking
 
 ### 6.1 The notebook is the homework

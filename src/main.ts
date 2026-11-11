@@ -12,6 +12,7 @@ import { IntroScene } from './scenes/IntroScene';
 import { MapScene } from './scenes/MapScene';
 import { NameScene } from './scenes/NameScene';
 import { FloodScene } from './scenes/FloodScene';
+import { HouseScene } from './scenes/HouseScene';
 
 // Every game pixel must cover a whole number of *device* pixels, or the browser smears them.
 // Windows/Mac display scaling makes a CSS pixel 1.25 or 1.5 device pixels, so the zoom is
@@ -38,7 +39,7 @@ const game = new Phaser.Game({
     default: 'arcade',
     arcade: { debug: false },
   },
-  scene: [BootScene, TitleScene, IntroScene, WorldScene, MapScene, HudScene, DialogueScene, NotebookScene, LabScene, SubmitScene, NameScene, FloodScene],
+  scene: [BootScene, TitleScene, IntroScene, WorldScene, MapScene, HudScene, DialogueScene, NotebookScene, LabScene, SubmitScene, NameScene, FloodScene, HouseScene],
 });
 
 window.addEventListener('resize', () => game.scale.setZoom(bestZoom()));

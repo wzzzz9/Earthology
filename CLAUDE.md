@@ -34,3 +34,6 @@
 - A class with `trip` in classes.json is a field trip: "Attend class" teleports the player to the place's scan point, the professor stands beside them, the lesson plays there. Rules in `src/systems/puzzles.ts`; world hooks in `WorldScene.ts` (`startTrip`, `puzzleTalk`); the flood map is `src/scenes/FloodScene.ts`.
 - Puzzle objects are map points of type `puzzle` named `<puzzle>.<object>`; check-map verifies they are reachable. Headless tests: `__debug.sinceErupt` (ms since the big geyser spouted), `__debug.flood.place(x,y)` / `.run()`, `__debug.floodResult`, `__debug.state.puzzlesSolved`; stash test output in `__debug.out` and shot.mjs prints it.
 - Changing the flood grid: re-run the brute-force check (see GAME_PLAN 4b) so two banks at the lip still solve it and banks beside the pens still fail.
+
+## Houses
+- Buildings carry a `house` property in the map (gen script); `WorldScene` makes a `door` interactable under each. Friends (level >= 2) enter `HouseScene` (the world sleeps, then wakes at the doorstep). Rooms come from `houses.json`: an 18x9 grid, furniture types from the catalogue in `HouseScene.ts`, things at tile positions. Headless: `__debug.house` has `p`, `seen`, `busy` while inside.

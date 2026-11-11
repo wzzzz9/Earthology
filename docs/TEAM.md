@@ -9,7 +9,7 @@ which the **Main** session reviews and merges.
 | **Main** (the VS Code session) | `src/scenes/**`, `src/systems/**` except `placeholders.ts`, `scripts/**`, `GAME_PLAN.md`, `CLAUDE.md`, `README.md`, merges | Working game code, milestone builds, headless tests, integration of the other three |
 | **Art** | `src/systems/placeholders.ts`, `src/art/**`, `docs/ART_SPEC.md`, `docs/art/**`, `public/assets/**` | The palette, the look of every sprite and tile, set-dressing rules, portraits. Receives reference images from the owner. |
 | **Research** | `content/facts.json` (verification only: `source`, `verified`, minimal text fixes), `docs/research/**` | Verified facts with sources; answers to research questions from the other sessions |
-| **Design** | `docs/design/**`, `content/countries/*/{dialogue,npcs,scannables,classes,rubric,teacher,intro}.json` | What the player does: classes, tasks, dialogue, rubric items, town life. Proposals as docs, content as JSON. |
+| **Design** | `docs/design/**`, `content/countries/*/{dialogue,npcs,scannables,classes,rubric,teacher,intro,houses}.json` | What the player does: classes, tasks, dialogue, rubric items, town life. Proposals as docs, content as JSON. |
 
 Shared rules for everyone: read `CLAUDE.md` and `GAME_PLAN.md` first. Run `npm ci && npm run check`
 before opening a PR (content) and `npm run build` if you touched `src/`. Never add a fact without
